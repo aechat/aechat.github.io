@@ -1034,6 +1034,200 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="dxv"
+          title="Resolume (DXV)"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> нельзя напрямую
+            экспортировать композицию в кодеке <mark className="video">DXV</mark>{" "}
+            стандартными средствами. Для этого потребуется установить стороннюю утилиту
+            <mark className="app">Resolume Alley</mark>, которая может работать как
+            отдельно, так и в виде плагина для{" "}
+            <mark className="app">Adobe After Effects</mark> и{" "}
+            <mark className="app">Adobe Premiere</mark>.
+          </p>
+          <ContentFilter
+            macContent={
+              <>
+                <ul>
+                  <li>
+                    <p>
+                      Для загрузки <mark className="app">Resolume Alley</mark> перейдите
+                      на официальный{" "}
+                      <a href="https://www.resolume.com/download/mac">сайт</a>{" "}
+                      <mark className="company">Resolume</mark>, пролистайте вниз и в
+                      выпадающем меню <mark className="select">«Alley downloads»</mark>{" "}
+                      выберите последнюю доступную версию для скачивания.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/download-from-resolume-page.png"
+                      type="image"
+                    />
+                  </li>
+                  <li>
+                    <p>
+                      Откройте загруженный инсталлятор и следуйте инструкциям. При
+                      необходимости отметьте чекбокс установки плагинов для{" "}
+                      <mark className="app">Adobe After Effects</mark> и{" "}
+                      <mark className="app">Adobe Premiere</mark>, если планируете
+                      экспортировать композиции напрямую из{" "}
+                      <mark className="app">Adobe After Effects</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/install-dxv-exporter-plugins-for-ae-pr.png"
+                      type="image"
+                    />
+                  </li>
+                </ul>
+              </>
+            }
+            windowsContent={
+              <>
+                <ul>
+                  <li>
+                    <p>
+                      Для загрузки <mark className="app">Resolume Alley</mark> перейдите
+                      на официальный{" "}
+                      <a href="https://www.resolume.com/download/win">сайт</a>{" "}
+                      <mark className="company">Resolume</mark>, пролистайте вниз и в
+                      выпадающем меню <mark className="select">«Alley downloads»</mark>{" "}
+                      выберите последнюю доступную версию для скачивания.
+                    </p>
+                    <ArticleMedia
+                      caption="Выбор версии Resolume Alley для скачивания"
+                      src="tools/resolume-alley/download-from-resolume-page.png"
+                      type="image"
+                    />
+                  </li>
+                  <li>
+                    <p>
+                      Откройте загруженный инсталлятор и следуйте инструкциям. При
+                      необходимости отметьте чекбокс установки плагинов для{" "}
+                      <mark className="app">Adobe After Effects</mark> и{" "}
+                      <mark className="app">Adobe Premiere</mark>, если планируете
+                      экспортировать композиции напрямую из{" "}
+                      <mark className="app">Adobe After Effects</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/install-dxv-exporter-plugins-for-ae-pr.png"
+                      type="image"
+                    />
+                  </li>
+                </ul>
+              </>
+            }
+          />
+          <Divider>
+            Экспортируем с помощью плагина <mark className="plugin">DXV 3</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">DXV</mark> с помощью
+                плагина, поставляемый с <mark className="app">Resolume Alley</mark> нужно
+                выбрать значение <mark className="select">«DXV 3»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата DXV 3"
+                src="after-effects/export/export-dxv3.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата DXV 3"
+                src="after-effects/export/dxv3-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает выбор типа сжатия кодека и настройка
+                сохранения альфа-канала.
+              </p>
+              <ArticleMedia
+                caption="Выбираем сжатие для экспорта в DXV 3"
+                src="after-effects/export/select-dxv3-compression.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Resolume Alley</mark>
+          </Divider>
+          <p>
+            Если у вас уже есть видео в другом формате — воспользуйтесь ранее
+            установленной утилитой <mark className="app">Resolume Alley</mark> для
+            конвертации в кодек <mark className="video">DXV</mark>.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Resolume Alley</mark> нажмите{" "}
+                <mark className="select">«Open»</mark> или перетащите их в окно программы
+                для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Resolume Alley"
+                src="tools/resolume-alley/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Для перехода к настройкам конвертации нажмите на{" "}
+                <mark className="select">«Convert file»</mark> в левой части интерфейса.
+              </p>
+              <ArticleMedia
+                caption="Переход к настройкам конвертации в Resolume Alley"
+                src="tools/resolume-alley/convert-file.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Presets»</mark> нужное сжатие
+                для конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор пресета для конвертации в Resolume Alley"
+                src="tools/resolume-alley/select-preset.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Queue file»</mark> в левой части интерфейса для
+                запуска конвертации.
+              </p>
+              <ArticleMedia
+                caption="Переход к настройкам конвертации в Resolume Alley"
+                src="tools/resolume-alley/queue-file.png"
+                type="image"
+              />
+              <Addition type="warning">
+                Некоторые видеопроигрыватели могут некорректно отображать цвета после
+                конвертации в <mark className="video">DXV</mark>.
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
