@@ -2,6 +2,8 @@ import React from "react";
 
 import {Divider} from "antd";
 
+import {Link} from "react-router-dom";
+
 import Addition from "../../../components/content/Addition";
 
 import {ArticleMedia} from "../../../components/content/ArticleMedia";
@@ -1601,6 +1603,252 @@ const AeExport: React.FC = () => {
   </body>
 </html>`}
           </CodeSnippet>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="gif"
+          title="Анимированный GIF"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> нельзя вывести
+            анимированный <mark className="image">GIF</mark> стандартными средствами.
+            Однако это можно сделать тремя способами: с помощью стороннего расширения{" "}
+            <mark className="plugin">GifGun</mark>, конвертацией промежуточного результата
+            через веб-сервис <mark className="web">Ezgif</mark> или экспортом через{" "}
+            <mark className="app">Adobe Media Encoder</mark>.
+          </p>
+          <Addition type="danger">
+            <ul>
+              <li>
+                <p>
+                  Если вы собираетесь использовать <mark className="image">GIF</mark> на
+                  веб-странице, лучше рассмотреть в качестве альтернативы{" "}
+                  <mark className="video">WEBM</mark> или{" "}
+                  <mark className="video">H.264</mark>. Они обеспечивают лучшее качество
+                  при меньшем размере файла. <mark className="image">GIF</mark> сжимается
+                  значительно менее эффективно, поэтому итоговый файл может получиться
+                  очень большим, особенно при высоком разрешении или частоте кадров.
+                </p>
+                <p>
+                  Для веба обычно достаточно разрешения до 1024×576 и частоты до 15 FPS.
+                  Тяжёлые <mark className="image">GIF</mark> создают дополнительную
+                  нагрузку на браузер и могут замедлять работу сайта, особенно на
+                  мобильных устройствах.{" "}
+                  <em className="article-note-muted">
+                    Я уж не говорю про скрипты на этом сайте...
+                  </em>
+                </p>
+              </li>
+              <li>
+                <mark className="image">GIF</mark> ограничен 256 цветами, а прозрачность
+                работает только в бинарном режиме. Из-за этого он плохо подходит для
+                плавных градиентов, точной цветопередачи и полупрозрачных элементов.
+              </li>
+            </ul>
+          </Addition>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="plugin">GifGun</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Если у вас установлено расширение <mark className="plugin">GifGun</mark> —
+                откройте его через меню{" "}
+                <mark className="select">«Window» → «Extensions» → «GifGun»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Открываем расширение GifGun"
+                src="after-effects/plugins/gifgun/open.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если расширение установлено, но не открывается при нажатии в меню —
+                    активируйте debug-режим, согласно <Link to="/reg">инструкции</Link>.
+                  </li>
+                  <li>
+                    Для корректной работы расширения необходимо в настройках{" "}
+                    <mark className="select">
+                      «Edit» → «Preferences» → «Scripting & Expressions»
+                    </mark>{" "}
+                    установить флажок у параметра{" "}
+                    <mark className="select">
+                      «Allow Scripts to Write Files and Access Network»
+                    </mark>
+                    .
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне расширения вы увидите простой интерфейс с двумя
+                элементами: кнопкой <mark className="select">«Make GIF»</mark> для запуска
+                экспорта и иконкой шестерёнки для доступа к настройкам.
+              </p>
+              <ArticleMedia
+                caption="Основное меню GifGun"
+                src="after-effects/plugins/gifgun/main.png"
+                type="image"
+              />
+            </li>
+
+            <li>
+              <p>
+                Для изменения настроек нажмите на иконку шестерёнки в главном окне
+                расширения. Здесь можно указать максимальный размер файла, разрешение,
+                сжатие, частоту кадров и директорию для сохранения анимации.
+              </p>
+              <ArticleMedia
+                caption="Настройки экспорта в GifGun"
+                src="after-effects/plugins/gifgun/export-settings.png"
+                type="image"
+              />
+            </li>
+
+            <li>
+              <p>
+                После завершения настройки нажмите{" "}
+                <mark className="select">«Make GIF»</mark> и дождитесь окончания экспорта.
+                Если включён чекбокс <mark className="select">«Open GIF folder»</mark>,
+                после завершения расширение автоматически откроет директорию в проводнике
+                с сохранённой анимацией.
+              </p>
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Ezgif</mark>
+          </Divider>
+          <p>
+            Если вы не хотите устанавливать расширение или у вас уже есть готовое видео,
+            которое нужно конвертировать в <mark className="image">GIF</mark>,
+            воспользуйтесь онлайн-сервисом <mark className="web">Ezgif</mark>. Он
+            обеспечивает хорошее соотношение качества и размера файла.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для начала конвертации перейдите на{" "}
+                <a href="https://ezgif.com/video-to-gif">сайт</a>{" "}
+                <mark className="web">Ezgif</mark>, перетащите видео в область загрузки
+                или выберите его вручную через <mark className="select">«Обзор»</mark>, а
+                затем нажмите <mark className="select">«Upload Video»</mark>.
+              </p>
+              <Addition type="warning">
+                Максимальный размер загружаемого файла — 200 МБ.
+              </Addition>
+              <ArticleMedia
+                caption="Импорт файла в Ezgif"
+                src="tools/ezgif/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После загрузки можно настроить частоту кадров, разрешение, соотношение
+                сторон и метод сжатия итогового файла. После изменения параметров нажмите{" "}
+                <mark className="select">«Convert to GIF!»</mark> для начала конвертации.
+              </p>
+              <Addition type="warning">
+                Максимальная длительность <mark className="image">GIF</mark> зависит от
+                выбранной частоты кадров: до 60 секунд при 5 FPS или до 15 секунд при 20
+                FPS.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка конвертации в Ezgif"
+                src="tools/ezgif/export-settings.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После завершения конвертации готовый <mark className="image">GIF</mark>{" "}
+                появится в разделе <mark className="select">«Output GIF Animation»</mark>.
+                Для сохранения нажмите <mark className="key">ПКМ</mark> по анимации и
+                выберите <mark className="select">«Сохранить изображение как...»</mark>.
+              </p>
+              <Addition type="info">
+                При необходимости размер <mark className="image">GIF</mark> можно
+                дополнительно уменьшить, воспользовавшись инструментом{" "}
+                <a href="https://ezgif.com/optimize">оптимизации</a>.
+              </Addition>
+              <ArticleMedia
+                caption="Сохранение результата конвертации"
+                src="tools/ezgif/save-result.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью{" "}
+            <mark className="app">Adobe Media Encoder</mark>
+          </Divider>
+          <p>
+            <mark className="image">GIF</mark> можно экспортировать и через{" "}
+            <mark className="app">Adobe Media Encoder</mark>. Несмотря на то, что многие
+            его обходят стороной, он предлагает больше вариантов форматов для экспорта по
+            сравнению с «чистым» <mark className="app">Adobe After Effects</mark>.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для начала отправьте композицию<sup>1</sup> из{" "}
+                <mark className="app">Adobe After Effects</mark> в{" "}
+                <mark className="app">Adobe Media Encoder</mark> через меню{" "}
+                <mark className="select">
+                  «File» → «Export» → «Add to Adobe Media Encoder Queue»
+                </mark>{" "}
+                и дождитесь запуска программы, либо откройте{" "}
+                <mark className="app">Adobe Media Encoder</mark> и импортируйте готовое
+                видео вручную.
+              </p>
+              <Addition type="info">
+                <sup>1</sup> Композиция корректно отправится в{" "}
+                <mark className="app">Adobe Media Encoder</mark> только если версии обеих
+                программ совпадают по году выпуска и они установлены в стандартные папки.{" "}
+                <a href="#match-version">Всмысле?</a>
+              </Addition>
+              <ArticleMedia
+                caption="Импорт файла в Adobe Media Encoder"
+                src="media-encoder/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После импорта файла выберите формат{" "}
+                <mark className="select">«Animated GIF»</mark>. Для настройки разрешения,
+                частоты кадров и других параметров откройте{" "}
+                <mark className="select">«Export Settings»</mark>, нажав на название
+                пресета.
+              </p>
+              <Addition type="warning">
+                Если выбрать <mark className="select">«GIF»</mark> без{" "}
+                <mark className="select">«Animated»</mark>, будет создана
+                последовательность отдельных кадров, которая заполнит директорию для
+                сохранения.
+              </Addition>
+              <ArticleMedia
+                caption="Выбор формата Animated GIF в Adobe Media Encoder"
+                src="media-encoder/select-animated-gif.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров в{" "}
+                <mark className="select">«Export Settings»</mark> нажмите{" "}
+                <mark className="select">«OK»</mark>, чтобы закрыть окно, и запустите
+                экспорт, нажав на зелёную иконку треугольника в правом верхнем углу окна
+                очереди экспорта.
+              </p>
+              <ArticleMedia
+                caption="Начало экспорта GIF в Adobe Media Encoder"
+                src="media-encoder/start-queue-gif.png"
+                type="image"
+              />
+            </li>
+          </ul>
         </NestedDetailsSummary>
       </DetailsSummary>
     </div>
