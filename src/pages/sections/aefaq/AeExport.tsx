@@ -6,7 +6,11 @@ import Addition from "../../../components/content/Addition";
 
 import {ArticleMedia} from "../../../components/content/ArticleMedia";
 
+import ContentFilter from "../../../components/content/ContentFilter";
+
 import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
+
+import NestedDetailsSummary from "../../../components/detailsSummary/NestedDetailsSummary";
 
 const AeExport: React.FC = () => {
   return (
@@ -144,7 +148,7 @@ const AeExport: React.FC = () => {
                     распространения видео в интернете и просмотра, например{" "}
                     <mark className="video">H.264</mark>,{" "}
                     <mark className="video">H.265</mark>,{" "}
-                    <mark className="video">VP9</mark> or{" "}
+                    <mark className="video">VP9</mark> или{" "}
                     <mark className="video">AV1</mark>. Обычно обеспечивают хорошее
                     соотношение качества и размера файла.
                   </p>
@@ -225,7 +229,7 @@ const AeExport: React.FC = () => {
                     <mark className="codec-param">4:4:4</mark>. Первая цифра в этой схеме
                     отвечает за количество сэмплов яркости, вторая — за количество сэмплов
                     цвета в первой строке пикселей, а третья — во второй. Иногда
-                    встречается и четвёртая цифра, которая указывает на наличие
+                    встречается и чётвертая цифра, которая указывает на наличие
                     альфа-канала.
                   </p>
                 </li>
@@ -253,6 +257,715 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </Addition>
+        <NestedDetailsSummary
+          anchor="mp4"
+          title="MP4 (H.264, H.265)"
+        >
+          <p>
+            В <mark className="app">Adobe After Effects</mark> экспорт в{" "}
+            <mark className="video">H.264</mark> и <mark className="video">H.265</mark> в
+            контейнере <mark className="file">MP4</mark> можно выполнить тремя способами:
+            через встроенный <mark className="plugin">H.264</mark>
+            <sup>1</sup>, начиная с версии <mark className="version">23.0 (2023)</mark>,
+            или с помощью сторонних плагинов — <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>. Их можно выбрать в списке{" "}
+            <mark className="select">«Format»</mark> в настройках модуля вывода.
+          </p>
+          <ArticleMedia
+            caption="Выбор формата экспорта в H.264"
+            src="after-effects/export/export-h264.png"
+            type="image"
+          />
+          <Addition type="warning">
+            <sup>1</sup> Стандартный <mark className="plugin">H.264</mark> не поддерживает
+            экспорт в <mark className="video">H.265</mark>, в отличие от{" "}
+            <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>.
+          </Addition>
+          <Addition type="danger">
+            <ul>
+              <li>
+                <p>
+                  Из <mark className="app">Adobe After Effects</mark> не получится
+                  экспортировать видео с прозрачностью в кодеках{" "}
+                  <mark className="video">H.264</mark> и{" "}
+                  <mark className="video">H.265</mark>. В таком случае используйте{" "}
+                  <mark className="video">Apple ProRes 4444</mark>, если нужна
+                  прозрачность, корректно работающая в монтажных программах.
+                </p>
+                <p>
+                  Несмотря на то, что <mark className="video">H.265</mark> технически
+                  может хранить альфа-канал, такие видео с прозрачностью будут корректно
+                  воспроизводиться только в <mark className="app">Safari</mark> на macOS и
+                  iOS. При импорте такого исходника в монтажные программы прозрачность
+                  поддерживаться не будет — вместо альфа-канала будет чёрный фон.{" "}
+                  <em className="article-note-muted">
+                    И да, с таким видео есть хороший шанс получить артефакты при
+                    воспроизведении или экспорте.
+                  </em>
+                </p>
+              </li>
+              <li>
+                Из-за особенностей стандарта <mark className="video">H.264</mark> и его
+                производных вы не сможете экспортировать композицию с нечётным
+                разрешением, например 725×501. В таком случае{" "}
+                <mark className="app">Adobe After Effects</mark> либо автоматически
+                приведёт размеры к ближайшим чётным значениям, либо выдаст ошибку при
+                экспорте.
+              </li>
+            </ul>
+          </Addition>
+          <Divider>
+            В чём разница между <mark className="plugin">H.264</mark>,{" "}
+            <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>?
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Стандартный <mark className="plugin">H.264</mark> не умеет адекватно
+                работать с нестандартной частотой кадров, например 20 FPS, плохо работает
+                с неквадратными пикселями в настройках композиции и иногда даёт проблемы
+                совместимости воспроизведения на некоторых устройствах из-за
+                автоматического выбора профиля и уровня кодека.
+              </p>
+              <p>
+                По сравнению с <mark className="plugin">Voukoder</mark> и{" "}
+                <mark className="plugin">AfterCodecs</mark> у него отсутствует поддержка{" "}
+                <mark className="codec-param">CQ (Constant Quality)</mark> и ниже
+                эффективность сжатия.{" "}
+                <em className="article-note-muted">
+                  Зато дополнительно скачивать и устанавливать ничего не нужно.
+                </em>
+              </p>
+            </li>
+            <li>
+              <mark className="plugin">Voukoder</mark> предлагает больше настроек, но
+              многие из них могут не понадобиться. В контексте экспорта в{" "}
+              <mark className="video">H.264</mark> и <mark className="video">H.265</mark>{" "}
+              его ключевая особенность — поддержка{" "}
+              <mark className="codec-param">CQ (Constant Quality)</mark> и других режимов
+              с указанием уровня качества изображения. В этих режимах вы задаёте желаемый
+              уровень, а кодек сам подбирает битрейт. В простых сценах он ниже, в сложных
+              — выше, что помогает не раздувать размер файла.
+            </li>
+            <li>
+              <mark className="plugin">AfterCodecs</mark> имеет более простой интерфейс и
+              реже искажает цвета, чем <mark className="plugin">Voukoder</mark>. Его
+              ключевая особенность — возможность задать целевой процент качества
+              изображения или размер файла, а также скорость кодирования: во первом случае
+              используется алгоритм, похожий на{" "}
+              <mark className="codec-param">CQ (Constant Quality)</mark>, во втором —
+              переменный битрейт.
+            </li>
+            <li>
+              Также есть вероятность, что видео, экспортированное через стандартный{" "}
+              <mark className="plugin">H.264</mark>, может не открываться в некоторых
+              проигрывателях, например <mark className="app">Windows Media Player</mark>,
+              или на некоторых устройствах, например старых iPhone. Обычно это решается
+              конвертацией видео, например через{" "}
+              <mark className="app">Shutter Encoder</mark>, либо экспортом композиции
+              через альтернативные плагины.
+            </li>
+          </ul>
+          <p>
+            Если же вы слишком чувствительны к особенностям сжатия{" "}
+            <mark className="video">H.264</mark> и разнице между оригиналом и итоговым
+            видео, то ни один из этих способов экспорта вам не подойдёт. В таком случае,
+            если вам нужно получить «максимальное» качество видео — используйте{" "}
+            <mark className="video">Apple ProRes 4444</mark> или несжатые кодеки.{" "}
+            <em className="article-note-muted">
+              Потом не удивляйтесь, почему такие видео занимают много дискового
+              пространства и их сложно куда-либо загрузить.
+            </em>
+          </p>
+          <p>
+            Также учтите, что все способы, описанные в статье, поддерживают только{" "}
+            <mark className="color-space">Rec.709</mark> и не позволяют экспортировать
+            композиции в <mark className="color-space">Rec.2100 HLG</mark> и другие
+            цветовые пространства. Если вы работали с исходниками, снятыми на iPhone, или
+            вам нужно получить <mark className="video">H.264</mark> или{" "}
+            <mark className="video">H.265</mark> в{" "}
+            <mark className="color-space">Rec.2100 HLG</mark>, сначала экспортируйте
+            композицию в <mark className="video">Apple ProRes 422</mark> или{" "}
+            <mark className="video">Apple ProRes 4444</mark> с нужным цветовым
+            пространством, а затем перекодируйте файл в требуемый кодек без изменения
+            параметров цвета, например через <mark className="app">Shutter Encoder</mark>.
+          </p>
+          <Divider>
+            Экспортируем композицию с помощью стандартного{" "}
+            <mark className="plugin">H.264</mark>
+          </Divider>
+          <Addition type="warning">
+            Если вы по каким-то причинам используете{" "}
+            <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">22.6 (2022)</mark> или ниже, пролистайте эту статью
+            дальше для ознакомления с альтернативными способами экспорта.
+          </Addition>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> с помощью
+                стандартного экспортёра нужно выбрать значение{" "}
+                <mark className="select">«H.264»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор стандартного H.264 в качестве формата экспорта"
+                src="after-effects/export/export-stock-h264.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> in разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата стандартного H.264"
+                src="after-effects/export/stock-h264-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне вы можете задать целевой битрейт и выбрать режим
+                кодирования битрейта — постоянный или переменный, настроить расстояние
+                между <mark className="codec-param">I-кадрами</mark>, а также профиль и
+                уровень <mark className="video">H.264</mark>.
+              </p>
+              <ArticleMedia
+                caption="Настройки формата стандартного H.264"
+                src="after-effects/export/select-stock-h264-options.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  По умолчанию вы не сможете выбрать профиль и уровень кодека, пока не
+                  уберёте чекбокс автоматического выбора значения правее поля выбора
+                  значения.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="video">Voukoder</mark>
+          </Divider>
+          <ContentFilter
+            windowsContent={
+              <>
+                <Addition type="warning">
+                  <ul>
+                    <li>
+                      <p>
+                        В этой статье демонстрируется{" "}
+                        <mark className="plugin">Voukoder Classic</mark>{" "}
+                        <mark className="version">13.4.1</mark>, недоступный для устройств
+                        на macOS. К сожалению, репозиторий этой версии на{" "}
+                        <a href="https://github.com/Vouk/voukoder/releases/tag/13.4.1">
+                          GitHub
+                        </a>{" "}
+                        был удалён, так как её заменили платной{" "}
+                        <mark className="plugin">Voukoder Pro</mark>.
+                      </p>
+                      <p>
+                        Архив с плагином и «коннекторами» можно найти в{" "}
+                        <a href="https://t.me/+Qd9xu7A4TeIwNzY6">
+                          складе стройматериалов
+                        </a>{" "}
+                        по хештегу <mark className="tag">#voukoder</mark>. Перед
+                        установкой «коннектора» убедитесь, что{" "}
+                        <mark className="app">Adobe After Effects</mark> установлен в
+                        директорию по умолчанию.
+                      </p>
+                    </li>
+                    <li>
+                      <mark className="plugin">Voukoder Classic</mark> в некоторых случаях
+                      может сильно искажать цвет. Если вам нужно сохранить точность
+                      цветопередачи, воспользуйтесь экспортом в{" "}
+                      <mark className="video">Apple ProRes 422</mark> или{" "}
+                      <mark className="video">Apple ProRes 4444</mark>, а затем
+                      конвертируйте видео в <mark className="video">H.264</mark> или{" "}
+                      <mark className="video">H.265</mark> с помощью стороннего ПО,
+                      например <mark className="app">Shutter Encoder</mark>.
+                    </li>
+                  </ul>
+                </Addition>
+              </>
+            }
+          />
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark> с помощью{" "}
+                <mark className="plugin">Voukoder</mark> нужно выбрать значение{" "}
+                <mark className="select">«Voukoder»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата Voukoder"
+                src="after-effects/export/export-voukoder.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата Voukoder"
+                src="after-effects/export/voukoder-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает раздел{" "}
+                <mark className="select">«Video»</mark> с открытой вкладкой{" "}
+                <mark className="select">«Кодек»</mark> в котором вы можете указать нужный
+                кодек. Для <mark className="video">H.264</mark> и{" "}
+                <mark className="video">H.265</mark> вы можете выбрать программное и
+                аппаратное кодирование.
+              </p>
+              <ArticleMedia
+                caption="Выбираем кодек для экспорта в Voukoder"
+                src="after-effects/export/voukoder-select-video-codec-h264-h265.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="word">Программное кодирование</mark> — кодирование
+                    выполняется процессором с помощью{" "}
+                    <mark className="codec-param">x264</mark> или{" "}
+                    <mark className="codec-param">x265</mark>.
+                  </li>
+                  <li>
+                    <mark className="word">Аппаратное кодирование</mark> — кодирование
+                    выполняется с использованием ускорения видеокарты или встроенной
+                    графики, например <mark className="select">«NVIDIA NVENC»</mark>,{" "}
+                    <mark className="select">«Intel QSV»</mark> или{" "}
+                    <mark className="select">«AMD AMF»</mark>. Обычно быстрее программного
+                    кодирования, но иногда искажает цвета.{" "}
+                    <em className="article-note-muted">
+                      Список доступных вариантов зависит от «железа» вашего устройства.
+                    </em>
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                Для настройки профиля, преднастройки под тип контента и режима кодирования
+                перейдите во вкладку <mark className="select">«Параметры»</mark>.
+              </p>
+              <p>
+                По умолчанию используется режим <mark className="codec-param">CRF</mark>,
+                который позволяет экспортировать композицию с постоянным уровнем качества
+                и адекватным размером файла. Его значение по умолчанию —{" "}
+                <mark className="copy">23</mark>. Чем меньше значение, тем выше качество,
+                но больше размер файла. Чтобы изменить параметр, нажмите на его значение в
+                правой части таблицы.
+              </p>
+              <Addition type="info">
+                В зависимости от выбранного кодека набор настроек может отличаться.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка значения постоянного качества"
+                src="after-effects/export/voukoder-select-constant-rate-factor.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В разделе <mark className="select">«Аудио»</mark> вы можете указать кодек
+                для аудиодорожки. Если вы не знаете что выбрать — оставьте значение по
+                умолчанию.
+              </p>
+              <ArticleMedia
+                caption="Настройка аудиокодека"
+                src="after-effects/export/voukoder-select-audio-codec.png"
+                type="image"
+              />
+              <p>
+                Для настройки битрейта и других параметров аудиодорожки перейдите во
+                вкладку <mark className="select">«Параметры»</mark>. Чтобы изменить
+                параметр, нажмите на его значение в правой части таблицы.
+              </p>
+              <Addition type="info">
+                В зависимости от выбранного кодека набор настроек может отличаться.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка битрейта аудио"
+                src="after-effects/export/voukoder-select-audio-bitrate.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В разделе <mark className="select">«Вывод»</mark> вы можете изменить
+                контейнер видео. Если он отличается от{" "}
+                <mark className="select">«MPEG-4 (.mp4)»</mark>, исправьте это.
+              </p>
+              <ArticleMedia
+                caption="Настройка контейнера"
+                src="after-effects/export/voukoder-select-video-container.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="video">AfterCodecs</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark> с помощью{" "}
+                <mark className="plugin">AfterCodecs</mark> нужно выбрать значение{" "}
+                <mark className="select">«AfterCodecs .mp4»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата AfterCodecs"
+                src="after-effects/export/export-aftercodecs-mp4.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата AfterCodecs"
+                src="after-effects/export/aftercodecs-mp4-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает множество настроек, с помощью которых
+                можно выбрать кодек, режим и скорость кодирования, настроить цвет и задать
+                расстояние между <mark className="codec-param">I-кадрами</mark>.
+              </p>
+              <ArticleMedia
+                caption="Настройки AfterCodecs"
+                src="after-effects/export/aftercodecs-mp4-settings.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <p>
+                      Параметр <mark className="select">«Video Codec»</mark> отвечает за
+                      выбор кодека. Так как мы выбрали формат{" "}
+                      <mark className="select">«AfterCodecs .mp4»</mark>, то выбор кодеков
+                      не велик: <mark className="select">«H.264»</mark> с тремя шаблонами
+                      и <mark className="select">«H.265»</mark>.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Параметр <mark className="select">«Tradeoff»</mark> определяет режим
+                      кодирования.
+                    </p>
+                    <ul>
+                      <li>
+                        <mark className="select">«Quality»</mark> работает по принципу{" "}
+                        <mark className="codec-param">CRF</mark>, но значение задаётся в
+                        процентах. Выставлять значение выше 85% особого смысла нет: файл
+                        станет тяжелее, а разницу в качестве вы вряд ли заметите.
+                      </li>
+                      <li>
+                        <mark className="select">«Bitrate»</mark> задаёт постоянный
+                        битрейт на всё видео.{" "}
+                        <em className="article-note-muted">
+                          Хотя после экспорта <mark className="app">MediaInfo</mark>{" "}
+                          пишет, что переменный.
+                        </em>
+                      </li>
+                      <li>
+                        <mark className="select">«File Size»</mark> подгоняет качество с
+                        помощью переменного битрейта, чтобы уложиться в заданный размер
+                        файла.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <mark className="select">«Speed»</mark> задаёт скорость кодирования:
+                    чем ниже значение, тем медленнее процесс, но лучше сжатие.
+                  </li>
+                  <li>
+                    В <mark className="select">«Colors»</mark> можно настроить битность,
+                    выбрать цветовой диапазон: <mark className="color-space">16–235</mark>{" "}
+                    или <mark className="color-space">0–255</mark> , а также задать
+                    цветовую субдискретизацию.
+                  </li>
+                  <li>
+                    В разделе <mark className="select">«Misc»</mark> можно выбрать
+                    преднастройку под тип контента и указать профиль кодека.
+                  </li>
+                  <li>
+                    Параметр <mark className="select">«GOP»</mark> отвечает за расстояние
+                    между <mark className="codec-param">I-кадрами</mark>.
+                  </li>
+                  <li>
+                    Параметр <mark className="select">«Audio Bitrate»</mark> отвечает за
+                    битрейт аудио.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Shutter Encoder</mark>
+          </Divider>
+          <p>
+            Если у вас уже есть видео в другом формате или итоговый файл получился слишком
+            большим, а заново рендерить композицию не хочется, воспользуйтесь{" "}
+            <mark className="app">Shutter Encoder</mark> — бесплатным<sup>1</sup>{" "}
+            конвертером на базе <mark className="app">FFmpeg</mark> с поддержкой большого
+            количества форматов, включая <mark className="video">H.264</mark> и{" "}
+            <mark className="video">H.265</mark>.
+          </p>
+          <Addition type="info">
+            <ul>
+              <li>
+                <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+                бесплатно, установите чекбокс{" "}
+                <mark className="select">
+                  «I do not wish to participate in the development of the software»
+                </mark>{" "}
+                на <a href="https://www.shutterencoder.com/">сайте</a>, а затем нажмите на
+                кнопку скачивания образа утилиты для вашей операционной системы.
+              </li>
+              <li>
+                В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+                встречаются неточности перевода, которые могут сбивать с толку. Чтобы
+                переключить интерфейс на английский язык, откройте настройки программы
+                через иконку шестерёнки в левом верхнем углу, затем найдите параметр{" "}
+                <mark className="select">«Установить язык»</mark>, выберите{" "}
+                <mark className="select">«English»</mark> и подтвердите перезапуск
+                программы.
+              </li>
+            </ul>
+          </Addition>
+          <p>
+            На первый взгляд интерфейс <mark className="app">Shutter Encoder</mark> может
+            показаться запутанным и сложным, но для конвертации файлов достаточно
+            выполнить несколько простых действий.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Shutter Encoder</mark> нажмите{" "}
+                <mark className="select">«Browse»</mark> или перетащите их в окно
+                программы для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Shutter Encoder"
+                src="tools/shutter-encoder/convert/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Choose Function»</mark> нужный
+                формат для конвертации — <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark>. Изменение данного параметра будет
+                относиться ко всем файлам в очереди конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор функции для конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/choose-function-h264-h265.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора функции нужно определиться с режимом кодирования, который
+                влияет на то, как кодек распределяет битрейт, а значит — на качество и
+                размер итогового файла. Обычно выделяют три типа.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="codec-param">CQ (Constant Quality)</mark> —
+                    динамически распределяет битрейт в зависимости от сложности сцены и
+                    сохраняет стабильное качество на протяжении всего ролика. Это
+                    оптимальный выбор для большинства задач.
+                  </li>
+                  <li>
+                    <mark className="codec-param">VBR (Variable Bitrate)</mark> — требует
+                    настройки целевого и максимального битрейта, которые не всегда легко
+                    подобрать с первого раза, особенно при попытке сохранить баланс между
+                    качеством и размером файла.
+                  </li>
+                  <li>
+                    <mark className="codec-param">CBR (Constant Bitrate)</mark> —
+                    использует фиксированный битрейт независимо от сложности сцены, что
+                    часто приводит к увеличенному размеру файла и менее равномерному
+                    качеству.
+                  </li>
+                </ul>
+              </Addition>
+              <p>
+                Если ваша цель — уменьшить размер файла без заметной потери качества,
+                выберите <mark className="codec-param">CQ</mark>. Для этого в параметре{" "}
+                <mark className="select">«Video Bitrate»</mark> переключитесь с{" "}
+                <mark className="select">«VBR»</mark> на этот режим несколькими нажатиями.
+              </p>
+              <ArticleMedia
+                caption="Выбор режима кодирования в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-video-bitrate-cq-h264.mp4"
+                type="video"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чем меньше значение <mark className="select">«CQ»</mark>, тем лучше
+                    качество. По умолчанию устанавливается{" "}
+                    <mark className="copy">23</mark> — этого достаточно для большинства
+                    случаев.
+                  </li>
+                  <li>
+                    Если нужно сохранить почти максимальное качество, укажите значение от{" "}
+                    <mark className="copy">17</mark> до <mark className="copy">20</mark>.
+                    Однако размер файла при этом может заметно возрасти.
+                  </li>
+                  <li>
+                    Экстремальные значения, например <mark className="copy">50</mark> или{" "}
+                    <mark className="copy">7</mark>, использовать не рекомендуется — в
+                    итоге можно получить «кашу» из пикселей или слишком большой по весу
+                    файл.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости укажите битрейт аудио в параметре{" "}
+                <mark className="select">«Audio Bitrate»</mark>. Обычно достаточно
+                значения <mark className="copy">320</mark> Кбит/с.
+              </p>
+              <ArticleMedia
+                caption="Выбор битрейта для аудиодорожки в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-audio-bitrate-320-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости включите аппаратное ускорение для декодирования видео в
+                параметре <mark className="select">«Hardware Acceleration»</mark>. В
+                большинстве случаев это ускорит процесс конвертации видео.
+              </p>
+              <Addition type="info">
+                Выбор значений в этом параметре зависит от формата, вашего устройства и
+                установленных драйверов.
+              </Addition>
+              <ArticleMedia
+                caption="Выбор аппаратного ускорения для конвертации файлов в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-hardware-acceleration-h264.mp4"
+                type="video"
+              />
+              <Addition type="warning">
+                <p>
+                  Аппаратные кодировщики, такие как{" "}
+                  <mark className="select">«NVIDIA NVENC»</mark>, ориентированы прежде
+                  всего на скорость кодирования. Из-за менее точных алгоритмов сжатия при
+                  их использовании могут появляться незначительные артефакты, например
+                  муар на тексте.
+                </p>
+                <p>
+                  Если для вас важнее качество, не используйте аппаратное ускорение. В
+                  этом случае будет использоваться программный кодировщик{" "}
+                  <mark className="codec-param">x264</mark> или{" "}
+                  <mark className="codec-param">x265</mark>, который работает медленнее,
+                  но обычно обеспечивает более качественное сжатие.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости измените цветовое пространство во вкладке{" "}
+                <mark className="select">«Colorimetry»</mark>, если оно отличается от
+                требуемого. Для социальных сетей и веб-страниц чаще всего используется{" "}
+                <mark className="color-space">Rec.709</mark>. Проверить цветовое
+                пространство исходного файла можно через{" "}
+                <mark className="app">MediaInfo</mark>.
+              </p>
+              <Addition type="warning">
+                Цвета после конвертации из одного цветового пространства в другое могут
+                незначительно измениться.
+              </Addition>
+              <ArticleMedia
+                caption="Конвертация цветовых пространств в Shutter Encoder"
+                src="tools/shutter-encoder/convert/convert-colorspace-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости измените частоту кадров во вкладке{" "}
+                <mark className="select">«Advanced features»</mark> с помощью параметра{" "}
+                <mark className="select">«Conform by»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Изменение частоты кадров в Shutter Encoder"
+                src="tools/shutter-encoder/convert/conform-by-drop-25fps-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Start function»</mark> в левой части интерфейса
+                для запуска конвертации.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если в программу добавлено несколько исходников, они будут
+                    конвертированы последовательно в соответствии с выбранными
+                    настройками.
+                  </li>
+                  <li>
+                    По умолчанию результат конвертации сохраняется в той же папке, где
+                    находится исходное видео. При необходимости директорию вывода можно
+                    изменить во вкладке <mark className="select">«Output»</mark>.
+                  </li>
+                </ul>
+              </Addition>
+              <ArticleMedia
+                caption="Начало конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/start-function-h264.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
