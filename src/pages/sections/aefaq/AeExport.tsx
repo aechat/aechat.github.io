@@ -2190,6 +2190,138 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="frame"
+          title="Текущий кадр предпросмотра как изображение (JPEG, PNG, TIFF)"
+        >
+          <Divider>
+            Экспортируем кадр композиции через{" "}
+            <mark className="select">«Render Queue»</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Чтобы быстро отправить текущий кадр композиции в очередь рендеринга,
+                нажмите <mark className="key">Ctrl + Alt + S</mark> или перейдите в меню{" "}
+                <mark className="select">«Composition» → «Save Frame As» → «File»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Экспорт текущего кадра стандартными средствами"
+                src="after-effects/export/save-frame-as-file.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После этого откроется <mark className="select">«Render Queue»</mark>, где
+                по умолчанию будет предложен экспорт в формат{" "}
+                <mark className="image">PSD</mark>. Формат изображения можно изменить в
+                настройках <mark className="select">«Output Module»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Текущий кадр композиции в очереди рендера"
+                src="after-effects/export/save-frame-as-file-render-queue.png"
+                type="image"
+              />
+              <Addition type="info">
+                Вы можете создать собственный шаблон для экспорта кадров и установить его
+                по умолчанию, чтобы не менять формат файла каждый раз вручную.
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем кадр композиции с помощью{" "}
+            <mark className="plugin">FX Console</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для сохранения текущего кадра в файл или буфер обмена с помощью{" "}
+                <mark className="plugin">FX Console</mark> воспользуйтесь кнопкой{" "}
+                <mark className="select">«Export»</mark>, оформленной в виде иконки
+                загрузки, или <mark className="key">«Take a Screenshot»</mark>
+                <sup>1</sup>, оформленной в виде иконки фотоаппарата.
+              </p>
+              <Addition type="info">
+                <sup>1</sup> Созданные скриншоты отправляются в галерею{" "}
+                <mark className="plugin">FX Console</mark>, откуда их позже можно
+                экспортировать в буфер обмена или сохранить в файл.
+              </Addition>
+              <ArticleMedia
+                caption="Экспорт текущего кадра с помощью FX Console"
+                src="after-effects/plugins/fx-console/copy-to-clipboard.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Если вам нужно сохранять скриншоты в полном разрешении независимо от
+                разрешения, установленного в окне предпросмотра, для начала перейдите в{" "}
+                <mark className="select">«Settings»</mark>, оформленную в виде иконки
+                шестерёнки.
+              </p>
+              <ArticleMedia
+                caption="Открытие настроек FX Console"
+                src="after-effects/plugins/fx-console/open-settings.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Затем установите чекбокс напротив параметра{" "}
+                <mark className="select">«Full Resolution Screenshots»</mark> и нажмите{" "}
+                <mark className="key">«OK»</mark> для сохранения изменений.
+              </p>
+              <ArticleMedia
+                caption="Включение возможности сохранения скриншотов в полном разрешении в FX Console"
+                src="after-effects/plugins/fx-console/enable-full-resolution-screenshots.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем кадр композиции с помощью{" "}
+            <mark className="select">«Copy Frame to Clipboard»</mark>
+          </Divider>
+          <p>
+            Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">26.3</mark> и выше, разработчики добавили
+            возможность скопировать текущий кадр предпросмотра композиции в буфер обмена.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Чтобы скопировать текущий кадр предпросмотра в буфер обмена, нажмите на
+                иконку <mark className="select">«Copy Frame to Clipboard»</mark> в окне
+                предпросмотра или нажмите{" "}
+                <mark className="key">Ctrl + Alt + Shift + F5</mark>.
+              </p>
+              <ArticleMedia
+                caption="Копирование текущего кадра в буфер обмена"
+                src="after-effects/interface/copy-frame-to-clipboard.png"
+                type="image"
+              />
+              <Addition type="info">
+                Некоторые пользователи ошибочно считают, что кнопка{" "}
+                <mark className="select">«Take Snapshot»</mark> (иконка фотоаппарата в
+                окне предпросмотра) также сохраняет текущий кадр в файл. На самом деле она
+                сохраняет его только во временную память программы для сравнения с другими
+                кадрами предпросмотра композиции.
+              </Addition>
+            </li>
+            <li>
+              Затем вставьте скопированное в буфер обмена изображение в любой графический
+              редактор, например <mark className="app">GIMP</mark> или{" "}
+              <mark className="app">Adobe Photoshop</mark> или мессенджер с помощью
+              комбинации клавиш <mark className="key">Ctrl + V</mark>. Далее вы можете
+              продолжить работу с изображением как хотите.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
