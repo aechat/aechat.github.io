@@ -966,6 +966,74 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="mov"
+          title="MOV (Apple ProRes, DNxHR, DNxHD, DV, DVCPRO, GoPro Cineform)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">Apple ProRes</mark>,{" "}
+                <mark className="video">DNxHR</mark>, <mark className="video">DNxHD</mark>
+                , <mark className="video">DV</mark>, <mark className="video">DVCPRO</mark>{" "}
+                или <mark className="video">GoPro Cineform</mark> нужно выбрать значение{" "}
+                <mark className="select">«QuickTime»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата QuickTime"
+                src="after-effects/export/export-quicktime.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия настроек
+                формата, в котором можно выбрать нужный кодек.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата QuickTime"
+                src="after-effects/export/quicktime-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В <mark className="select">«Format Options»</mark> вы можете выбрать
+                нужный кодек в списке <mark className="select">«Video Codec»</mark>.{" "}
+                <a href="https://ru.wikipedia.org/wiki/Apple_ProRes#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%BE%D0%B2_%D1%81%D0%B5%D0%BC%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B0_ProRes">
+                  В чём разница между вариантами Apple ProRes?
+                </a>
+              </p>
+              <ArticleMedia
+                caption="Выбор кодека для формата QuickTime"
+                src="after-effects/export/select-quicktime-codec.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  Если вы выбрали кодек, поддерживающий альфа-канал, например{" "}
+                  <mark className="video">Apple ProRes 4444</mark> или{" "}
+                  <mark className="video">GoPro CineForm</mark> и вы хотите экспортировать
+                  композицию с альфа-каналом — не забудьте указать значение{" "}
+                  <mark className="select">«RGB + Alpha»</mark> в параметре{" "}
+                  <mark className="select">«Channels»</mark>.
+                </p>
+                <ArticleMedia
+                  caption="Включаем сохранение альфа-канала для Apple ProRes 4444"
+                  src="after-effects/export/prores-4444-rgb+alpha.png"
+                  type="image"
+                />
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
