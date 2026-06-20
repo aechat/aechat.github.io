@@ -6,6 +6,8 @@ import Addition from "../../../components/content/Addition";
 
 import {ArticleMedia} from "../../../components/content/ArticleMedia";
 
+import CodeSnippet from "../../../components/content/CodeSnippet";
+
 import ContentFilter from "../../../components/content/ContentFilter";
 
 import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
@@ -1227,6 +1229,378 @@ const AeExport: React.FC = () => {
               </Addition>
             </li>
           </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="webm"
+          title="Видео для веб-страниц: WEBM (VP9, AV1) и H.265 с альфа-каналом"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> не получится
+            экспортировать композицию в кодеках <mark className="video">VP9</mark> и{" "}
+            <mark className="video">AV1</mark> в контейнере{" "}
+            <mark className="file">WEBM</mark>
+            <sup>1</sup>, а также в <mark className="video">H.265</mark> с альфа-каналом
+            стандартными средствами. В таком случае придётся использовать «костыли»:
+            сначала экспортировать композицию в промежуточный формат, а затем
+            конвертировать полученное видео в нужный кодек.
+          </p>
+          <Addition type="warning">
+            <sup>1</sup> Несмотря на то, что существует{" "}
+            <a href="https://fnord.com/">сторонний плагин</a> для экспорта{" "}
+            <mark className="plugin">WEBM</mark> от <mark className="user">fnord</mark>{" "}
+            для <mark className="app">Adobe Media Encoder</mark>, я не рекомендую его
+            использовать на постоянной основе. Он часто выдаёт видео с жуткими
+            артефактами, отвратительным качеством или просто «падает» посреди рендера без
+            причины.
+          </Addition>
+          <p>
+            Прежде чем начать экспорт композиции, нужно определиться с целями формата
+            видео.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Если задача — получить видео с прозрачностью и небольшим размером для
+                работы в монтажных программах, это не лучший вариант. По умолчанию{" "}
+                <mark className="app">Adobe After Effects</mark> и{" "}
+                <mark className="app">Adobe Premiere</mark> не поддерживают импорт{" "}
+                <mark className="video">WEBM</mark>, хотя это можно исправить установкой
+                стороннего импортёра <mark className="plugin">Autokroma Influx</mark>.
+                Учтите, что при импорте через него стабильность проекта не гарантируется —
+                такие файлы могут замедлять работу или вызывать ошибки.
+              </p>
+              <p>
+                If вы будете передавать проект с такими форматами, получателю придётся
+                также установить <mark className="plugin">Autokroma Influx</mark> или
+                конвертировать исходники в другой формат для совместимости.
+              </p>
+            </li>
+            <li>
+              <p>
+                Если же задача — получить видео меньшего размера по сравнению с{" "}
+                <mark className="video">H.264</mark> или с прозрачностью<sup>1</sup> для
+                размещения на веб-странице, то <mark className="video">VP9</mark> и{" "}
+                <mark className="video">AV1</mark> хорошо подходят для этой цели.
+              </p>
+              <Addition type="warning">
+                <sup>1</sup> <mark className="app">Safari</mark> на iOS и macOS не
+                поддерживает <mark className="video">WEBM</mark> с прозрачностью, поэтому
+                вместо альфа-канала будет отображаться чёрный фон. Чтобы обеспечить
+                совместимость, видео придётся конвертировать в{" "}
+                <mark className="video">H.265</mark> через{" "}
+                <mark className="app">Shutter Encoder</mark> с включённой опцией{" "}
+                <mark className="select">«Enable Alpha Channel»</mark> в{" "}
+                <mark className="select">«Advanced Settings»</mark> и указывать полученное
+                видео как дополнительный источник для воспроизведения в теге{" "}
+                <mark className="code">{`<video>`}</mark>.
+              </Addition>
+            </li>
+          </ul>
+          <Divider>Экспортируем композицию в промежуточном формате</Divider>
+          <p>
+            В качестве промежуточного формата можно использовать практически что угодно,
+            но для экспорта видео с прозрачностью лучше выбрать{" "}
+            <mark className="video">Apple ProRes 4444</mark>. Это один из немногих
+            форматов, который поддерживает альфа-канал при экспорте.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке{" "}
+                <mark className="video">Apple ProRes 4444</mark> нужно выбрать значение{" "}
+                <mark className="select">«QuickTime»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата QuickTime"
+                src="after-effects/export/export-quicktime.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия настроек
+                формата, в котором можно выбрать нужный кодек.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата QuickTime"
+                src="after-effects/export/quicktime-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В <mark className="select">«Format Options»</mark> выберите кодек{" "}
+                <mark className="select">«Apple ProRes 4444»</mark> в списке{" "}
+                <mark className="select">«Video Codec»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Выбор кодека для формата QuickTime"
+                src="after-effects/export/select-quicktime-prores-4444.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Shutter Encoder</mark>
+          </Divider>
+          <p>
+            После экспорта композиции нам нужно воспользоваться{" "}
+            <mark className="app">Shutter Encoder</mark> — бесплатным<sup>1</sup>{" "}
+            конвертером на базе <mark className="app">FFmpeg</mark> с поддержкой большого
+            количества форматов, включая <mark className="video">VP9</mark>,{" "}
+            <mark className="video">AV1</mark> и <mark className="video">H.265</mark> с
+            альфа-каналом.
+          </p>
+          <Addition type="info">
+            <ul>
+              <li>
+                <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+                бесплатно, установите чекбокс{" "}
+                <mark className="select">
+                  «I do not wish to participate in the development of the software»
+                </mark>{" "}
+                на <a href="https://www.shutterencoder.com/">сайте</a>, а затем нажмите на
+                кнопку скачивания образа утилиты для вашей операционной системы.
+              </li>
+              <li>
+                В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+                встречаются неточности перевода, которые могут сбивать с толку. Чтобы
+                переключить интерфейс на английский язык, откройте настройки программы
+                через иконку шестерёнки в левом верхнем углу, затем найдите параметр{" "}
+                <mark className="select">«Установить язык»</mark>, выберите{" "}
+                <mark className="select">«English»</mark> и подтвердите перезапуск
+                программы.
+              </li>
+            </ul>
+          </Addition>
+          <p>
+            На первый взгляд интерфейс <mark className="app">Shutter Encoder</mark> может
+            показаться запутанным и сложным, но для конвертации файлов достаточно
+            выполнить несколько простых действий.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Shutter Encoder</mark> нажмите{" "}
+                <mark className="select">«Browse»</mark> или перетащите их в окно
+                программы для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Shutter Encoder"
+                src="tools/shutter-encoder/convert/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Choose Function»</mark> нужный
+                формат для конвертации — <mark className="video">VP9</mark>,{" "}
+                <mark className="video">AV1</mark> или{" "}
+                <mark className="video">H.265</mark>. Изменение данного параметра будет
+                относиться ко всем файлам в очереди конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор функции для конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/choose-function-vp9-av1-h265.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора функции нужно определиться с режимом кодирования, который
+                влияет на то, как кодек распределяет битрейт, а значит — на качество и
+                размер итогового файла. Обычно выделяют три типа.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="codec-param">CQ (Constant Quality)</mark> —
+                    динамически распределяет битрейт в зависимости от сложности сцены и
+                    сохраняет стабильное качество на протяжении всего ролика. Это
+                    оптимальный выбор для большинства задач.
+                  </li>
+                  <li>
+                    <mark className="codec-param">VBR (Variable Bitrate)</mark> — требует
+                    настройки целевого и максимального битрейта, которые не всегда легко
+                    подобрать с первого раза, особенно при попытке сохранить баланс между
+                    качеством и размером файла.
+                  </li>
+                  <li>
+                    <mark className="codec-param">CBR (Constant Bitrate)</mark> —
+                    использует фиксированный битрейт независимо от сложности сцены, что
+                    часто приводит к увеличенному размеру файла и менее равномерному
+                    качеству.
+                  </li>
+                </ul>
+              </Addition>
+              <p>
+                Если ваша цель — уменьшить размер файла без заметной потери качества,
+                выберите <mark className="codec-param">CQ</mark>. Для этого в параметре{" "}
+                <mark className="select">«Video Bitrate»</mark> переключитесь с{" "}
+                <mark className="select">«VBR»</mark> на этот режим несколькими нажатиями.
+              </p>
+              <ArticleMedia
+                caption="Выбор режима кодирования в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-video-bitrate-cq-vp9.mp4"
+                type="video"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чем меньше значение <mark className="select">«CQ»</mark>, тем лучше
+                    качество. По умолчанию устанавливается{" "}
+                    <mark className="copy">23</mark> — этого достаточно для большинства
+                    случаев.
+                  </li>
+                  <li>
+                    Если нужно сохранить почти максимальное качество, укажите значение от{" "}
+                    <mark className="copy">17</mark> до <mark className="copy">20</mark>.
+                    Однако размер файла при этом может заметно возрасти.
+                  </li>
+                  <li>
+                    Экстремальные значения, например <mark className="copy">50</mark> или{" "}
+                    <mark className="copy">7</mark>, использовать не рекомендуется — в
+                    итоге можно получить «кашу» из пикселей или слишком большой по весу
+                    файл.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости укажите битрейт аудио в параметре{" "}
+                <mark className="select">«Audio Bitrate»</mark>. Обычно достаточно
+                значения <mark className="copy">320</mark> Кбит/с.
+              </p>
+              <ArticleMedia
+                caption="Выбор битрейта для аудиодорожки в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-audio-bitrate-320-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости измените цветовое пространство во вкладке{" "}
+                <mark className="select">«Colorimetry»</mark>, если оно отличается от
+                требуемого. Для социальных сетей и веб-страниц чаще всего используется{" "}
+                <mark className="color-space">Rec.709</mark>. Проверить цветовое
+                пространство исходного файла можно через{" "}
+                <mark className="app">MediaInfo</mark>.
+              </p>
+              <Addition type="warning">
+                Цвета после конвертации из одного цветового пространства в другое могут
+                незначительно измениться.
+              </Addition>
+              <ArticleMedia
+                caption="Конвертация цветовых пространств в Shutter Encoder"
+                src="tools/shutter-encoder/convert/convert-colorspace-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Если вы хотите сохранить альфа-канал при конвертации, включите параметр{" "}
+                <mark className="select">«Enable alpha channel»</mark> во вкладке{" "}
+                <mark className="select">«Advanced features»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Сохранение альфа-канала при конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/enable-alpha-channel-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Start function»</mark> в левой части интерфейса
+                для запуска конвертации.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если в программу добавлено несколько исходников, они будут
+                    конвертированы последовательно в соответствии с выбранными
+                    настройками.
+                  </li>
+                  <li>
+                    По умолчанию результат конвертации сохраняется в той же папке, где
+                    находится исходное видео. При необходимости директорию вывода можно
+                    изменить во вкладке <mark className="select">«Output»</mark>.
+                  </li>
+                </ul>
+              </Addition>
+              <ArticleMedia
+                caption="Начало конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/start-function-vp9.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>Используем конвертированные видео на странице</Divider>
+          <p>
+            Как уже сказано ранее, одни браузеры поддерживают{" "}
+            <mark className="video">VP9</mark> и <mark className="video">AV1</mark> с
+            прозрачностью, а другие — нет. Таблицы совместимости форматов и кодеков
+            браузерами можно посмотреть по ссылкам ниже.
+          </p>
+          <div className="flexible-links">
+            <a href="https://caniuse.com/webm">Поддержка WEBM (VP8, VP9)</a>
+            <a href="https://caniuse.com/av1">Поддержка AV1</a>
+            <a href="https://caniuse.com/mpeg4">Поддержка H.264</a>
+            <a href="https://caniuse.com/hevc">Поддержка H.265 (HEVC)</a>
+          </div>
+          <p>
+            Для тега <mark className="code">{`<video>`}</mark> можно указать несколько
+            источников, и браузер выберет первый поддерживаемый вариант, проходя по{" "}
+            <mark className="code">{`<source>`}</mark> сверху вниз. Чтобы видео с
+            прозрачностью корректно отображалось в <mark className="app">Safari</mark>,
+            разместите первым вариант с <mark className="video">H.265</mark>, а затем{" "}
+            <mark className="video">WEBM</mark>. Учтите, что для{" "}
+            <mark className="video">H.265</mark> с альфа-каналом нужно указать тип и кодек{" "}
+            <mark className="code">type=&quot;video/mp4;codecs=hvc1&quot;</mark>, иначе
+            прозрачность может не отобразиться.
+          </p>
+          <p>
+            В остальных браузерах, например <mark className="app">Firefox</mark> или{" "}
+            <mark className="app">Chrome</mark> для воспроизведения видео будет
+            использоваться <mark className="video">WEBM</mark>.
+          </p>
+          <CodeSnippet language="html">
+            {`<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Использование видео с прозрачностью в разных браузерах</title>
+  </head>
+  <body>
+    <video
+      loop
+      controls
+      autoplay
+    >
+      <source
+        src="images/aefaq@aechat_alpha.mp4"
+        type="video/mp4;codecs=hvc1"
+      />
+      <source
+        src="images/aefaq@aechat_alpha.webm"
+        type="video/webm"
+      />
+    </video>
+  </body>
+</html>`}
+          </CodeSnippet>
         </NestedDetailsSummary>
       </DetailsSummary>
     </div>
