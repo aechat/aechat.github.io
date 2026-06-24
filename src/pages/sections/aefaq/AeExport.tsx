@@ -2370,6 +2370,30 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="audio"
+          title="Аудио (MP3, WAV, AIFF)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта аудио в форматах <mark className="audio">MP3</mark>,{" "}
+                <mark className="audio">WAV</mark> или <mark className="audio">AIFF</mark>{" "}
+                нужно выбрать соответствующие значения в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата аудио"
+                src="after-effects/export/export-audio.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
