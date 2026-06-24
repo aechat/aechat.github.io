@@ -2322,6 +2322,54 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="sequence"
+          title="Секвенция изображений (JPEG, PNG, TIFF)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта секвенции изображений нужно выбрать значение с припиской{" "}
+                <mark className="select">«Sequence»</mark> в названии, например{" "}
+                <mark className="select">«PNG Sequence»</mark> или{" "}
+                <mark className="select">«JPG Sequence»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата секвенции изображений"
+                src="after-effects/export/export-image-sequence.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  Если вы выбрали формат, поддерживающий альфа-канал, например{" "}
+                  <mark className="image">PNG</mark> и вы хотите экспортировать композицию
+                  с альфа-каналом — не забудьте указать значение{" "}
+                  <mark className="select">«RGB + Alpha»</mark> в параметре{" "}
+                  <mark className="select">«Channels»</mark>.
+                </p>
+                <ArticleMedia
+                  caption="Включаем сохранение альфа-канала для секвенции PNG"
+                  src="after-effects/export/png-rgb+alpha.png"
+                  type="image"
+                />
+              </Addition>
+            </li>
+            <li>
+              <p>
+                После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+                <mark className="select">«Render Queue»</mark>.
+              </p>
+              <Addition type="info">
+                При экспорте секвенции <mark className="app">Adobe After Effects</mark> по
+                умолчанию создаёт отдельную подпапку для изображений. Это поведение можно
+                отключить, убрав флажок{" "}
+                <mark className="select">«Save in subfolder»</mark> при выборе пути
+                сохранения.
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
     </div>
   );
