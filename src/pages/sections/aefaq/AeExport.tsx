@@ -2394,6 +2394,17 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <p>
+          Помимо параметров формата, в <mark className="select">«Output Module»</mark>{" "}
+          доступны и параметры цвета во вкладке <mark className="select">«Color»</mark>.
+          Здесь можно переопределить цветовое пространство экспортируемого файла или
+          отключить управление цветом.
+        </p>
+        <ArticleMedia
+          caption="Настройки цветового пространства в модуле вывода"
+          src="after-effects/export/output-module-color.png"
+          type="image"
+        />
       </DetailsSummary>
     </div>
   );
