@@ -2405,6 +2405,20 @@ const AeExport: React.FC = () => {
           src="after-effects/export/output-module-color.png"
           type="image"
         />
+        <Divider>
+          Вникаем в <mark className="select">«Render Settings»</mark>
+        </Divider>
+        <p>
+          <mark className="select">«Render Settings»</mark> отвечает за настройки
+          разрешения рендера композиции, качество слоёв, использование прокси, рабочую
+          область рендера и позволяет переопределить некоторые параметры, например
+          отключить все эффекты или принудительно включить рендер слоёв-направляющих.
+        </p>
+        <ArticleMedia
+          caption="Настройки рендера композиции"
+          src="after-effects/export/render-settings.png"
+          type="image"
+        />
       </DetailsSummary>
     </div>
   );
