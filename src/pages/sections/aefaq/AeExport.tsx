@@ -2419,6 +2419,20 @@ const AeExport: React.FC = () => {
           src="after-effects/export/render-settings.png"
           type="image"
         />
+        <Divider>
+          Разбираемся с <mark className="select">«Output To»</mark>
+        </Divider>
+        <p>
+          <mark className="select">«Output To»</mark> задаёт путь для сохранения файла. В
+          зависимости от выбранного формата к названию автоматически добавляется
+          расширение. Для имён и расположения файлов можно использовать стандартные
+          шаблоны или создать собственный.
+        </p>
+        <ArticleMedia
+          caption="Выбор расположения для экспорта композиции"
+          src="after-effects/export/output-to.png"
+          type="image"
+        />
       </DetailsSummary>
     </div>
   );
