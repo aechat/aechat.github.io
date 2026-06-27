@@ -2434,6 +2434,118 @@ const AeExport: React.FC = () => {
           type="image"
         />
       </DetailsSummary>
+      <DetailsSummary
+        anchor="media-encoder-issues"
+        tag="dynamic link, проблемы при экспорте, медиа енкодер, ame"
+        title="Почему «из каждого утюга» советуют не использовать Adobe Media Encoder для экспорта композиций?"
+      >
+        <p>
+          Исторически долгие годы <mark className="app">Adobe Media Encoder</mark>{" "}
+          оставался практически безальтернативным решением для экспорта из{" "}
+          <mark className="app">Adobe After Effects</mark> в кодек{" "}
+          <mark className="video">H.264</mark> и ряд других форматов. Однако в{" "}
+          <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">23.0 (2023)</mark> и новее возможность экспорта в{" "}
+          <mark className="video">H.264</mark> вернулась спустя несколько лет, поэтому
+          обращаться к <mark className="app">Adobe Media Encoder</mark> для этой цели
+          можно значительно реже.
+        </p>
+        <Addition type="info">
+          Если вы используете <mark className="app">Adobe After Effects</mark> ниже{" "}
+          <mark className="version">23.0 (2023)</mark>, вместо{" "}
+          <mark className="app">Adobe Media Encoder</mark> лучше воспользоваться плагинами{" "}
+          <mark className="plugin">AfterCodecs</mark> или{" "}
+          <mark className="plugin">Voukoder</mark>.{" "}
+          <a href="#how-to-export-mp4">Подробнее...</a>
+        </Addition>
+        <p>
+          Изначально <mark className="app">Adobe Media Encoder</mark> создавался как
+          инструмент для конвертации медиафайлов между различными форматами и создания
+          прокси-файлов для <mark className="app">Adobe Premiere</mark>. Позже он получил
+          поддержку экспорта композиций из{" "}
+          <mark className="app">Adobe After Effects</mark> в{" "}
+          <mark className="video">H.264</mark>, поэтому многие пользователи по привычке
+          или из-за незнания альтернатив продолжают пользоваться им. Несмотря на это,
+          программа по-прежнему остаётся востребованной в некоторых сценариях, а при
+          работе с ней можно столкнуться с рядом особенностей, о которых и пойдёт речь в
+          этой статье.
+        </p>
+        <Divider>
+          Какие проблемы могут возникнуть при использовании{" "}
+          <mark className="app">Adobe Media Encoder</mark>?
+        </Divider>
+        <ul>
+          <li>
+            <p>
+              При экспорте сложных сцен <mark className="app">Adobe Media Encoder</mark>{" "}
+              может остановить рендеринг без объяснения причин, и будет сложно понять
+              причину. Сложные сцены лучше экспортировать напрямую из{" "}
+              <mark className="app">Adobe After Effects</mark>, при необходимости
+              используя <a href="#proxy-comp">прокси</a>. Это минимизирует время экспорта
+              и риск ошибок.
+            </p>
+            <Addition type="warning">
+              При экспорте композиции в <mark className="app">Adobe Media Encoder</mark>{" "}
+              запускается ещё один процесс <mark className="file">AFTERFX.EXE</mark>,
+              который создаёт дополнительную нагрузку на компьютер и может занять всю
+              оперативную память, что часто приводит к сбоям.
+            </Addition>
+          </li>
+          <li>
+            <mark className="app">Adobe Media Encoder</mark> может терять исходники: после
+            экспорта вы рискуете обнаружить разноцветный плейсхолдер вместо нужного файла,
+            особенно если рендеринг был долгим.
+          </li>
+          <li>
+            <p>
+              <mark className="app">Adobe Media Encoder</mark> может экспортировать
+              композиции с артефактами, например со смещённым изображением<sup>1</sup> или
+              искажёнными цветами.
+            </p>
+            <Addition type="info">
+              <sup>1</sup> Баг со смещением изображения встречается в версиях от{" "}
+              <mark className="version">23.1 (2023)</mark> до{" "}
+              <mark className="version">23.5 (2023)</mark>. Чтобы его исправить, обновите{" "}
+              <mark className="app">Adobe After Effects</mark> и{" "}
+              <mark className="app">Adobe Media Encoder</mark> до версии{" "}
+              <mark className="version">23.6 (2023)</mark> или выше.
+            </Addition>
+          </li>
+          <li>
+            При экспорте через <mark className="app">Adobe Media Encoder</mark> на
+            сторонних эффектах могут появиться красные кресты, водяные знаки или другие
+            признаки отсутствия лицензии. Даже если в{" "}
+            <mark className="app">Adobe After Effects</mark> с активацией всё в порядке —
+            не факт, что она корректно подхватится в{" "}
+            <mark className="app">Adobe Media Encoder</mark>, поскольку лицензии многих
+            сторонних эффектов привязаны именно к{" "}
+            <mark className="app">Adobe After Effects</mark>.
+          </li>
+          <li>
+            При экспорте в <mark className="app">Adobe Media Encoder</mark> вы вряд ли
+            добьётесь стабильной работы функции{" "}
+            <mark className="select">«Multi-Frame Rendering»</mark>, которая отлично
+            работает при экспорте напрямую из{" "}
+            <mark className="app">Adobe After Effects</mark>.
+          </li>
+          <li>
+            Композиция, отправленная из <mark className="app">Adobe After Effects</mark> в{" "}
+            <mark className="app">Adobe Media Encoder</mark>, может просто не появиться в
+            очереди рендеринга. Такое бывает при внутреннем сбое{" "}
+            <mark className="plugin">Dynamic Link</mark>, о котором программа не сообщает.
+          </li>
+          <li>
+            Обычно процесс экспорта в <mark className="app">Adobe After Effects</mark>{" "}
+            запускается почти мгновенно, в отличие от долгого запуска самого{" "}
+            <mark className="app">Adobe Media Encoder</mark>. После его запуска нужно ещё
+            подождать, пока он подгрузит композицию, запустит фоновый процесс{" "}
+            <mark className="file">AFTERFX.EXE</mark> и только потом начнёт экспорт. Не
+            всегда удобно ждать минуту, чтобы{" "}
+            <mark className="app">Adobe Media Encoder</mark> «опомнился» для экспорта
+            короткого видео.
+          </li>
+        </ul>
+      </DetailsSummary>
     </div>
   );
 };
