@@ -1762,7 +1762,7 @@ h = content(shapeName).content(pathName).size[1];
                     </mark>{" "}
                     сохраняет заданную частоту кадров композиции при вложении в другую.{" "}
                     <mark className="select">«Preserve resolution when nested»</mark>{" "}
-                    сохраняет разрешение (<mark className="select">«Full»</mark>
+                    сохраняет разрешение (<mark className="select">«Full»</mark>,{" "}
                     <mark className="select">«Half»</mark>,{" "}
                     <mark className="select">«Third»</mark>,{" "}
                     <mark className="select">«Quarter»</mark> или{" "}
