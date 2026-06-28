@@ -333,7 +333,7 @@ const AePerformance: React.FC = () => {
             </p>
           </li>
         </ul>
-        <Divider>Дополнительная информация для самостоятельных размышлений</Divider>
+        <Divider>Дополнительные материалы</Divider>
         <div className="flexible-links">
           <a href="https://www.pugetsystems.com/solutions/video-editing-workstations/adobe-after-effects/hardware-recommendations/">
             Рекомендации по железу от Puget Systems
@@ -1771,7 +1771,7 @@ const AePerformance: React.FC = () => {
           оптимизаций и исправлений ошибок ради сомнительного преимущества, которое на
           практике ничего не даёт.
         </p>
-        <Divider>Дополнительные материалы для размышлений</Divider>
+        <Divider>Дополнительные материалы</Divider>
         <div className="flexible-links">
           <a href="https://www.pugetsystems.com/blog/2025/02/24/upcoming-boost-to-after-effects-preview-playback-with-ram-and-disk-cache/">
             О потреблении ОЗУ и дискового кэша от Puget Systems

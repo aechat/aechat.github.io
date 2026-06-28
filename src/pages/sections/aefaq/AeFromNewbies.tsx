@@ -2790,9 +2790,7 @@ h = content(shapeName).content(pathName).size[1];
             </NestedDetailsSummary>
           </li>
         </ul>
-        <Divider>
-          Статьи о слоях от <mark className="company">Adobe</mark>
-        </Divider>
+        <Divider>Дополнительные материалы</Divider>
         <div className="flexible-links">
           <a href="https://helpx.adobe.com/after-effects/using/creating-layers.html">
             Создание слоев
@@ -2841,8 +2839,8 @@ h = content(shapeName).content(pathName).size[1];
           </a>
         </div>
         <Addition type="info">
-          Чтобы открыть нужную статью на русском языке — добавьте{" "}
-          <mark className="copy">/ru</mark> в ссылку после{" "}
+          Чтобы открыть нужную статью от <mark className="company">Adobe</mark> на русском
+          языке — добавьте <mark className="copy">/ru</mark> в ссылку после{" "}
           <mark className="web">helpx.adobe.com</mark>. Учтите, что статьи, переведённые
           на другие языки, могут быть переведены некорректно или иметь устаревшую
           информацию.

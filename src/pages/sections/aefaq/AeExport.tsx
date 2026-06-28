@@ -862,7 +862,7 @@ const AeExport: React.FC = () => {
             />
           </li>
         </ul>
-        <Divider>Дополнительный материал для размышлений</Divider>
+        <Divider>Дополнительные материалы</Divider>
         <div className="flexible-links">
           <a href="https://blog.frame.io/2017/02/15/choose-the-right-codec/">
             Выбор кодека для проекта
