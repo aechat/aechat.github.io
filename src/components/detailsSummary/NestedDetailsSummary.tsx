@@ -51,6 +51,26 @@ interface NestedDetailsSummaryProperties {
   title: string;
 }
 
+const getClosedParents = (detailsElement: HTMLDetailsElement | null): string[] => {
+  const parents: string[] = [];
+
+  let current = detailsElement?.parentElement?.closest<HTMLDetailsElement>("details");
+
+  while (current) {
+    if (!current.open) {
+      const summary = current.querySelector("summary");
+
+      if (summary?.id) {
+        parents.unshift(summary.id);
+      }
+    }
+
+    current = current.parentElement?.closest<HTMLDetailsElement>("details");
+  }
+
+  return parents;
+};
+
 const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   anchor,
   children,
@@ -350,26 +370,52 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         `.${styles["details-nested-summary"]}`
       );
 
+      if (!(summaryElement instanceof HTMLElement)) {
+        return;
+      }
+
       const resolvedSummaryId =
-        summaryElement instanceof HTMLElement
-          ? summaryElement.id || assignFallbackSummaryId(summaryElement)
-          : "";
+        summaryElement.id || assignFallbackSummaryId(summaryElement);
 
-      if (summaryElement && resolvedSummaryId === id) {
-        if (isOpenReference.current) {
-          if (!skipScroll) {
-            shouldDelayNextScrollReference.current = true;
-            scrollToSummary();
-          }
-        } else {
-          if (!skipScroll) {
-            shouldScrollAfterOpenReference.current = true;
-          }
+      if (resolvedSummaryId !== id) {
+        return;
+      }
 
-          shouldDelayNextScrollReference.current = true;
-          isOpenReference.current = true;
-          setIsOpen(true);
+      const closedParents = getClosedParents(detailsReference.current);
+
+      if (closedParents.length > 0) {
+        for (const parentId of closedParents) {
+          globalThis.dispatchEvent(
+            new CustomEvent("open-spoiler-by-id", {
+              detail: {id: parentId, skipScroll: true},
+            })
+          );
         }
+
+        setTimeout(() => {
+          globalThis.dispatchEvent(
+            new CustomEvent("open-spoiler-by-id", {
+              detail: {id, skipScroll},
+            })
+          );
+        }, 150);
+
+        return;
+      }
+
+      if (isOpenReference.current) {
+        if (!skipScroll) {
+          shouldDelayNextScrollReference.current = true;
+          scrollToSummary();
+        }
+      } else {
+        if (!skipScroll) {
+          shouldScrollAfterOpenReference.current = true;
+        }
+
+        shouldDelayNextScrollReference.current = true;
+        isOpenReference.current = true;
+        setIsOpen(true);
       }
     };
 
