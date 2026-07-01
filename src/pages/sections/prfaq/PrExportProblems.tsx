@@ -273,20 +273,34 @@ const PrExportProblems: React.FC = () => {
         </Divider>
         <p>
           Для быстрой конвертации видео нам понадобится{" "}
-          <mark className="app">Shutter Encoder</mark> — бесплатный и популярный
-          графический интерфейс утилиты <mark className="app">FFmpeg</mark>, который
-          доступен для Windows и macOS. С его помощью можно конвертировать видео в
+          <mark className="app">Shutter Encoder</mark> — бесплатный<sup>1</sup> и
+          популярный графический интерфейс утилиты <mark className="app">FFmpeg</mark>,
+          который доступен для Windows и macOS. С его помощью можно конвертировать видео в
           распространённые форматы и при необходимости указывать нужные настройки
           кодирования.
         </p>
         <Addition type="info">
-          Если у вас не установлен <mark className="app">Shutter Encoder</mark>, то его
-          можно скачать по <a href="https://www.shutterencoder.com/">этой</a> ссылке.
-          Чтобы скачать программу бесплатно, на сайте установите чекбокс{" "}
-          <mark className="select">
-            «I do not wish to participate in the development of the software»
-          </mark>
-          , а затем нажмите на кнопку скачивания для вашей операционной системы.
+          <ul>
+            <li>
+              <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+              бесплатно, установите чекбокс{" "}
+              <mark className="select">
+                «I do not wish to participate in the development of the software»
+              </mark>{" "}
+              на <a href="https://www.shutterencoder.com/">сайте</a>, а затем нажмите на
+              кнопку скачивания образа утилиты для вашей операционной системы.
+            </li>
+            <li>
+              В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+              встречается некорректный перевод некоторых элементов интерфейса, которые
+              могут сбить вас с толку. Чтобы сменить язык интерфейса на английский,
+              откройте настройки программы, нажав на иконку шестерёнки в левом верхнем
+              углу. В открывшемся окне найдите параметр{" "}
+              <mark className="select">«Установить язык»</mark>, измените его значение на{" "}
+              <mark className="select">«English»</mark> и подтвердите перезапуск
+              программы.
+            </li>
+          </ul>
         </Addition>
         <p>
           После установки и открытия <mark className="app">Shutter Encoder</mark> —

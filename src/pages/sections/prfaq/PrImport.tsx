@@ -268,17 +268,34 @@ const PrImport: React.FC = () => {
           type="image"
         />
         <p>
-          Чтобы начать перекодирование ваших исходников, вам нужно установить программу{" "}
+          Чтобы начать перекодирование ваших исходников, вам нужно установить бесплатную
+          <sup>1</sup> программу{" "}
           <a href="https://www.shutterencoder.com/">Shutter Encoder</a>. После установки
           просто запустите программу и перетащите в неё ваши файлы, можно даже целую
           папку.
         </p>
         <Addition type="info">
-          Чтобы скачать программу бесплатно, на сайте установите чекбокс{" "}
-          <mark className="select">
-            «I do not wish to participate in the development of the software»
-          </mark>{" "}
-          и затем нажмите на кнопку скачивания для вашей операционной системы.
+          <ul>
+            <li>
+              <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+              бесплатно, установите чекбокс{" "}
+              <mark className="select">
+                «I do not wish to participate in the development of the software»
+              </mark>{" "}
+              на <a href="https://www.shutterencoder.com/">сайте</a> и затем нажмите на
+              кнопку скачивания образа утилиты для вашей операционной системы.
+            </li>
+            <li>
+              В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+              встречается некорректный перевод некоторых элементов интерфейса, которые
+              могут сбить вас с толку. Чтобы сменить язык интерфейса на английский,
+              откройте настройки программы, нажав на иконку шестерёнки в левом верхнем
+              углу. В открывшемся окне найдите параметр{" "}
+              <mark className="select">«Установить язык»</mark>, измените его значение на{" "}
+              <mark className="select">«English»</mark> и подтвердите перезапуск
+              программы.
+            </li>
+          </ul>
         </Addition>
         <p>
           На первый взгляд интерфейс <mark className="app">Shutter Encoder</mark> может
