@@ -149,6 +149,31 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
     setIsOpen(nextIsOpen);
   };
 
+  const updateDynamicStyles = useCallback(() => {
+    const details = detailsReference.current;
+
+    if (details?.open) {
+      const contentWrapper = details.querySelector<HTMLElement>(
+        `.${styles["details-nested-content-wrapper"]}`
+      );
+
+      const innerContent = contentWrapper?.querySelector<HTMLElement>(
+        `.${styles["details-nested-section"]}`
+      );
+
+      if (contentWrapper && innerContent) {
+        const measuredHeight = innerContent.scrollHeight;
+
+        if (contentWrapper.style.maxHeight !== "none") {
+          contentWrapper.style.maxHeight = `${measuredHeight}px`;
+        }
+
+        lastExpandedHeightReference.current = measuredHeight;
+        details.style.marginBottom = `${details.offsetHeight * 0.01 + 10}px`;
+      }
+    }
+  }, []);
+
   const updateUrlHash = useCallback((hash: string) => {
     replaceUrlHash(hash);
   }, []);
@@ -549,6 +574,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       if (targetHeight > 0 || attempt >= 40) {
         contentWrapper.style.maxHeight = `${targetHeight}px`;
         lastExpandedHeightReference.current = targetHeight;
+        updateDynamicStyles();
 
         return;
       }
@@ -572,6 +598,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         lastExpandedHeightReference.current = innerContent.scrollHeight;
         contentWrapper.style.maxHeight = "none";
         flushPendingScroll();
+        updateDynamicStyles();
       } else {
         isClosingAnimationReference.current = false;
         details.open = false;
@@ -590,14 +617,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         return;
       }
 
-      if (contentWrapper.style.maxHeight === "none") {
-        return;
-      }
-
-      const measuredHeight = innerContent.scrollHeight;
-
-      contentWrapper.style.maxHeight = `${measuredHeight}px`;
-      lastExpandedHeightReference.current = measuredHeight;
+      updateDynamicStyles();
     });
 
     resizeObserver.observe(innerContent);
@@ -607,14 +627,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         return;
       }
 
-      if (contentWrapper.style.maxHeight === "none") {
-        return;
-      }
-
-      const measuredHeight = innerContent.scrollHeight;
-
-      contentWrapper.style.maxHeight = `${measuredHeight}px`;
-      lastExpandedHeightReference.current = measuredHeight;
+      updateDynamicStyles();
     };
 
     window.addEventListener("resize", onWindowResize);
@@ -632,6 +645,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       const currentHeight = contentWrapper.getBoundingClientRect().height;
 
       contentWrapper.style.maxHeight = `${currentHeight}px`;
+      updateDynamicStyles();
 
       transitionAnimationFrame = requestAnimationFrame(() => {
         updateOpenHeight();
@@ -644,6 +658,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
         contentWrapper.style.maxHeight = "none";
         flushPendingScroll();
+        updateDynamicStyles();
       }, durationMs + 60);
     } else {
       isClosingAnimationReference.current = true;
@@ -652,6 +667,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
       contentWrapper.style.maxHeight = `${currentHeight}px`;
       contentWrapper.getBoundingClientRect();
+      details.style.marginBottom = "";
 
       transitionAnimationFrame = requestAnimationFrame(() => {
         contentWrapper.style.maxHeight = "0px";
@@ -685,7 +701,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       window.removeEventListener("resize", onWindowResize);
       contentWrapper.removeEventListener("transitionend", onTransitionEnd);
     };
-  }, [getExpandedHeight, isOpen, isParentOpen, scrollToSummary]);
+  }, [getExpandedHeight, isOpen, isParentOpen, scrollToSummary, updateDynamicStyles]);
 
   useEffect(() => {
     const summaryElement = detailsReference.current?.querySelector<HTMLElement>(
