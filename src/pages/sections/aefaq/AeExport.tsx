@@ -2394,6 +2394,115 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="mogrt"
+          title="Шаблоны для Adobe Premiere (MOGRT)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта композиции в виде шаблона <mark className="file">MOGRT</mark>
+                , предназначенного для дальнейшего использования в{" "}
+                <mark className="app">Adobe Premiere</mark>, используется окно{" "}
+                <mark className="select">«Essential Graphics»</mark>, которое можно
+                открыть через меню{" "}
+                <mark className="select">«Window» → «Essential Graphics»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Основное окно «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-main.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После открытия окна <mark className="select">«Essential Graphics»</mark>{" "}
+                выберите в поле <mark className="select">«Primary»</mark> нужную вам
+                композицию.
+              </p>
+              <ArticleMedia
+                caption="Выбор композиции для работы в «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-select-composition.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора композиции при необходимости укажите в поле{" "}
+                <mark className="select">«Name»</mark> собственное имя шаблона и нажмите
+                на <mark className="select">«Export as Motion Graphics Template»</mark>.
+              </p>
+
+              <ArticleMedia
+                caption="Начало экспорта MOGRT из окна «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-export-mogrt.png"
+                type="image"
+              />
+              <Addition type="warning">
+                <p>
+                  Экспортировать шаблон не получится, если вы не добавили в панель{" "}
+                  <mark className="select">«Essential Graphics»</mark> хотя бы одно
+                  свойство слоя или контроллер. Для этого перетащите свойства из таймлайна
+                  в эту панель.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне укажите местоположение шаблона, ключевые слова для
+                быстрого поиска среди шаблонов в{" "}
+                <mark className="app">Adobe Premiere</mark> и настройте предупреждения о
+                используемых шрифтах, которые не находятся в{" "}
+                <mark className="app">Adobe Fonts</mark> и необходимости об установленном{" "}
+                <mark className="app">Adobe After Effects</mark> при использовании
+                некоторых<sup>1</sup> элементов для повышения совместимости. Для начала
+                экспорта шаблона нажмите на <mark className="select">«OK»</mark> в нижней
+                части окна.
+              </p>
+              <ArticleMedia
+                caption="Настройка параметров экспорта MOGRT"
+                src="media/after-effects/export/export-as-motion-graphics-template.png"
+                type="image"
+              />
+              <Addition type="warning">
+                <p>
+                  <sup>1</sup> Для корректной работы шаблона{" "}
+                  <mark className="file">MOGRT</mark> в{" "}
+                  <mark className="app">Adobe Premiere</mark> без использования движка{" "}
+                  <mark className="app">Adobe After Effects</mark> необходимо соблюдать
+                  следующие ограничения.
+                </p>
+                <ul>
+                  <li>
+                    Поддерживаются все стандартные эффекты, кроме{" "}
+                    <mark className="plugin">Camera-Shake Deblur</mark>,{" "}
+                    <mark className="plugin">Maxon Cineware</mark>,{" "}
+                    <mark className="plugin">Warp Stabilizer</mark> и{" "}
+                    <mark className="plugin">Puppet</mark>.
+                  </li>
+                  <li>Сторонние плагины, очевидно, не поддерживаются.</li>
+                  <li>
+                    При использовании трёхмерных слоёв поддерживается только рендер{" "}
+                    <mark className="plugin">Classic 3D</mark>.
+                  </li>
+                  <li>
+                    Некоторые видеоформаты и футажи, связанные через{" "}
+                    <mark className="plugin">Dynamic Link</mark>, могут не работать.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              После экспорта шаблона, проверьте его работу в{" "}
+              <mark className="app">Adobe Premiere</mark>.
+            </li>
+          </ul>
+          <Divider>Дополнительные материалы</Divider>
+          <ArticleMedia
+            src="tHDnFgW9NpQ"
+            type="youtube"
+          />
+        </NestedDetailsSummary>
         <p>
           Помимо параметров формата, в <mark className="select">«Output Module»</mark>{" "}
           доступны и параметры цвета во вкладке <mark className="select">«Color»</mark>.
