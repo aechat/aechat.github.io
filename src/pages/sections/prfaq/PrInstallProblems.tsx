@@ -2579,34 +2579,36 @@ const PrInstallProblems: React.FC = () => {
             выбрав фразу.
           </li>
         </ul>
-        <DetailsSummary title="Где хранятся языковые пакеты и как удалить лишние после обновления?">
-          <p>
-            После обновления <mark className="app">Adobe Premiere</mark> и языковых
-            пакетов старые файлы не удаляются автоматически, так как могут использоваться
-            в предыдущих версиях <mark className="app">Adobe Premiere</mark>. Со временем
-            это превращается в лишние данные на диске.
-          </p>
-          <ContentFilter
-            windowsContent={
-              <>
-                <p>
-                  Файлы транскрибации и языковые пакеты для автоматического создания
-                  субтитров находятся в директории{" "}
-                  <mark className="path">
-                    C:\Program Files\Common Files\Adobe\Premiere Pro
-                  </mark>
-                  . Внутри расположены папки с установленными версиями программы.
-                </p>
-                <p>
-                  В папке нужной версии, например <mark className="path">26.0</mark>,
-                  находится директория <mark className="path">SpeechESL</mark>. Именно
-                  здесь хранятся языковые пакеты, которые можно удалить вручную при
-                  необходимости.
-                </p>
-              </>
-            }
-          />
-        </DetailsSummary>
+      </DetailsSummary>
+      <DetailsSummary
+        anchor="purge-speech-to-text-packages"
+        title="Где хранятся языковые пакеты и как удалить лишние после обновления?"
+      >
+        <p>
+          После обновления <mark className="app">Adobe Premiere</mark> и языковых пакетов
+          старые файлы не удаляются автоматически, так как могут использоваться в
+          предыдущих версиях <mark className="app">Adobe Premiere</mark>. Со временем это
+          превращается в лишние данные на диске.
+        </p>
+        <ContentFilter
+          windowsContent={
+            <>
+              <p>
+                Файлы транскрибации и языковые пакеты для автоматического создания
+                субтитров находятся в директории{" "}
+                <mark className="path">
+                  C:\Program Files\Common Files\Adobe\Premiere Pro
+                </mark>
+                . Внутри расположены папки с установленными версиями программы.
+              </p>
+              <p>
+                В папке нужной версии, например <mark className="path">26.0</mark>,
+                находится директория <mark className="path">SpeechESL</mark>. Именно здесь
+                хранятся языковые пакеты, которые можно удалить вручную при необходимости.
+              </p>
+            </>
+          }
+        />
       </DetailsSummary>
       <DetailsSummary
         anchor="match-version"
