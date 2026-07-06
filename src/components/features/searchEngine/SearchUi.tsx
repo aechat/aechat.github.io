@@ -24,6 +24,8 @@ import {copyText} from "../../../utilities/copyUtilities";
 
 import {withSelectionHaptic} from "../../../utilities/haptics";
 
+import {applyInteractiveScaleVariables} from "../../../utilities/interactiveScaleUtilities";
+
 import {formatNestedQuotes} from "../../../utilities/stringUtilities";
 
 import modalStyles from "../../modals/Modal.module.scss";
@@ -1354,6 +1356,44 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
       globalThis.removeEventListener("resize", handleResize);
     };
   }, [history, checkScrollLimits]);
+
+  useEffect(() => {
+    const container = containerReference.current;
+
+    if (!container || isMobileDevice()) {
+      return;
+    }
+
+    const updateScales = () => {
+      const buttons = container.querySelectorAll("button");
+
+      for (const button of buttons) {
+        applyInteractiveScaleVariables(button);
+      }
+    };
+
+    updateScales();
+
+    const observer =
+      "ResizeObserver" in globalThis
+        ? new ResizeObserver(() => {
+            updateScales();
+          })
+        : undefined;
+
+    const buttons = container.querySelectorAll("button");
+
+    for (const button of buttons) {
+      observer?.observe(button);
+    }
+
+    globalThis.addEventListener("resize", updateScales);
+
+    return () => {
+      observer?.disconnect();
+      globalThis.removeEventListener("resize", updateScales);
+    };
+  }, [history]);
 
   const ripple = useRipple<HTMLButtonElement>();
 

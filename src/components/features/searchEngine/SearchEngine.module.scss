@@ -334,7 +334,7 @@
       display: flex;
       flex: 1;
       flex-wrap: nowrap;
-      gap: 6px;
+      gap: $space-8;
       transition:
         --fade-left $duration-250 ease,
         --fade-right $duration-250 ease;
