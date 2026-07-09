@@ -2809,6 +2809,39 @@ const AeExport: React.FC = () => {
           формат экспорта или перезагрузите устройство.
         </p>
       </DetailsSummary>
+      <DetailsSummary
+        anchor="fix-export-1kb-h264"
+        tag="не экспортируется, битый файл, кириллица в пути"
+        title="Почему при экспорте в MP4 с помощью стандартного H.264 сохраняется файл размером 1 КБ?"
+      >
+        <p>
+          Скорее всего, вы столкнулись с багом{" "}
+          <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">23.1 (2023)</mark>. Из-за кириллицы или символов вне{" "}
+          <mark className="term">ASCII</mark> в пути сохранения при экспорте через
+          встроенный кодек <mark className="video">H.264</mark> получается повреждённый
+          файл размером 1 КБ, который не открывается ни одной программой.
+        </p>
+        <p>
+          Для решения этой проблемы достаточно обновить{" "}
+          <mark className="app">Adobe After Effects</mark> до версии{" "}
+          <mark className="version">23.6 (2023)</mark> или выше и повторить экспорт.
+        </p>
+        <Addition type="info">
+          <ul>
+            <li>
+              Проверить текущую версию <mark className="app">Adobe After Effects</mark>{" "}
+              можно в меню <mark className="select">«Help» → «About After Effects»</mark>.
+            </li>
+            <li>
+              Если вы не хотите или не можете обновить программу по каким-либо причинам —
+              укажите путь сохранения композиции без кириллицы или экспортируйте видео в{" "}
+              <mark className="video">H.264</mark> через альтернативные способы.{" "}
+              <a href="#how-to-export-mp4">Подробнее...</a>
+            </li>
+          </ul>
+        </Addition>
+      </DetailsSummary>
     </div>
   );
 };
