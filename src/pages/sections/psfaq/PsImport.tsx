@@ -12,10 +12,6 @@ const PsImport: React.FC = () => {
   return (
     <div className="article-content">
       <DetailsSummary
-        anchor="import-raw"
-        title="Как импортировать RAW изображения?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="fix-color-profile-mismatch"
         tag="missing profile, embedded profile mismatch, отсутствие встроенного профиля, несоответствие внедренного профиля, документ не содержит встроенных профилей rgb, the document has an embedded color profile that does not match the current rgb working space"
         title="Почему при импорте изображения появляется «The document does not have an embedded RGB profile»?"
@@ -77,14 +73,6 @@ const PsImport: React.FC = () => {
           type="image"
         />
       </DetailsSummary>
-      <DetailsSummary
-        anchor="restore-legacy-import"
-        title="Мне не нравится новый интерфейс импорта, как вернуть старый?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="fix-colors-mismatch-viewer"
-        title="Почему при открытии фото в Adobe Photoshop цвета отличаются от просмотрщика фото?"
-      ></DetailsSummary>
     </div>
   );
 };

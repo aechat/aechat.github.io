@@ -10,20 +10,6 @@ const PsExport: React.FC = () => {
   return (
     <div className="article-content">
       <DetailsSummary
-        anchor="social-media-export"
-        title="Какие параметры экспорта нужно установить для загрузки в социальные сети?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="export-image"
-        tag="сохранить фото, пнг, жипег, жпг, вебп"
-        title="Как экспортировать изображение в JPEG, PNG, WEBP и прочие популярные форматы изображений?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="export-gif"
-        tag="сохранить анимированную гифку"
-        title="Как экспортировать последовательность фото в анимацию GIF?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="export-layers"
         tag="export layers"
         title="Как экспортировать слои отдельными файлами?"
@@ -50,11 +36,6 @@ const PsExport: React.FC = () => {
           type="image"
         />
       </DetailsSummary>
-      <DetailsSummary
-        anchor="how-to-export-video"
-        tag="сохранить видео, mp4"
-        title="Может прозвучит по-идиотски, но как экспортировать из программы видео?"
-      ></DetailsSummary>
       <DetailsSummary
         anchor="restore-legacy-save"
         tag="legacy export"

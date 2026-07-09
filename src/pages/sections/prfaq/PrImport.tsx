@@ -591,11 +591,6 @@ const PrImport: React.FC = () => {
           </ul>
         </Addition>
       </DetailsSummary>
-      <DetailsSummary
-        anchor="import-xml"
-        tag="xml, import xml, final cut xml, перенос таймлайна, project interchange"
-        title="Для чего нужны файлы XML и как их импортировать?"
-      ></DetailsSummary>
     </div>
   );
 };

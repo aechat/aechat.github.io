@@ -80,26 +80,6 @@ const PsActions: React.FC = () => {
           <a href="https://t.me/+Qd9xu7A4TeIwNzY6">склад стройматериалов</a>.
         </Addition>
       </DetailsSummary>
-      <DetailsSummary
-        anchor="retouch-photo"
-        title="Как и чем можно отретушировать фото?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="color-correction"
-        title="Как и чем можно сделать цветокоррекцию?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="replace-sky"
-        title="Как и чем можно заменить небо?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="blur-background"
-        title="Как красиво размыть фон?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="frame-animation"
-        title="Как и чем можно сделать покадровые анимации?"
-      ></DetailsSummary>
     </div>
   );
 };

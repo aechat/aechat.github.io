@@ -131,11 +131,6 @@ const PrInterface: React.FC = () => {
         </p>
       </DetailsSummary>
       <DetailsSummary
-        anchor="dock-panel"
-        tag="dock panel, workspace, прикрепить окно, рабочее пространство"
-        title="Как прикрепить нужное окно в рабочее пространство?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="excalibur"
         tag="панель эффектов, фх консоль, экскалибур"
         title="Есть ли аналог FX Console для Premiere?"

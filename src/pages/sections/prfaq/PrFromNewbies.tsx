@@ -213,11 +213,6 @@ const PrFromNewbies: React.FC = () => {
         </ul>
       </DetailsSummary>
       <DetailsSummary
-        anchor="vocabulary"
-        tag="сленг, жаргон, сокращения, словосочетания, говор"
-        title="Какие популярные термины есть у пользователей программы?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="keyboard-shortcuts"
         tag="хоткеи, горячие клавиши, шорткаты, keyboard shortcuts, hotkeys"
         title="Где найти таблицу комбинаций клавиш?"
@@ -2462,11 +2457,6 @@ const PrFromNewbies: React.FC = () => {
         />
       </DetailsSummary>
       <DetailsSummary
-        anchor="render-bar-colors"
-        tag="полоса рендеринга, render bar color"
-        title="Что означают красные, жёлтые и зелёные полосы вверху таймлайна?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="timeline-track-targeting"
         tag="выделение, вставка клипов"
         title="Для чего нужны A1 и V1 слева от клипов на таймлайне?"
@@ -2499,11 +2489,6 @@ const PrFromNewbies: React.FC = () => {
           type="youtube"
         />
       </DetailsSummary>
-      <DetailsSummary
-        anchor="sequence-independent"
-        tag="nest, unnest, независимая секвенция, duplicate sequence, nesting"
-        title="Продублировал секвенцию на таймлайне, но копия зависит от оригинала. Как сделать Nest независимыми друг от друга?"
-      ></DetailsSummary>
       <DetailsSummary
         anchor="scale-vs-fit"
         title='Чем отличается "Scale to Frame Size" от "Fill Frame" и "Fit to Frame"?'

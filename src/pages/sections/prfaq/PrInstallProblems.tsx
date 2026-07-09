@@ -3345,12 +3345,6 @@ const PrInstallProblems: React.FC = () => {
           }
         />
       </DetailsSummary>
-      <DetailsSummary
-        anchor="safe-mode-and-reset"
-        tag="безопасный режим, reset preferences, safe mode"
-        title="Что делать, если программа начала работать нестабильно, а переустанавливать с нуля не хочется?"
-      ></DetailsSummary>
-
       <Addition type="info">
         Некоторые решения проблем, которые могут у вас возникнуть после установки
         дополнительных материалов или во время использования программы, находятся в общем

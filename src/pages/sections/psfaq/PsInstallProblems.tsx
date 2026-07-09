@@ -1651,11 +1651,6 @@ const PsInstallProblems: React.FC = () => {
           прочитать в <a href="#how-to-install">статье 2.1</a>.
         </Addition>
       </DetailsSummary>
-      <DetailsSummary
-        anchor="safe-mode-and-reset"
-        tag="безопасный режим, reset preferences, safe mode, установка поверх, нестабильно, сброс настроек, startup repair options, переустановка поверх, чистая установка"
-        title="Что делать, если программа начала работать нестабильно, а переустанавливать с нуля не хочется?"
-      ></DetailsSummary>
       <Addition type="info">
         Некоторые решения проблем, которые могут у вас возникнуть после установки
         дополнительных материалов или во время использования программы, находятся в общем

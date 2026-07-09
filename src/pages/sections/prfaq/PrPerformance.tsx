@@ -14,11 +14,6 @@ const PrPerformance: React.FC = () => {
   return (
     <div className="article-content">
       <DetailsSummary
-        anchor="choose-computer"
-        tag="pc, железо, выбор пк, сборка, системные требования, hardware recommendations"
-        title="Какой компьютер или ноутбук нужен для работы в программе?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="choose-version"
         tag="версия программы для старых устройств"
         title="Какая версия программы считается самой стабильной и какую лучше установить?"
@@ -45,16 +40,7 @@ const PrPerformance: React.FC = () => {
         </Addition>
       </DetailsSummary>
       <DetailsSummary
-        anchor="about-app-performance"
-        tag="тормозит, ускорить работу, оптимизация, увеличить скорость рендера, лаги, медленно работает, низкая скорость, производительность, применение эффектов, системные требования, артефакты, искажения, потребление оперативной памяти"
-        title="Почему у меня, б%@#ь, лагает е&#!%й Adobe Premiere, с$%а?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="mercury-acceleration"
-        tag="mercury gpu acceleration, software rendering only, рендеринг на процессоре"
-        title="Как переключить тип рендеринга и зачем это нужно делать?"
-      ></DetailsSummary>
-      <DetailsSummary
+        anchor="disable-media-intelligence-analysis"
         tag="анализ медиа"
         title="Что у меня постоянно обрабатывается в фоне после импорта исходников или как отключить «Media Intelligence Analysis»?"
       >

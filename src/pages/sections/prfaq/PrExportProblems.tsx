@@ -152,11 +152,6 @@ const PrExportProblems: React.FC = () => {
         />
       </DetailsSummary>
       <DetailsSummary
-        anchor="fix-render-freeze"
-        tag="зависает, ame"
-        title="Что делать, если экспорт зависает на определённом моменте?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="fix-export-1kb-file"
         tag="file importer detected an inconsistency in the file structure, reading and writing this file's metadata (xmp) has been disabled, не экспортируется, битый файл"
         title="Почему при экспорте в MP4 через встроенный кодек H.264 и HEVC сохраняется файл с размером в 1 КБ?"
@@ -188,11 +183,6 @@ const PrExportProblems: React.FC = () => {
         </p>
       </DetailsSummary>
       <DetailsSummary
-        anchor="fix-export-color-shift"
-        tag="iphone, hlg, rec.709, color shift, color space, color management"
-        title="Почему после экспорта у меня изменились цвета и оттенки?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="fix-position-shift"
         tag="медиаенкодер, медиаэнкодер, переместилось"
         title="Почему в предпросмотре Premiere, Media Encoder и после экспорта видео смещается влево или вправо?"
@@ -222,11 +212,6 @@ const PrExportProblems: React.FC = () => {
         </Addition>
       </DetailsSummary>
       <DetailsSummary
-        anchor="fix-color-banding"
-        tag="color banding, полосы, шум, глубина цвета, bit depth"
-        title="Как избавиться от ужасного ступенчатого градиента?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="fix-odd-resolution-error"
         tag="settings mismatch, output file will be resized from to meet format constraints, odd resolution, нечетное разрешение, ограничения h264"
         title="Почему при экспорте размер секвенции растягивается до чётного значения?"
@@ -251,11 +236,6 @@ const PrExportProblems: React.FC = () => {
           изменения настроек композиции попробуйте начать экспорт заново.
         </p>
       </DetailsSummary>
-      <DetailsSummary
-        anchor="no-sound-after-export"
-        tag="нет звука после экспорта, audio export, audio codec, дорожки отключены"
-        title="Почему после экспорта отсутствует звук в видео?"
-      ></DetailsSummary>
       <DetailsSummary
         anchor="compress-video-shutter-encoder"
         tag="конвертация, шаттер енкодер, сжатие видео, квантование, cqr"

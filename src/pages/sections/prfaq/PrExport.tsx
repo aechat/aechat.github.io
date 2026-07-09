@@ -14,10 +14,6 @@ const PrExport: React.FC = () => {
   return (
     <div className="article-content">
       <DetailsSummary
-        tag="тикток, ютуб, максимальное качество, разрешение, битрейт, кодек, fps, соцсети, настройки рендера, вывод видео"
-        title="Какие настройки экспорта стоит установить для вывода в социальные сети?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="export-mp4"
         tag="h264, h265, hevc, avc1, voukoder, aftercodecs"
         title="Как вывести секвенцию в MP4 и H.264/H.265?"
@@ -647,10 +643,6 @@ const PrExport: React.FC = () => {
           альфа-каналом.
         </Addition>
       </DetailsSummary>
-      <DetailsSummary
-        tag="previews, ускорение времени рендера, уменьшение перепросчёта, пререндер, prerender"
-        title="Как сократить время повторного экспорта, если заказчик попросил внести небольшие правки?"
-      ></DetailsSummary>
       <DetailsSummary
         anchor="save-export-preset"
         title="Как сохранить свой шаблон с настройками для экспорта секвенций?"

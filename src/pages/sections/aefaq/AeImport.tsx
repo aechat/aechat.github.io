@@ -1564,11 +1564,6 @@ const AeImport: React.FC = () => {
         </p>
       </DetailsSummary>
       <DetailsSummary
-        anchor="import-svg"
-        tag="свг, вектор, vector"
-        title="Как импортировать SVG?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="import-figma"
         tag="aeux, overlord, импорт макета, фигма"
         title="Как импортировать макет из Figma?"

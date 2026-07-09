@@ -51,16 +51,6 @@ const PsFromNewbies: React.FC = () => {
         </div>
       </DetailsSummary>
       <DetailsSummary
-        anchor="vocabulary"
-        tag="сленг, жаргон, сокращения, словосочетания, говор"
-        title="Какие популярные термины есть у пользователей программы?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="keyboard-shortcuts"
-        tag="хоткеи, горячие клавиши, шорткаты, keyboard shortcuts, hotkeys"
-        title="Где найти таблицу комбинаций клавиш?"
-      ></DetailsSummary>
-      <DetailsSummary
         anchor="changelog"
         tag="что нового, фишки, обновления, апдейты, патчноуты"
         title="Где я могу узнать о нововведениях в обновлениях программы?"
