@@ -1694,7 +1694,6 @@ const AeExport: React.FC = () => {
                 type="image"
               />
             </li>
-
             <li>
               <p>
                 Для изменения настроек нажмите на иконку шестерёнки в главном окне
@@ -1707,7 +1706,6 @@ const AeExport: React.FC = () => {
                 type="image"
               />
             </li>
-
             <li>
               <p>
                 После завершения настройки нажмите{" "}
@@ -2432,7 +2430,6 @@ const AeExport: React.FC = () => {
                 <mark className="select">«Name»</mark> собственное имя шаблона и нажмите
                 на <mark className="select">«Export as Motion Graphics Template»</mark>.
               </p>
-
               <ArticleMedia
                 caption="Начало экспорта MOGRT из окна «Essential Graphics»"
                 src="media/after-effects/export/essential-graphics-export-mogrt.png"

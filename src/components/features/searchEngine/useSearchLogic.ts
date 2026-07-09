@@ -532,7 +532,6 @@ export const useSearchLogic = (
       );
 
       allRankedResultsReference.current = filteredResults;
-
       setTotalResultsCount(filteredResults.length);
 
       setResults(

@@ -49,7 +49,6 @@ const getWordMatchScore = (qWords: string[], candWords: string[]): number => {
   for (const qw of qWords) {
     if (candWords.includes(qw)) {
       wordMatches += 1;
-
       continue;
     }
 
@@ -57,7 +56,6 @@ const getWordMatchScore = (qWords: string[], candWords: string[]): number => {
 
     if (hasPrefix) {
       wordMatches += 0.7;
-
       continue;
     }
 

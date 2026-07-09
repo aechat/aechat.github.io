@@ -358,19 +358,16 @@ const SearchModalContent: React.FC<SearchModalContentProperties> = ({
   switch (contentTransitionPhase) {
     case "exit": {
       contentTransitionClass = searchStyles["content-transition-exit"];
-
       break;
     }
 
     case "enter": {
       contentTransitionClass = searchStyles["content-transition-enter"];
-
       break;
     }
 
     case "idle": {
       contentTransitionClass = searchStyles["content-transition-idle"];
-
       break;
     }
     // No default
@@ -1248,19 +1245,16 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   switch (transitionPhase) {
     case "exit": {
       transitionClass = searchStyles["transition-exit"];
-
       break;
     }
 
     case "enter": {
       transitionClass = searchStyles["transition-enter"];
-
       break;
     }
 
     case "idle": {
       transitionClass = searchStyles["transition-idle"];
-
       break;
     }
     // No default
