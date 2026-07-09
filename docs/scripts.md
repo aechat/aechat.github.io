@@ -144,7 +144,7 @@ yarn report:versions
 node scripts/reports/generateVersionReports.js
 ```
 
-Скрипт принимает параметр `--sections` для указания категорий статей, обрабатываемых в директории `src/pages/sections` со значением по умолчанию `aefaq,prfaq,psfaq,aeexpr`, а также параметр `--out` для указания пути к папке результатов, по умолчанию создающий директорию с временной меткой в названии. Пример расширенного вызова с параметрами выглядит следующим образом:
+Скрипт принимает параметр `--sections` для указания категорий статей, обрабатываемых в директории [sections](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/sections) со значением по умолчанию `aefaq,prfaq,psfaq`, а также параметр `--out` для указания пути к папке результатов, по умолчанию создающий директорию с временной меткой в названии. Пример расширенного вызова с параметрами выглядит следующим образом:
 
 ```bash
 node scripts/reports/generateVersionReports.js --sections aefaq,prfaq --out scripts/logs/custom-version-report

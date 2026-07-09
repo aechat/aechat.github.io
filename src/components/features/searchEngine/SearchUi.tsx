@@ -457,8 +457,6 @@ const getSearchQuery = (query: string) => {
     context = "premiere pro";
   } else if (path.includes("psfaq")) {
     context = "photoshop";
-  } else if (path.includes("aeexpr")) {
-    context = "after effects expression";
   }
 
   return `${query} ${context}`;

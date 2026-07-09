@@ -1,6 +1,6 @@
 # Статьи и разделы
 
-Все статьи проекта располагаются в каталоге `src/pages/sections`. Каждая директория внутри этого каталога представляет собой отдельный тематический блок. В папке `aefaq` собраны материалы по After Effects, в папке `prfaq` находятся разделы по Premiere, папка `psfaq` содержит ответы по Photoshop, а в папке `aeexpr` размещаются статьи по выражениям After Effects. Один файл с расширением `.tsx` в этих директориях содержит подборку вопросов и ответов по одной теме.
+Все статьи проекта располагаются в каталоге [sections](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/sections). Каждая директория внутри этого каталога представляет собой отдельный тематический блок. В папке `aefaq` собраны материалы по After Effects, в папке `prfaq` находятся разделы по Premiere, а папка `psfaq` содержит ответы по Photoshop. Один файл с расширением `.tsx` в этих директориях содержит подборку вопросов и ответов по одной теме.
 
 ## Каркас файла статьи
 
@@ -40,7 +40,7 @@ export default AeInterface;
 
 ## Добавление нового раздела статей
 
-Чтобы создать новую категорию статей, необходимо добавить файл с расширением `.tsx` в соответствующий подкаталог `src/pages/sections`. В этом файле описывается компонент, экспортируемый по умолчанию, с корневым блоком `div`, имеющим класс `article-content`. После создания файла его необходимо зарегистрировать на странице раздела в каталоге `src/pages`, импортировав компонент в `AeFaqPage.tsx`, `PrFaqPage.tsx`, `PsFaqPage.tsx` или `AeExprPage.tsx` и добавив новый объект в массив `sections` этой страницы.
+Чтобы создать новую категорию статей, необходимо добавить файл с расширением `.tsx` в соответствующий подкаталог [sections](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/sections). В этом файле описывается компонент, экспортируемый по умолчанию, с корневым блоком `div`, имеющим класс `article-content`. После создания файла его необходимо зарегистрировать на странице раздела в каталоге [pages](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages), импортировав компонент в [AeFaqPage.tsx](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/AeFaqPage.tsx), [PrFaqPage.tsx](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/PrFaqPage.tsx) или [PsFaqPage.tsx](file:///C:/Users/m1sh3r/YandexDisk/Projects/aechat-links/src/pages/PsFaqPage.tsx) и добавив новый объект в массив `sections` этой страницы.
 
 ```ts
 {

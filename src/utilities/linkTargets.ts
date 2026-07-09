@@ -42,7 +42,6 @@ export type LinkTarget =
 
 const pageTitles: Record<string, string> = {
   "/": "links",
-  "/aeexpr": "aeexpr",
   "/aefaq": "aefaq",
   "/prfaq": "prfaq",
   "/psfaq": "psfaq",

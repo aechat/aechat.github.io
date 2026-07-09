@@ -67,7 +67,6 @@ export default {
         "aefaq",
         "prfaq",
         "psfaq",
-        "aeexpr",
         "rules",
         "reg",
         "links",

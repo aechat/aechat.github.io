@@ -365,7 +365,7 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
   const currentPath =
     globalThis.window === undefined ? "" : globalThis.window.location.pathname;
 
-  const pagesWithSpoilerAnimation = ["/aefaq", "/prfaq", "/psfaq", "/aeexpr"];
+  const pagesWithSpoilerAnimation = ["/aefaq", "/prfaq", "/psfaq"];
 
   const today = new Date();
 

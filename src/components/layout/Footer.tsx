@@ -35,12 +35,11 @@ interface FooterProperties {
   title: string;
 }
 
-const FAQ_PATHS = ["/aefaq", "/prfaq", "/psfaq", "/aeexpr"] as const;
+const FAQ_PATHS = ["/aefaq", "/prfaq", "/psfaq"] as const;
 
 type FaqPath = (typeof FAQ_PATHS)[number];
 
 const PATH_MAP: Record<FaqPath, string> = {
-  "/aeexpr": "src/pages/sections/aeexpr",
   "/aefaq": "src/pages/sections/aefaq",
   "/prfaq": "src/pages/sections/prfaq",
   "/psfaq": "src/pages/sections/psfaq",

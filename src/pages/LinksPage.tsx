@@ -62,7 +62,7 @@ import {getPlatformInfo} from "../utilities/browserDetection";
 
 import {triggerHaptic} from "../utilities/haptics";
 
-import {/* AEExprIcon, */ AeIcon, PrIcon, PsIcon} from "./FaqIcon";
+import {AeIcon, PrIcon, PsIcon} from "./FaqIcon";
 
 const Links = () => {
   usePageLoad();
@@ -322,15 +322,6 @@ const Links = () => {
               name="psfaq"
               variant="internal"
             />
-            {/* <LinkCard
-              description="Шпаргалка по использованию выражений в Adobe After Effects"
-              href="/aeexpr"
-              icon={<AEExprIcon />}
-              name="aeexpr"
-              variant="internal"
-            /> 
-            // aeexpr скоро будет возвращён, ссылка временно скрыта из-за пустоты этого раздела
-            */}
           </div>
           <Divider>Каналы в Telegram</Divider>
           <Addition type="info">

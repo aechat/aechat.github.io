@@ -29,13 +29,12 @@ const constants = {
   WIDE_SCREEN_WIDTH: 650,
 } as const;
 
-const SEARCH_PATHS = ["aefaq", "prfaq", "psfaq", "aeexpr"] as const;
+const SEARCH_PATHS = ["aefaq", "prfaq", "psfaq"] as const;
 
-const WIP_PATHS = ["prfaq", "psfaq", "aeexpr"] as const;
+const WIP_PATHS = ["prfaq", "psfaq"] as const;
 
 const TOOLTIP_MESSAGES: Record<string, string> = {
   "/": "Ссылки на полезные ресурсы, программы и чаты",
-  "/aeexpr": "Руководство по выражениям в Adobe After Effects",
   "/aefaq": "Ответы на часто задаваемые вопросы по Adobe After Effects",
   "/prfaq": "Ответы на часто задаваемые вопросы по Adobe Premiere",
   "/psfaq": "Ответы на часто задаваемые вопросы по Adobe Photoshop",

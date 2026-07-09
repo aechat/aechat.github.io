@@ -46,7 +46,6 @@ const APRIL_FOOLS_ENTRIES = [
   ["aefaq", "аефак"],
   ["prfaq", "прфак"],
   ["psfaq", "псфак"],
-  ["aeexpr", "аеехпр"],
   ["voukoder", "вукодер"],
   ["boris fx", "эффекты бориса"],
   ["red giant", "красные гианты"],

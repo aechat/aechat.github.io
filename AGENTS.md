@@ -34,7 +34,7 @@
 ## Структура проекта
 
 1. Статьи находятся в `src/pages/sections`.
-2. Основные разделы статей: `aefaq`, `prfaq`, `psfaq`, `aeexpr`.
+2. Основные разделы статей: `aefaq`, `prfaq`, `psfaq`.
 3. Основные каталоги кода:
    - `src/components/content` - компоненты статей;
    - `src/components/features` - интерактивные инструменты;

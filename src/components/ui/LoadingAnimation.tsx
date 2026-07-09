@@ -34,8 +34,6 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
 
     if (path.startsWith("/psfaq")) return "psfaq";
 
-    if (path.startsWith("/aeexpr")) return "aeexpr";
-
     if (path.startsWith("/rules")) return "rules";
   };
 

@@ -55,8 +55,6 @@ import prfaqSvg from "/icons/prfaq.svg?raw";
 
 import psfaqSvg from "/icons/psfaq.svg?raw";
 
-import aeexprfaqSvg from "/icons/aeexprfaq.svg?raw";
-
 const Links = lazy(() => import("./pages/LinksPage"));
 
 const ChatRules = lazy(() => import("./pages/ChatRules"));
@@ -70,8 +68,6 @@ const AeFaqPage = lazy(() => import("./pages/AeFaqPage"));
 const PrFaqPage = lazy(() => import("./pages/PrFaqPage"));
 
 const PsFaqPage = lazy(() => import("./pages/PsFaqPage"));
-
-const AeExprPage = lazy(() => import("./pages/AeExprPage"));
 
 const SAFARI_WARNING_INTERVAL = 60 * 60 * 1000;
 
@@ -429,8 +425,6 @@ const AppContent = () => {
       setSvgContent(prfaqSvg);
     } else if (path.startsWith("/psfaq")) {
       setSvgContent(psfaqSvg);
-    } else if (path.startsWith("/aeexpr")) {
-      setSvgContent(aeexprfaqSvg);
     } else {
       setSvgContent(faviconSvg);
     }
@@ -497,10 +491,7 @@ const AppContent = () => {
     const path = location.pathname;
 
     const isFaqPage =
-      path.startsWith("/aefaq") ||
-      path.startsWith("/prfaq") ||
-      path.startsWith("/psfaq") ||
-      path.startsWith("/aeexpr");
+      path.startsWith("/aefaq") || path.startsWith("/prfaq") || path.startsWith("/psfaq");
 
     if (isWebKit && isFaqPage) {
       shouldShowWarning = shouldShowStoredWarning(
@@ -630,10 +621,6 @@ const AppContent = () => {
                   <Route
                     element={<PsFaqPage />}
                     path="/psfaq"
-                  />
-                  <Route
-                    element={<AeExprPage />}
-                    path="/aeexpr"
                   />
                   <Route
                     element={<ChatRules />}
