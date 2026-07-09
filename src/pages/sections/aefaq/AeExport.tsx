@@ -2842,6 +2842,64 @@ const AeExport: React.FC = () => {
           </ul>
         </Addition>
       </DetailsSummary>
+      <DetailsSummary
+        anchor="fix-output-file-will-be-resized"
+        tag="settings mismatch, output file will be resized from to meet format constraints, frame rate of output file will be adjusted to meet format constraints, audio may not synchronize, odd resolution, нечетное разрешение, ограничения форматов"
+        title="Как исправить «Settings mismatch» или почему при экспорте изменяется разрешение или частота кадров композиции?"
+      >
+        <p>
+          <mark className="app">Adobe After Effects</mark> может автоматически изменить
+          параметры выходного файла, например разрешение или частоту кадров, если они не
+          соответствуют требованиям выбранного формата. Такое может произойти при
+          использовании нечётного разрешения с кодеками{" "}
+          <mark className="video">H.264</mark>, <mark className="video">H.265</mark> и их
+          производными, экспорте в формат с фиксированным размером кадра, например{" "}
+          <mark className="video">DV PAL</mark>, или при использовании формата с
+          нестандартным соотношением сторон пикселя.
+        </p>
+        <p>
+          Вы можете продолжить экспорт, согласившись с автоматической адаптацией
+          параметров выходного файла. При этом настройки самой композиции останутся без
+          изменений.{" "}
+          <em className="article-note-muted">Однако не всегда такой вариант подходит.</em>
+        </p>
+        <ArticleMedia
+          caption="Предупреждение об изменении разрешения и частоты кадров композиции для соответствия требованиям формата"
+          src="media/after-effects/export/output-file-will-be-resized-frame-rate-will-be-adjusted.png"
+          type="image"
+        />
+        <p>
+          При использовании некоторых сторонних экспортёров, например{" "}
+          <mark className="plugin">AfterCodecs</mark>, экспорт может завершиться ошибкой,
+          если параметры композиции не соответствуют требованиям выбранного кодека,
+          например при использовании нечётного разрешения.
+        </p>
+        <Addition type="info">
+          Если вам всё же необходимо получить видео <mark className="video">H.264</mark>,{" "}
+          <mark className="video">H.265</mark> или их производных с нечётным разрешением,
+          попробуйте воспользоваться <mark className="plugin">Voukoder</mark>. Он может
+          автоматически привести размер кадра к требованиям кодека за счёт добавления
+          пикселей или обрезки изображения с сохранением исходного разрешения в метаданных
+          файла. Благодаря этому многие плееры и видеоредакторы смогут корректно
+          определить исходный размер видео.
+        </Addition>
+        <ArticleMedia
+          caption="Ошибка в AfterCodecs при экспорте с нечётным разрешением"
+          src="media/after-effects/errors/aftercodecs-odd-resolution-error.png"
+          type="image"
+        />
+        <p>
+          Чтобы решить эти проблемы, откройте настройки композиции с помощью комбинации
+          клавиш <mark className="key">Ctrl + K</mark> или через меню{" "}
+          <mark className="select">«Composition» → «Composition Settings»</mark> и укажите
+          требуемые для формата параметры разрешения и частоты кадров. После этого экспорт
+          должен пройти без предупреждений.
+        </p>
+        <Addition type="warning">
+          При радикальном изменении разрешения или частоты кадров композиции, возможно,
+          вам придётся адаптировать вашу композицию под требования формата.
+        </Addition>
+      </DetailsSummary>
     </div>
   );
 };
