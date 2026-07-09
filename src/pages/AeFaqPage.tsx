@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  BrokenImageOutlined,
   ErrorOutlineRounded,
   HelpCenterOutlined,
   InputRounded,
@@ -41,8 +40,6 @@ import AeActions from "./sections/aefaq/AeActions";
 import AeErrors from "./sections/aefaq/AeErrors";
 
 import AeExport from "./sections/aefaq/AeExport";
-
-import AeExportProblems from "./sections/aefaq/AeExportProblems";
 
 import AeFromNewbies from "./sections/aefaq/AeFromNewbies";
 
@@ -125,13 +122,6 @@ const AeFaqPage = () => {
       id: "export",
       key: "9",
       title: "Рендер и экспорт",
-    },
-    {
-      component: AeExportProblems,
-      icon: <BrokenImageOutlined />,
-      id: "export-problems",
-      key: "10",
-      title: "Проблемы при экспорте",
     },
   ];
 

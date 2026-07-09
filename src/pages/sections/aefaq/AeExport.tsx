@@ -2,6 +2,8 @@ import React from "react";
 
 import {Divider} from "antd";
 
+import {Link} from "react-router-dom";
+
 import Addition from "../../../components/content/Addition";
 
 import {ArticleMedia} from "../../../components/content/ArticleMedia";
@@ -12,83 +14,2518 @@ import ContentFilter from "../../../components/content/ContentFilter";
 
 import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
 
+import NestedDetailsSummary from "../../../components/detailsSummary/NestedDetailsSummary";
+
 import JsonToTgsConverter from "../../../components/features/converters/ConverterJsonToTgs";
 
 const AeExport: React.FC = () => {
   return (
     <div className="article-content">
       <DetailsSummary
-        anchor="render-queue"
-        tag="render queue, очередь рендера, настройки экспорта, render settings, output module, export settings"
-        title="Что такое очередь рендеринга?"
+        anchor="how-to-export"
+        tag="очередь рендера, render queue, настройки экспорта, render settings, output module, export settings, h264, h265, hevc, avc1, voukoder, aftercodecs, gif, webm, vp9, av1, альфа канал, alpha channel, видео с прозрачностью, ezgif, gifgun, resolume, dxv, apple prores, tgs, lottie"
+        title="Как экспортировать композицию?"
       >
         <p>
-          <mark className="select">«Render Queue»</mark> — это основное окно для экспорта
-          композиций из <mark className="app">Adobe After Effects</mark> в форматах видео,
-          аудио или изображений. Это очередь композиций, которые будут экспортироваться
-          последовательно, сверху вниз.
+          После того, как вы закончили работу над композицией, её нужно экспортировать — в
+          видео, изображение или аудио. Иначе её не получится ни использовать в другом
+          проекте, ни передать клиенту. В <mark className="app">Adobe After Effects</mark>{" "}
+          экспорт обычно выполняют через окно{" "}
+          <mark className="select">«Render Queue»</mark> — очередь рендеринга, в которую
+          добавляют нужные композиции, выбирают формат, настраивают параметры и указывают
+          путь сохранения итогового файла.{" "}
+          <em className="article-note-muted">
+            И для этого даже не нужно использовать{" "}
+            <mark className="app">Adobe Media Encoder</mark>.
+          </em>
+        </p>
+        <Divider>
+          Как работать с <mark className="select">«Render Queue»</mark>?
+        </Divider>
+        <p>
+          Чтобы отправить в очередь экспорта текущую или выделенную композицию в окне{" "}
+          <mark className="select">«Project»</mark>, выберите{" "}
+          <mark className="select">
+            «Composition» → «Add Composition to Render Queue»
+          </mark>{" "}
+          или <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>,
+          либо используйте сочетание клавиш <mark className="key">Ctrl + M</mark>.
         </p>
         <ArticleMedia
-          caption="Render Queue"
-          src="legacy/aftereffects/render_queue.png"
+          caption="Добавление композиции в очередь рендера"
+          src="after-effects/export/file-export-add-to-render-queue.png"
           type="image"
         />
         <p>
-          В очередь можно добавить одну или несколько композиций. Текущую или выделенную
-          композицию в окне <mark className="select">«Project»</mark> можно отправить на
-          экспорт с помощью сочетания клавиш <mark className="key">Ctrl + M</mark> или
-          через меню{" "}
-          <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-        </p>
-        <p>
-          Для каждой композиции в очереди можно задать параметры вывода. Есть три основных
-          параметра: <mark className="select">«Render Settings»</mark>,{" "}
-          <mark className="select">«Output Module»</mark> и{" "}
+          Для каждой композиции в очереди можно задать три основных параметра вывода:{" "}
+          <mark className="select">«Output Module»</mark>,{" "}
+          <mark className="select">«Render Settings»</mark> и{" "}
           <mark className="select">«Output To»</mark>. Для каждого из них доступны готовые
           и пользовательские пресеты. Чтобы выбрать шаблон, нажмите на стрелку слева от
-          названия, а для изменения параметров — на само название.
+          названия.
         </p>
+        <ArticleMedia
+          caption="Применение пресетов для экспорта"
+          src="after-effects/export/apply-export-presets.mp4"
+          type="video"
+        />
         <p>
-          Экспорт выбранных композиций можно запустить кнопкой{" "}
-          <mark className="select">«Render»</mark> в правом верхнем углу или клавишей{" "}
-          <mark className="key">Enter</mark>.
+          Чтобы изменить значения применённого пресета — нажмите на его название или в
+          списке доступных пресетов нажмите на <mark className="select">«Custom»</mark>.
+          После этого откроется окно с детальной настройкой нужного вам раздела. Для
+          применения настроек нажмите <mark className="select">«OK»</mark> в правом нижнем
+          углу окна.
         </p>
+        <ArticleMedia
+          caption="Изменяем значения модуля экспорта под себя"
+          src="after-effects/export/custom-export-settings.mp4"
+          type="video"
+        />
         <Divider>
-          Разбираемся с <mark className="select">«Output Module»</mark>
+          Настраиваем <mark className="select">«Output Module»</mark>
         </Divider>
         <p>
-          <mark className="select">«Output Module»</mark> отвечает за изменение формата
-          вывода и при необходимости — за настройку его параметров через{" "}
-          <mark className="select">«Format Options»</mark>.
+          Основные настройки экспорта находятся в{" "}
+          <mark className="select">«Output Module»</mark>. Здесь можно задать формат
+          файла, настроить звук, а также изменить размер изображения — обрезать, растянуть
+          или масштабировать его.
         </p>
+        <ArticleMedia
+          caption="Модуль вывода"
+          src="after-effects/export/output-module.png"
+          type="image"
+        />
         <p>
-          В последних версиях <mark className="app">Adobe After Effects</mark> для
-          экспорта доступны популярные форматы видео{" "}
-          <mark className="video">H.264 (MP4)</mark>,{" "}
-          <mark className="video">QuickTime</mark> и <mark className="video">AVI</mark>,
-          аудиоформаты <mark className="audio">AIFF</mark>,{" "}
-          <mark className="audio">MP3</mark> и <mark className="audio">WAV</mark>, а также
-          возможность экспортировать композицию покадрово в форматах{" "}
-          <mark className="image">TIFF</mark>, <mark className="image">JPEG</mark>,{" "}
-          <mark className="image">PNG</mark>, <mark className="image">PSD</mark> и других.
-          Чтобы выбрать формат, установите нужное значение в параметре{" "}
-          <mark className="select">«Format»</mark>.
-        </p>
-        <p>
-          В этом же окне можно изменить размер и кадрирование изображения. В разделе
-          настроек аудио — задать частоту дискретизации, битовую глубину и выбрать режим:{" "}
-          <mark className="select">«Mono»</mark> или{" "}
-          <mark className="select">«Stereo»</mark>.
+          Но иногда в списке <mark className="select">«Format»</mark> может не оказаться
+          нужного варианта, например <mark className="video">VP9</mark> или{" "}
+          <mark className="image">GIF</mark>. Ниже в спойлерах показано, как
+          экспортировать композиции в разные популярные форматы.
         </p>
         <Addition type="info">
-          При включенной опции <mark className="select">«Audio Output Auto»</mark> звук
-          может не попасть в итоговый файл из-за бага в{" "}
-          <mark className="app">Adobe After Effects</mark>. Чтобы избежать этого,
-          установите значение <mark className="select">«Audio Output On»</mark>.
+          <p>
+            Однако прежде чем начать их раскрывать, хотелось бы пройтись по базовой
+            терминологии, которая встречается в этой статье и может вызывать трудности у
+            некоторых читателей.{" "}
+            <em className="article-note-muted">А если не хотите — пролистайте дальше.</em>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <mark className="word">Контейнер</mark> — это оболочка, в которой хранятся
+                видео и аудио, субтитры и служебная информация. Расширение файла, например{" "}
+                <mark className="file">MP4</mark>, <mark className="file">MKV</mark> или{" "}
+                <mark className="file">MOV</mark>, указывает на тип контейнера.
+              </p>
+              <p>
+                Поскольку контейнер — это лишь «обёртка», его иногда можно сменить без
+                перекодирования. Например, если видео с кодеком{" "}
+                <mark className="video">H.264</mark> упаковано в{" "}
+                <mark className="file">MOV</mark>, его можно перепаковать в{" "}
+                <mark className="file">MP4</mark> без изменения содержимого, то есть без
+                потери качества. Иногда это работает даже при простом переименовании
+                файла, однако такой способ не всегда гарантирует корректное
+                воспроизведение, поэтому лучше использовать утилиты, которые умеют менять
+                контейнер без перекодирования.
+              </p>
+            </li>
+            <li>
+              <p>
+                <mark className="word">Кодек</mark> — это алгоритм, который сжимает видео,
+                уменьшая размер файла. При сжатии с потерями часть информации неизбежно
+                теряется, а для воспроизведения видео затем декодируется. Кодеки бывают
+                двух видов: монтажные и потоковые (delivery).
+              </p>
+              <ul>
+                <li>
+                  <mark className="word">Монтажный кодек</mark> — тип кодеков, созданных
+                  специально для видеомонтажа и композитинга, например{" "}
+                  <mark className="video">Apple ProRes</mark>,{" "}
+                  <mark className="video">DNxHR</mark> или{" "}
+                  <mark className="video">GoPro CineForm</mark>. В отличие от кодеков для
+                  публикации, таких как <mark className="video">H.264</mark>, они обычно
+                  используют внутрикадровое сжатие, при котором каждый кадр хранится
+                  независимо. Это избавляет процессор от необходимости вычислять
+                  межкадровые изменения и заметно снижает нагрузку на систему, но требует
+                  больше места на диске.
+                </li>
+                <li>
+                  <p>
+                    <mark className="word">Потоковый (delivery) кодек</mark> — кодеки для
+                    распространения видео в интернете и просмотра, например{" "}
+                    <mark className="video">H.264</mark>,{" "}
+                    <mark className="video">H.265</mark>,{" "}
+                    <mark className="video">VP9</mark> или{" "}
+                    <mark className="video">AV1</mark>. Обычно обеспечивают хорошее
+                    соотношение качества и размера файла.
+                  </p>
+                  <Addition type="danger">
+                    <p>
+                      Крайне не рекомендуется использовать для монтажа видео из интернета,
+                      закодированные подобными кодеками. Они предназначены прежде всего
+                      для финального вывода и просмотра, поэтому при работе с материалами,
+                      загруженными с <mark className="web">YouTube</mark> или других
+                      площадок, могут появляться артефакты или «зелёный экран», а сама
+                      работа с такими исходниками может быть медленной и нестабильной
+                      из-за постоянного декодирования сжатых кадров.
+                    </p>
+                    <p>
+                      Прежде чем использовать подобные файлы в проекте, их стоит
+                      перекодировать в монтажный кодек, например{" "}
+                      <mark className="video">Apple ProRes 422</mark>.{" "}
+                      <a href="#import-workflow">Подробнее...</a>
+                    </p>
+                  </Addition>
+                </li>
+              </ul>
+              <p>
+                Видео может кодироваться программно или с использованием аппаратного
+                ускорения, например <mark className="codec-param">Intel Quick Sync</mark>{" "}
+                или <mark className="codec-param">NVIDIA NVENC</mark>. Список доступных
+                вариантов зависит от «железа» вашего устройства.
+              </p>
+              <Addition type="warning">
+                <ul>
+                  <li>
+                    Аппаратное ускорение кодирования не ускоряет обработку применённых в
+                    композициях эффектов.
+                  </li>
+                  <li>
+                    Некоторые кодировщики, такие как{" "}
+                    <mark className="codec-param">NVIDIA NVENC</mark>, ориентированы
+                    прежде всего на скорость. Из-за менее точных алгоритмов иногда могут
+                    появляться незначительные искажения цвета или дефекты изображения,
+                    например муар на тексте. Если вы хотите снизить вероятность подобных
+                    проблем, предпочтительнее использовать программный кодировщик{" "}
+                    <mark className="codec-param">x264</mark>, который кодирует видео
+                    медленнее, но точнее.
+                  </li>
+                </ul>
+              </Addition>
+              <p>
+                У кодека обычно есть несколько параметров, но не все из них могут
+                настраиваться при экспорте из{" "}
+                <mark className="app">Adobe After Effects</mark>.
+              </p>
+              <ul>
+                <li>
+                  <p>
+                    <mark className="word">Битрейт</mark> — это скорость передачи данных,
+                    которая обычно измеряется в Мбит/с. Он определяет степень сжатия: чем
+                    ниже битрейт, тем сильнее сжатие и заметнее артефакты — изображение
+                    может рассыпаться на квадраты, детали размываться, а плавные градиенты
+                    превращаться в полосы.
+                  </p>
+                  <Addition type="info">
+                    Если видео уже было сильно сжато, например до 1 Мбит/с, вернуть
+                    исходное качество, просто повысив битрейт при повторной конвертации,
+                    не получится — это не архив, и вы лишь увеличите размер файла, но не
+                    улучшите качество.
+                  </Addition>
+                </li>
+                <li>
+                  <p>
+                    <mark className="word">Цветовая субдискретизация</mark> — это метод
+                    сжатия изображения, при котором информация о цвете для группы пикселей
+                    усредняется, чтобы сэкономить место.
+                  </p>
+                  <p>
+                    Основные форматы цветовой субдискретизации —{" "}
+                    <mark className="codec-param">4:2:0</mark>,{" "}
+                    <mark className="codec-param">4:2:2</mark> и{" "}
+                    <mark className="codec-param">4:4:4</mark>. Первая цифра в этой схеме
+                    отвечает за количество сэмплов яркости, вторая — за количество сэмплов
+                    цвета в первой строке пикселей, а третья — во второй. Иногда
+                    встречается и чётвертая цифра, которая указывает на наличие
+                    альфа-канала.
+                  </p>
+                </li>
+                <li>
+                  <mark className="word">Профиль</mark> — набор возможностей кодека,
+                  используемых при сжатии. Чем выше профиль, тем эффективнее сжатие, но
+                  ниже совместимость со слабыми и старыми устройствами. Для наибольшей
+                  совместимости чаще всего используют профиль{" "}
+                  <mark className="codec-param">Main</mark>.{" "}
+                  <a href="https://ru.wikipedia.org/wiki/H.264#%D0%9F%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D0%B8">
+                    Подробнее...
+                  </a>
+                </li>
+                <li>
+                  <mark className="word">Уровень</mark> — это ограничение кодека по
+                  максимальному разрешению, частоте кадров и битрейту. Он влияет на
+                  совместимость с разными устройствами, особенно старыми: если указать
+                  уровень выше поддерживаемого, видео может не воспроизвестись. На
+                  качество изображения этот параметр не влияет.{" "}
+                  <a href="https://ru.wikipedia.org/wiki/H.264#%D0%A3%D1%80%D0%BE%D0%B2%D0%BD%D0%B8">
+                    Подробнее...
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </Addition>
+        <NestedDetailsSummary
+          anchor="mp4"
+          title="MP4 (H.264, H.265)"
+        >
+          <p>
+            В <mark className="app">Adobe After Effects</mark> экспорт в{" "}
+            <mark className="video">H.264</mark> и <mark className="video">H.265</mark> в
+            контейнере <mark className="file">MP4</mark> можно выполнить тремя способами:
+            через встроенный <mark className="plugin">H.264</mark>
+            <sup>1</sup>, начиная с версии <mark className="version">23.0 (2023)</mark>,
+            или с помощью сторонних плагинов — <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>. Их можно выбрать в списке{" "}
+            <mark className="select">«Format»</mark> в настройках модуля вывода.
+          </p>
+          <ArticleMedia
+            caption="Выбор формата экспорта в H.264"
+            src="after-effects/export/export-h264.png"
+            type="image"
+          />
+          <Addition type="warning">
+            <sup>1</sup> Стандартный <mark className="plugin">H.264</mark> не поддерживает
+            экспорт в <mark className="video">H.265</mark>, в отличие от{" "}
+            <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>.
+          </Addition>
+          <Addition type="danger">
+            <ul>
+              <li>
+                <p>
+                  Из <mark className="app">Adobe After Effects</mark> не получится
+                  экспортировать видео с прозрачностью в кодеках{" "}
+                  <mark className="video">H.264</mark> и{" "}
+                  <mark className="video">H.265</mark>. В таком случае используйте{" "}
+                  <mark className="video">Apple ProRes 4444</mark>, если нужна
+                  прозрачность, корректно работающая в монтажных программах.
+                </p>
+                <p>
+                  Несмотря на то, что <mark className="video">H.265</mark> технически
+                  может хранить альфа-канал, такие видео с прозрачностью будут корректно
+                  воспроизводиться только в <mark className="app">Safari</mark> на macOS и
+                  iOS. При импорте такого исходника в монтажные программы прозрачность
+                  поддерживаться не будет — вместо альфа-канала будет чёрный фон.{" "}
+                  <em className="article-note-muted">
+                    И да, с таким видео есть хороший шанс получить артефакты при
+                    воспроизведении или экспорте.
+                  </em>
+                </p>
+              </li>
+              <li>
+                Из-за особенностей стандарта <mark className="video">H.264</mark> и его
+                производных вы не сможете экспортировать композицию с нечётным
+                разрешением, например 725×501. В таком случае{" "}
+                <mark className="app">Adobe After Effects</mark> либо автоматически
+                приведёт размеры к ближайшим чётным значениям, либо выдаст ошибку при
+                экспорте.
+              </li>
+            </ul>
+          </Addition>
+          <Divider>
+            В чём разница между <mark className="plugin">H.264</mark>,{" "}
+            <mark className="plugin">Voukoder</mark> и{" "}
+            <mark className="plugin">AfterCodecs</mark>?
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Стандартный <mark className="plugin">H.264</mark> не умеет адекватно
+                работать с нестандартной частотой кадров, например 20 FPS, плохо работает
+                с неквадратными пикселями в настройках композиции и иногда даёт проблемы
+                совместимости воспроизведения на некоторых устройствах из-за
+                автоматического выбора профиля и уровня кодека.
+              </p>
+              <p>
+                По сравнению с <mark className="plugin">Voukoder</mark> и{" "}
+                <mark className="plugin">AfterCodecs</mark> у него отсутствует поддержка{" "}
+                <mark className="codec-param">CQ (Constant Quality)</mark> и ниже
+                эффективность сжатия.{" "}
+                <em className="article-note-muted">
+                  Зато дополнительно скачивать и устанавливать ничего не нужно.
+                </em>
+              </p>
+            </li>
+            <li>
+              <mark className="plugin">Voukoder</mark> предлагает больше настроек, но
+              многие из них могут не понадобиться. В контексте экспорта в{" "}
+              <mark className="video">H.264</mark> и <mark className="video">H.265</mark>{" "}
+              его ключевая особенность — поддержка{" "}
+              <mark className="codec-param">CQ (Constant Quality)</mark> и других режимов
+              с указанием уровня качества изображения. В этих режимах вы задаёте желаемый
+              уровень, а кодек сам подбирает битрейт. В простых сценах он ниже, в сложных
+              — выше, что помогает не раздувать размер файла.
+            </li>
+            <li>
+              <mark className="plugin">AfterCodecs</mark> имеет более простой интерфейс и
+              реже искажает цвета, чем <mark className="plugin">Voukoder</mark>. Его
+              ключевая особенность — возможность задать целевой процент качества
+              изображения или размер файла, а также скорость кодирования: во первом случае
+              используется алгоритм, похожий на{" "}
+              <mark className="codec-param">CQ (Constant Quality)</mark>, во втором —
+              переменный битрейт.
+            </li>
+            <li>
+              Также есть вероятность, что видео, экспортированное через стандартный{" "}
+              <mark className="plugin">H.264</mark>, может не открываться в некоторых
+              проигрывателях, например <mark className="app">Windows Media Player</mark>,
+              или на некоторых устройствах, например старых iPhone. Обычно это решается
+              конвертацией видео, например через{" "}
+              <mark className="app">Shutter Encoder</mark>, либо экспортом композиции
+              через альтернативные плагины.
+            </li>
+          </ul>
+          <p>
+            Если же вы слишком чувствительны к особенностям сжатия{" "}
+            <mark className="video">H.264</mark> и разнице между оригиналом и итоговым
+            видео, то ни один из этих способов экспорта вам не подойдёт. В таком случае,
+            если вам нужно получить «максимальное» качество видео — используйте{" "}
+            <mark className="video">Apple ProRes 4444</mark> или несжатые кодеки.{" "}
+            <em className="article-note-muted">
+              Потом не удивляйтесь, почему такие видео занимают много дискового
+              пространства и их сложно куда-либо загрузить.
+            </em>
+          </p>
+          <p>
+            Также учтите, что все способы, описанные в статье, поддерживают только{" "}
+            <mark className="color-space">Rec.709</mark> и не позволяют экспортировать
+            композиции в <mark className="color-space">Rec.2100 HLG</mark> и другие
+            цветовые пространства. Если вы работали с исходниками, снятыми на iPhone, или
+            вам нужно получить <mark className="video">H.264</mark> или{" "}
+            <mark className="video">H.265</mark> в{" "}
+            <mark className="color-space">Rec.2100 HLG</mark>, сначала экспортируйте
+            композицию в <mark className="video">Apple ProRes 422</mark> или{" "}
+            <mark className="video">Apple ProRes 4444</mark> с нужным цветовым
+            пространством, а затем перекодируйте файл в требуемый кодек без изменения
+            параметров цвета, например через <mark className="app">Shutter Encoder</mark>.
+          </p>
+          <Divider>
+            Экспортируем композицию с помощью стандартного{" "}
+            <mark className="plugin">H.264</mark>
+          </Divider>
+          <Addition type="warning">
+            Если вы по каким-то причинам используете{" "}
+            <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">22.6 (2022)</mark> или ниже, пролистайте эту статью
+            дальше для ознакомления с альтернативными способами экспорта.
+          </Addition>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> с помощью
+                стандартного экспортёра нужно выбрать значение{" "}
+                <mark className="select">«H.264»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор стандартного H.264 в качестве формата экспорта"
+                src="after-effects/export/export-stock-h264.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> in разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата стандартного H.264"
+                src="after-effects/export/stock-h264-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне вы можете задать целевой битрейт и выбрать режим
+                кодирования битрейта — постоянный или переменный, настроить расстояние
+                между <mark className="codec-param">I-кадрами</mark>, а также профиль и
+                уровень <mark className="video">H.264</mark>.
+              </p>
+              <ArticleMedia
+                caption="Настройки формата стандартного H.264"
+                src="after-effects/export/select-stock-h264-options.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  По умолчанию вы не сможете выбрать профиль и уровень кодека, пока не
+                  уберёте чекбокс автоматического выбора значения правее поля выбора
+                  значения.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="video">Voukoder</mark>
+          </Divider>
+          <ContentFilter
+            windowsContent={
+              <>
+                <Addition type="warning">
+                  <ul>
+                    <li>
+                      <p>
+                        В этой статье демонстрируется{" "}
+                        <mark className="plugin">Voukoder Classic</mark>{" "}
+                        <mark className="version">13.4.1</mark>, недоступный для устройств
+                        на macOS. К сожалению, репозиторий этой версии на{" "}
+                        <a href="https://github.com/Vouk/voukoder/releases/tag/13.4.1">
+                          GitHub
+                        </a>{" "}
+                        был удалён, так как её заменили платной{" "}
+                        <mark className="plugin">Voukoder Pro</mark>.
+                      </p>
+                      <p>
+                        Архив с плагином и «коннекторами» можно найти в{" "}
+                        <a href="https://t.me/+Qd9xu7A4TeIwNzY6">
+                          складе стройматериалов
+                        </a>{" "}
+                        по хештегу <mark className="tag">#voukoder</mark>. Перед
+                        установкой «коннектора» убедитесь, что{" "}
+                        <mark className="app">Adobe After Effects</mark> установлен в
+                        директорию по умолчанию.
+                      </p>
+                    </li>
+                    <li>
+                      <mark className="plugin">Voukoder Classic</mark> в некоторых случаях
+                      может сильно искажать цвет. Если вам нужно сохранить точность
+                      цветопередачи, воспользуйтесь экспортом в{" "}
+                      <mark className="video">Apple ProRes 422</mark> или{" "}
+                      <mark className="video">Apple ProRes 4444</mark>, а затем
+                      конвертируйте видео в <mark className="video">H.264</mark> или{" "}
+                      <mark className="video">H.265</mark> с помощью стороннего ПО,
+                      например <mark className="app">Shutter Encoder</mark>.
+                    </li>
+                  </ul>
+                </Addition>
+              </>
+            }
+          />
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark> с помощью{" "}
+                <mark className="plugin">Voukoder</mark> нужно выбрать значение{" "}
+                <mark className="select">«Voukoder»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата Voukoder"
+                src="after-effects/export/export-voukoder.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата Voukoder"
+                src="after-effects/export/voukoder-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает раздел{" "}
+                <mark className="select">«Video»</mark> с открытой вкладкой{" "}
+                <mark className="select">«Кодек»</mark> в котором вы можете указать нужный
+                кодек. Для <mark className="video">H.264</mark> и{" "}
+                <mark className="video">H.265</mark> вы можете выбрать программное и
+                аппаратное кодирование.
+              </p>
+              <ArticleMedia
+                caption="Выбираем кодек для экспорта в Voukoder"
+                src="after-effects/export/voukoder-select-video-codec-h264-h265.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="word">Программное кодирование</mark> — кодирование
+                    выполняется процессором с помощью{" "}
+                    <mark className="codec-param">x264</mark> или{" "}
+                    <mark className="codec-param">x265</mark>.
+                  </li>
+                  <li>
+                    <mark className="word">Аппаратное кодирование</mark> — кодирование
+                    выполняется с использованием ускорения видеокарты или встроенной
+                    графики, например <mark className="select">«NVIDIA NVENC»</mark>,{" "}
+                    <mark className="select">«Intel QSV»</mark> или{" "}
+                    <mark className="select">«AMD AMF»</mark>. Обычно быстрее программного
+                    кодирования, но иногда искажает цвета.{" "}
+                    <em className="article-note-muted">
+                      Список доступных вариантов зависит от «железа» вашего устройства.
+                    </em>
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                Для настройки профиля, преднастройки под тип контента и режима кодирования
+                перейдите во вкладку <mark className="select">«Параметры»</mark>.
+              </p>
+              <p>
+                По умолчанию используется режим <mark className="codec-param">CRF</mark>,
+                который позволяет экспортировать композицию с постоянным уровнем качества
+                и адекватным размером файла. Его значение по умолчанию —{" "}
+                <mark className="copy">23</mark>. Чем меньше значение, тем выше качество,
+                но больше размер файла. Чтобы изменить параметр, нажмите на его значение в
+                правой части таблицы.
+              </p>
+              <Addition type="info">
+                В зависимости от выбранного кодека набор настроек может отличаться.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка значения постоянного качества"
+                src="after-effects/export/voukoder-select-constant-rate-factor.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В разделе <mark className="select">«Аудио»</mark> вы можете указать кодек
+                для аудиодорожки. Если вы не знаете что выбрать — оставьте значение по
+                умолчанию.
+              </p>
+              <ArticleMedia
+                caption="Настройка аудиокодека"
+                src="after-effects/export/voukoder-select-audio-codec.png"
+                type="image"
+              />
+              <p>
+                Для настройки битрейта и других параметров аудиодорожки перейдите во
+                вкладку <mark className="select">«Параметры»</mark>. Чтобы изменить
+                параметр, нажмите на его значение в правой части таблицы.
+              </p>
+              <Addition type="info">
+                В зависимости от выбранного кодека набор настроек может отличаться.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка битрейта аудио"
+                src="after-effects/export/voukoder-select-audio-bitrate.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В разделе <mark className="select">«Вывод»</mark> вы можете изменить
+                контейнер видео. Если он отличается от{" "}
+                <mark className="select">«MPEG-4 (.mp4)»</mark>, исправьте это.
+              </p>
+              <ArticleMedia
+                caption="Настройка контейнера"
+                src="after-effects/export/voukoder-select-video-container.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="video">AfterCodecs</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark> с помощью{" "}
+                <mark className="plugin">AfterCodecs</mark> нужно выбрать значение{" "}
+                <mark className="select">«AfterCodecs .mp4»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата AfterCodecs"
+                src="after-effects/export/export-aftercodecs-mp4.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата AfterCodecs"
+                src="after-effects/export/aftercodecs-mp4-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает множество настроек, с помощью которых
+                можно выбрать кодек, режим и скорость кодирования, настроить цвет и задать
+                расстояние между <mark className="codec-param">I-кадрами</mark>.
+              </p>
+              <ArticleMedia
+                caption="Настройки AfterCodecs"
+                src="after-effects/export/aftercodecs-mp4-settings.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <p>
+                      Параметр <mark className="select">«Video Codec»</mark> отвечает за
+                      выбор кодека. Так как мы выбрали формат{" "}
+                      <mark className="select">«AfterCodecs .mp4»</mark>, то выбор кодеков
+                      не велик: <mark className="select">«H.264»</mark> с тремя шаблонами
+                      и <mark className="select">«H.265»</mark>.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Параметр <mark className="select">«Tradeoff»</mark> определяет режим
+                      кодирования.
+                    </p>
+                    <ul>
+                      <li>
+                        <mark className="select">«Quality»</mark> работает по принципу{" "}
+                        <mark className="codec-param">CRF</mark>, но значение задаётся в
+                        процентах. Выставлять значение выше 85% особого смысла нет: файл
+                        станет тяжелее, а разницу в качестве вы вряд ли заметите.
+                      </li>
+                      <li>
+                        <mark className="select">«Bitrate»</mark> задаёт постоянный
+                        битрейт на всё видео.{" "}
+                        <em className="article-note-muted">
+                          Хотя после экспорта <mark className="app">MediaInfo</mark>{" "}
+                          пишет, что переменный.
+                        </em>
+                      </li>
+                      <li>
+                        <mark className="select">«File Size»</mark> подгоняет качество с
+                        помощью переменного битрейта, чтобы уложиться в заданный размер
+                        файла.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <mark className="select">«Speed»</mark> задаёт скорость кодирования:
+                    чем ниже значение, тем медленнее процесс, но лучше сжатие.
+                  </li>
+                  <li>
+                    В <mark className="select">«Colors»</mark> можно настроить битность,
+                    выбрать цветовой диапазон: <mark className="color-space">16–235</mark>{" "}
+                    или <mark className="color-space">0–255</mark> , а также задать
+                    цветовую субдискретизацию.
+                  </li>
+                  <li>
+                    В разделе <mark className="select">«Misc»</mark> можно выбрать
+                    преднастройку под тип контента и указать профиль кодека.
+                  </li>
+                  <li>
+                    Параметр <mark className="select">«GOP»</mark> отвечает за расстояние
+                    между <mark className="codec-param">I-кадрами</mark>.
+                  </li>
+                  <li>
+                    Параметр <mark className="select">«Audio Bitrate»</mark> отвечает за
+                    битрейт аудио.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Shutter Encoder</mark>
+          </Divider>
+          <p>
+            Если у вас уже есть видео в другом формате или итоговый файл получился слишком
+            большим, а заново рендерить композицию не хочется, воспользуйтесь{" "}
+            <mark className="app">Shutter Encoder</mark> — бесплатным<sup>1</sup>{" "}
+            конвертером на базе <mark className="app">FFmpeg</mark> с поддержкой большого
+            количества форматов, включая <mark className="video">H.264</mark> и{" "}
+            <mark className="video">H.265</mark>.
+          </p>
+          <Addition type="info">
+            <ul>
+              <li>
+                <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+                бесплатно, установите чекбокс{" "}
+                <mark className="select">
+                  «I do not wish to participate in the development of the software»
+                </mark>{" "}
+                на <a href="https://www.shutterencoder.com/">сайте</a>, а затем нажмите на
+                кнопку скачивания образа утилиты для вашей операционной системы.
+              </li>
+              <li>
+                В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+                встречаются неточности перевода, которые могут сбивать с толку. Чтобы
+                переключить интерфейс на английский язык, откройте настройки программы
+                через иконку шестерёнки в левом верхнем углу, затем найдите параметр{" "}
+                <mark className="select">«Установить язык»</mark>, выберите{" "}
+                <mark className="select">«English»</mark> и подтвердите перезапуск
+                программы.
+              </li>
+            </ul>
+          </Addition>
+          <p>
+            На первый взгляд интерфейс <mark className="app">Shutter Encoder</mark> может
+            показаться запутанным и сложным, но для конвертации файлов достаточно
+            выполнить несколько простых действий.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Shutter Encoder</mark> нажмите{" "}
+                <mark className="select">«Browse»</mark> или перетащите их в окно
+                программы для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Shutter Encoder"
+                src="tools/shutter-encoder/convert/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Choose Function»</mark> нужный
+                формат для конвертации — <mark className="video">H.264</mark> или{" "}
+                <mark className="video">H.265</mark>. Изменение данного параметра будет
+                относиться ко всем файлам в очереди конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор функции для конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/choose-function-h264-h265.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора функции нужно определиться с режимом кодирования, который
+                влияет на то, как кодек распределяет битрейт, а значит — на качество и
+                размер итогового файла. Обычно выделяют три типа.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="codec-param">CQ (Constant Quality)</mark> —
+                    динамически распределяет битрейт в зависимости от сложности сцены и
+                    сохраняет стабильное качество на протяжении всего ролика. Это
+                    оптимальный выбор для большинства задач.
+                  </li>
+                  <li>
+                    <mark className="codec-param">VBR (Variable Bitrate)</mark> — требует
+                    настройки целевого и максимального битрейта, которые не всегда легко
+                    подобрать с первого раза, особенно при попытке сохранить баланс между
+                    качеством и размером файла.
+                  </li>
+                  <li>
+                    <mark className="codec-param">CBR (Constant Bitrate)</mark> —
+                    использует фиксированный битрейт независимо от сложности сцены, что
+                    часто приводит к увеличенному размеру файла и менее равномерному
+                    качеству.
+                  </li>
+                </ul>
+              </Addition>
+              <p>
+                Если ваша цель — уменьшить размер файла без заметной потери качества,
+                выберите <mark className="codec-param">CQ</mark>. Для этого в параметре{" "}
+                <mark className="select">«Video Bitrate»</mark> переключитесь с{" "}
+                <mark className="select">«VBR»</mark> на этот режим несколькими нажатиями.
+              </p>
+              <ArticleMedia
+                caption="Выбор режима кодирования в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-video-bitrate-cq-h264.mp4"
+                type="video"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чем меньше значение <mark className="select">«CQ»</mark>, тем лучше
+                    качество. По умолчанию устанавливается{" "}
+                    <mark className="copy">23</mark> — этого достаточно для большинства
+                    случаев.
+                  </li>
+                  <li>
+                    Если нужно сохранить почти максимальное качество, укажите значение от{" "}
+                    <mark className="copy">17</mark> до <mark className="copy">20</mark>.
+                    Однако размер файла при этом может заметно возрасти.
+                  </li>
+                  <li>
+                    Экстремальные значения, например <mark className="copy">50</mark> или{" "}
+                    <mark className="copy">7</mark>, использовать не рекомендуется — в
+                    итоге можно получить «кашу» из пикселей или слишком большой по весу
+                    файл.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости укажите битрейт аудио в параметре{" "}
+                <mark className="select">«Audio Bitrate»</mark>. Обычно достаточно
+                значения <mark className="copy">320</mark> Кбит/с.
+              </p>
+              <ArticleMedia
+                caption="Выбор битрейта для аудиодорожки в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-audio-bitrate-320-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости включите аппаратное ускорение для декодирования видео в
+                параметре <mark className="select">«Hardware Acceleration»</mark>. В
+                большинстве случаев это ускорит процесс конвертации видео.
+              </p>
+              <Addition type="info">
+                Выбор значений в этом параметре зависит от формата, вашего устройства и
+                установленных драйверов.
+              </Addition>
+              <ArticleMedia
+                caption="Выбор аппаратного ускорения для конвертации файлов в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-hardware-acceleration-h264.mp4"
+                type="video"
+              />
+              <Addition type="warning">
+                <p>
+                  Аппаратные кодировщики, такие как{" "}
+                  <mark className="select">«NVIDIA NVENC»</mark>, ориентированы прежде
+                  всего на скорость кодирования. Из-за менее точных алгоритмов сжатия при
+                  их использовании могут появляться незначительные артефакты, например
+                  муар на тексте.
+                </p>
+                <p>
+                  Если для вас важнее качество, не используйте аппаратное ускорение. В
+                  этом случае будет использоваться программный кодировщик{" "}
+                  <mark className="codec-param">x264</mark> или{" "}
+                  <mark className="codec-param">x265</mark>, который работает медленнее,
+                  но обычно обеспечивает более качественное сжатие.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости измените цветовое пространство во вкладке{" "}
+                <mark className="select">«Colorimetry»</mark>, если оно отличается от
+                требуемого. Для социальных сетей и веб-страниц чаще всего используется{" "}
+                <mark className="color-space">Rec.709</mark>. Проверить цветовое
+                пространство исходного файла можно через{" "}
+                <mark className="app">MediaInfo</mark>.
+              </p>
+              <Addition type="warning">
+                Цвета после конвертации из одного цветового пространства в другое могут
+                незначительно измениться.
+              </Addition>
+              <ArticleMedia
+                caption="Конвертация цветовых пространств в Shutter Encoder"
+                src="tools/shutter-encoder/convert/convert-colorspace-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости измените частоту кадров во вкладке{" "}
+                <mark className="select">«Advanced features»</mark> с помощью параметра{" "}
+                <mark className="select">«Conform by»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Изменение частоты кадров в Shutter Encoder"
+                src="tools/shutter-encoder/convert/conform-by-drop-25fps-h264.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Start function»</mark> в левой части интерфейса
+                для запуска конвертации.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если в программу добавлено несколько исходников, они будут
+                    конвертированы последовательно в соответствии с выбранными
+                    настройками.
+                  </li>
+                  <li>
+                    По умолчанию результат конвертации сохраняется в той же папке, где
+                    находится исходное видео. При необходимости директорию вывода можно
+                    изменить во вкладке <mark className="select">«Output»</mark>.
+                  </li>
+                </ul>
+              </Addition>
+              <ArticleMedia
+                caption="Начало конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/start-function-h264.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="mov"
+          title="MOV (Apple ProRes, DNxHR, DNxHD, DV, DVCPRO, GoPro Cineform)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">Apple ProRes</mark>,{" "}
+                <mark className="video">DNxHR</mark>, <mark className="video">DNxHD</mark>
+                , <mark className="video">DV</mark>, <mark className="video">DVCPRO</mark>{" "}
+                или <mark className="video">GoPro Cineform</mark> нужно выбрать значение{" "}
+                <mark className="select">«QuickTime»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата QuickTime"
+                src="after-effects/export/export-quicktime.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия настроек
+                формата, в котором можно выбрать нужный кодек.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата QuickTime"
+                src="after-effects/export/quicktime-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В <mark className="select">«Format Options»</mark> вы можете выбрать
+                нужный кодек в списке <mark className="select">«Video Codec»</mark>.{" "}
+                <a href="https://ru.wikipedia.org/wiki/Apple_ProRes#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%BE%D0%B2_%D1%81%D0%B5%D0%BC%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B0_ProRes">
+                  В чём разница между вариантами Apple ProRes?
+                </a>
+              </p>
+              <ArticleMedia
+                caption="Выбор кодека для формата QuickTime"
+                src="after-effects/export/select-quicktime-codec.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  Если вы выбрали кодек, поддерживающий альфа-канал, например{" "}
+                  <mark className="video">Apple ProRes 4444</mark> или{" "}
+                  <mark className="video">GoPro CineForm</mark> и вы хотите экспортировать
+                  композицию с альфа-каналом — не забудьте указать значение{" "}
+                  <mark className="select">«RGB + Alpha»</mark> в параметре{" "}
+                  <mark className="select">«Channels»</mark>.
+                </p>
+                <ArticleMedia
+                  caption="Включаем сохранение альфа-канала для Apple ProRes 4444"
+                  src="after-effects/export/prores-4444-rgb+alpha.png"
+                  type="image"
+                />
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="dxv"
+          title="Resolume (DXV)"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> нельзя напрямую
+            экспортировать композицию в кодеке <mark className="video">DXV</mark>{" "}
+            стандартными средствами. Для этого потребуется установить стороннюю утилиту
+            <mark className="app">Resolume Alley</mark>, которая может работать как
+            отдельно, так и в виде плагина для{" "}
+            <mark className="app">Adobe After Effects</mark> и{" "}
+            <mark className="app">Adobe Premiere</mark>.
+          </p>
+          <ContentFilter
+            macContent={
+              <>
+                <ul>
+                  <li>
+                    <p>
+                      Для загрузки <mark className="app">Resolume Alley</mark> перейдите
+                      на официальный{" "}
+                      <a href="https://www.resolume.com/download/mac">сайт</a>{" "}
+                      <mark className="company">Resolume</mark>, пролистайте вниз и в
+                      выпадающем меню <mark className="select">«Alley downloads»</mark>{" "}
+                      выберите последнюю доступную версию для скачивания.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/download-from-resolume-page.png"
+                      type="image"
+                    />
+                  </li>
+                  <li>
+                    <p>
+                      Откройте загруженный инсталлятор и следуйте инструкциям. При
+                      необходимости отметьте чекбокс установки плагинов для{" "}
+                      <mark className="app">Adobe After Effects</mark> и{" "}
+                      <mark className="app">Adobe Premiere</mark>, если планируете
+                      экспортировать композиции напрямую из{" "}
+                      <mark className="app">Adobe After Effects</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/install-dxv-exporter-plugins-for-ae-pr.png"
+                      type="image"
+                    />
+                  </li>
+                </ul>
+              </>
+            }
+            windowsContent={
+              <>
+                <ul>
+                  <li>
+                    <p>
+                      Для загрузки <mark className="app">Resolume Alley</mark> перейдите
+                      на официальный{" "}
+                      <a href="https://www.resolume.com/download/win">сайт</a>{" "}
+                      <mark className="company">Resolume</mark>, пролистайте вниз и в
+                      выпадающем меню <mark className="select">«Alley downloads»</mark>{" "}
+                      выберите последнюю доступную версию для скачивания.
+                    </p>
+                    <ArticleMedia
+                      caption="Выбор версии Resolume Alley для скачивания"
+                      src="tools/resolume-alley/download-from-resolume-page.png"
+                      type="image"
+                    />
+                  </li>
+                  <li>
+                    <p>
+                      Откройте загруженный инсталлятор и следуйте инструкциям. При
+                      необходимости отметьте чекбокс установки плагинов для{" "}
+                      <mark className="app">Adobe After Effects</mark> и{" "}
+                      <mark className="app">Adobe Premiere</mark>, если планируете
+                      экспортировать композиции напрямую из{" "}
+                      <mark className="app">Adobe After Effects</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Чекбокс выбора установки плагинов для экспорта в DXV 3"
+                      src="tools/resolume-alley/install-dxv-exporter-plugins-for-ae-pr.png"
+                      type="image"
+                    />
+                  </li>
+                </ul>
+              </>
+            }
+          />
+          <Divider>
+            Экспортируем с помощью плагина <mark className="plugin">DXV 3</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке <mark className="video">DXV</mark> с помощью
+                плагина, поставляемый с <mark className="app">Resolume Alley</mark> нужно
+                выбрать значение <mark className="select">«DXV 3»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата DXV 3"
+                src="after-effects/export/export-dxv3.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия дополнительных
+                настроек формата.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата DXV 3"
+                src="after-effects/export/dxv3-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В открывшемся окне нас встречает выбор типа сжатия кодека и настройка
+                сохранения альфа-канала.
+              </p>
+              <ArticleMedia
+                caption="Выбираем сжатие для экспорта в DXV 3"
+                src="after-effects/export/select-dxv3-compression.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Resolume Alley</mark>
+          </Divider>
+          <p>
+            Если у вас уже есть видео в другом формате — воспользуйтесь ранее
+            установленной утилитой <mark className="app">Resolume Alley</mark> для
+            конвертации в кодек <mark className="video">DXV</mark>.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Resolume Alley</mark> нажмите{" "}
+                <mark className="select">«Open»</mark> или перетащите их в окно программы
+                для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Resolume Alley"
+                src="tools/resolume-alley/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Для перехода к настройкам конвертации нажмите на{" "}
+                <mark className="select">«Convert file»</mark> в левой части интерфейса.
+              </p>
+              <ArticleMedia
+                caption="Переход к настройкам конвертации в Resolume Alley"
+                src="tools/resolume-alley/convert-file.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Presets»</mark> нужное сжатие
+                для конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор пресета для конвертации в Resolume Alley"
+                src="tools/resolume-alley/select-preset.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Queue file»</mark> в левой части интерфейса для
+                запуска конвертации.
+              </p>
+              <ArticleMedia
+                caption="Переход к настройкам конвертации в Resolume Alley"
+                src="tools/resolume-alley/queue-file.png"
+                type="image"
+              />
+              <Addition type="warning">
+                Некоторые видеопроигрыватели могут некорректно отображать цвета после
+                конвертации в <mark className="video">DXV</mark>.
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="webm"
+          title="Видео для веб-страниц: WEBM (VP9, AV1) и H.265 с альфа-каналом"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> не получится
+            экспортировать композицию в кодеках <mark className="video">VP9</mark> и{" "}
+            <mark className="video">AV1</mark> в контейнере{" "}
+            <mark className="file">WEBM</mark>
+            <sup>1</sup>, а также в <mark className="video">H.265</mark> с альфа-каналом
+            стандартными средствами. В таком случае придётся использовать «костыли»:
+            сначала экспортировать композицию в промежуточный формат, а затем
+            конвертировать полученное видео в нужный кодек.
+          </p>
+          <Addition type="warning">
+            <sup>1</sup> Несмотря на то, что существует{" "}
+            <a href="https://fnord.com/">сторонний плагин</a> для экспорта{" "}
+            <mark className="plugin">WEBM</mark> от <mark className="user">fnord</mark>{" "}
+            для <mark className="app">Adobe Media Encoder</mark>, я не рекомендую его
+            использовать на постоянной основе. Он часто выдаёт видео с жуткими
+            артефактами, отвратительным качеством или просто «падает» посреди рендера без
+            причины.
+          </Addition>
+          <p>
+            Прежде чем начать экспорт композиции, нужно определиться с целями формата
+            видео.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Если задача — получить видео с прозрачностью и небольшим размером для
+                работы в монтажных программах, это не лучший вариант. По умолчанию{" "}
+                <mark className="app">Adobe After Effects</mark> и{" "}
+                <mark className="app">Adobe Premiere</mark> не поддерживают импорт{" "}
+                <mark className="video">WEBM</mark>, хотя это можно исправить установкой
+                стороннего импортёра <mark className="plugin">Autokroma Influx</mark>.
+                Учтите, что при импорте через него стабильность проекта не гарантируется —
+                такие файлы могут замедлять работу или вызывать ошибки.
+              </p>
+              <p>
+                If вы будете передавать проект с такими форматами, получателю придётся
+                также установить <mark className="plugin">Autokroma Influx</mark> или
+                конвертировать исходники в другой формат для совместимости.
+              </p>
+            </li>
+            <li>
+              <p>
+                Если же задача — получить видео меньшего размера по сравнению с{" "}
+                <mark className="video">H.264</mark> или с прозрачностью<sup>1</sup> для
+                размещения на веб-странице, то <mark className="video">VP9</mark> и{" "}
+                <mark className="video">AV1</mark> хорошо подходят для этой цели.
+              </p>
+              <Addition type="warning">
+                <sup>1</sup> <mark className="app">Safari</mark> на iOS и macOS не
+                поддерживает <mark className="video">WEBM</mark> с прозрачностью, поэтому
+                вместо альфа-канала будет отображаться чёрный фон. Чтобы обеспечить
+                совместимость, видео придётся конвертировать в{" "}
+                <mark className="video">H.265</mark> через{" "}
+                <mark className="app">Shutter Encoder</mark> с включённой опцией{" "}
+                <mark className="select">«Enable Alpha Channel»</mark> в{" "}
+                <mark className="select">«Advanced Settings»</mark> и указывать полученное
+                видео как дополнительный источник для воспроизведения в теге{" "}
+                <mark className="code">{`<video>`}</mark>.
+              </Addition>
+            </li>
+          </ul>
+          <Divider>Экспортируем композицию в промежуточном формате</Divider>
+          <p>
+            В качестве промежуточного формата можно использовать практически что угодно,
+            но для экспорта видео с прозрачностью лучше выбрать{" "}
+            <mark className="video">Apple ProRes 4444</mark>. Это один из немногих
+            форматов, который поддерживает альфа-канал при экспорте.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для экспорта видео в кодеке{" "}
+                <mark className="video">Apple ProRes 4444</mark> нужно выбрать значение{" "}
+                <mark className="select">«QuickTime»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата QuickTime"
+                src="after-effects/export/export-quicktime.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После того, как вы выбрали нужный формат — откройте{" "}
+                <mark className="select">«Format Options»</mark> в разделе{" "}
+                <mark className="select">«Video Output»</mark> для открытия настроек
+                формата, в котором можно выбрать нужный кодек.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки формата QuickTime"
+                src="after-effects/export/quicktime-format-options.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                В <mark className="select">«Format Options»</mark> выберите кодек{" "}
+                <mark className="select">«Apple ProRes 4444»</mark> в списке{" "}
+                <mark className="select">«Video Codec»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Выбор кодека для формата QuickTime"
+                src="after-effects/export/select-quicktime-prores-4444.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Shutter Encoder</mark>
+          </Divider>
+          <p>
+            После экспорта композиции нам нужно воспользоваться{" "}
+            <mark className="app">Shutter Encoder</mark> — бесплатным<sup>1</sup>{" "}
+            конвертером на базе <mark className="app">FFmpeg</mark> с поддержкой большого
+            количества форматов, включая <mark className="video">VP9</mark>,{" "}
+            <mark className="video">AV1</mark> и <mark className="video">H.265</mark> с
+            альфа-каналом.
+          </p>
+          <Addition type="info">
+            <ul>
+              <li>
+                <sup>1</sup> Чтобы скачать <mark className="app">Shutter Encoder</mark>{" "}
+                бесплатно, установите чекбокс{" "}
+                <mark className="select">
+                  «I do not wish to participate in the development of the software»
+                </mark>{" "}
+                на <a href="https://www.shutterencoder.com/">сайте</a>, а затем нажмите на
+                кнопку скачивания образа утилиты для вашей операционной системы.
+              </li>
+              <li>
+                В русской локализации <mark className="app">Shutter Encoder</mark> иногда
+                встречаются неточности перевода, которые могут сбивать с толку. Чтобы
+                переключить интерфейс на английский язык, откройте настройки программы
+                через иконку шестерёнки в левом верхнем углу, затем найдите параметр{" "}
+                <mark className="select">«Установить язык»</mark>, выберите{" "}
+                <mark className="select">«English»</mark> и подтвердите перезапуск
+                программы.
+              </li>
+            </ul>
+          </Addition>
+          <p>
+            На первый взгляд интерфейс <mark className="app">Shutter Encoder</mark> может
+            показаться запутанным и сложным, но для конвертации файлов достаточно
+            выполнить несколько простых действий.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для импорта файлов в <mark className="app">Shutter Encoder</mark> нажмите{" "}
+                <mark className="select">«Browse»</mark> или перетащите их в окно
+                программы для добавления в очередь.
+              </p>
+              <ArticleMedia
+                caption="Импорт файла в Shutter Encoder"
+                src="tools/shutter-encoder/convert/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Затем выберите в <mark className="select">«Choose Function»</mark> нужный
+                формат для конвертации — <mark className="video">VP9</mark>,{" "}
+                <mark className="video">AV1</mark> или{" "}
+                <mark className="video">H.265</mark>. Изменение данного параметра будет
+                относиться ко всем файлам в очереди конвертации.
+              </p>
+              <ArticleMedia
+                caption="Выбор функции для конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/choose-function-vp9-av1-h265.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора функции нужно определиться с режимом кодирования, который
+                влияет на то, как кодек распределяет битрейт, а значит — на качество и
+                размер итогового файла. Обычно выделяют три типа.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    <mark className="codec-param">CQ (Constant Quality)</mark> —
+                    динамически распределяет битрейт в зависимости от сложности сцены и
+                    сохраняет стабильное качество на протяжении всего ролика. Это
+                    оптимальный выбор для большинства задач.
+                  </li>
+                  <li>
+                    <mark className="codec-param">VBR (Variable Bitrate)</mark> — требует
+                    настройки целевого и максимального битрейта, которые не всегда легко
+                    подобрать с первого раза, особенно при попытке сохранить баланс между
+                    качеством и размером файла.
+                  </li>
+                  <li>
+                    <mark className="codec-param">CBR (Constant Bitrate)</mark> —
+                    использует фиксированный битрейт независимо от сложности сцены, что
+                    часто приводит к увеличенному размеру файла и менее равномерному
+                    качеству.
+                  </li>
+                </ul>
+              </Addition>
+              <p>
+                Если ваша цель — уменьшить размер файла без заметной потери качества,
+                выберите <mark className="codec-param">CQ</mark>. Для этого в параметре{" "}
+                <mark className="select">«Video Bitrate»</mark> переключитесь с{" "}
+                <mark className="select">«VBR»</mark> на этот режим несколькими нажатиями.
+              </p>
+              <ArticleMedia
+                caption="Выбор режима кодирования в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-video-bitrate-cq-vp9.mp4"
+                type="video"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чем меньше значение <mark className="select">«CQ»</mark>, тем лучше
+                    качество. По умолчанию устанавливается{" "}
+                    <mark className="copy">23</mark> — этого достаточно для большинства
+                    случаев.
+                  </li>
+                  <li>
+                    Если нужно сохранить почти максимальное качество, укажите значение от{" "}
+                    <mark className="copy">17</mark> до <mark className="copy">20</mark>.
+                    Однако размер файла при этом может заметно возрасти.
+                  </li>
+                  <li>
+                    Экстремальные значения, например <mark className="copy">50</mark> или{" "}
+                    <mark className="copy">7</mark>, использовать не рекомендуется — в
+                    итоге можно получить «кашу» из пикселей или слишком большой по весу
+                    файл.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости укажите битрейт аудио в параметре{" "}
+                <mark className="select">«Audio Bitrate»</mark>. Обычно достаточно
+                значения <mark className="copy">320</mark> Кбит/с.
+              </p>
+              <ArticleMedia
+                caption="Выбор битрейта для аудиодорожки в Shutter Encoder"
+                src="tools/shutter-encoder/convert/change-audio-bitrate-320-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                При необходимости измените цветовое пространство во вкладке{" "}
+                <mark className="select">«Colorimetry»</mark>, если оно отличается от
+                требуемого. Для социальных сетей и веб-страниц чаще всего используется{" "}
+                <mark className="color-space">Rec.709</mark>. Проверить цветовое
+                пространство исходного файла можно через{" "}
+                <mark className="app">MediaInfo</mark>.
+              </p>
+              <Addition type="warning">
+                Цвета после конвертации из одного цветового пространства в другое могут
+                незначительно измениться.
+              </Addition>
+              <ArticleMedia
+                caption="Конвертация цветовых пространств в Shutter Encoder"
+                src="tools/shutter-encoder/convert/convert-colorspace-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                Если вы хотите сохранить альфа-канал при конвертации, включите параметр{" "}
+                <mark className="select">«Enable alpha channel»</mark> во вкладке{" "}
+                <mark className="select">«Advanced features»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Сохранение альфа-канала при конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/enable-alpha-channel-vp9.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров нажмите{" "}
+                <mark className="select">«Start function»</mark> в левой части интерфейса
+                для запуска конвертации.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если в программу добавлено несколько исходников, они будут
+                    конвертированы последовательно в соответствии с выбранными
+                    настройками.
+                  </li>
+                  <li>
+                    По умолчанию результат конвертации сохраняется в той же папке, где
+                    находится исходное видео. При необходимости директорию вывода можно
+                    изменить во вкладке <mark className="select">«Output»</mark>.
+                  </li>
+                </ul>
+              </Addition>
+              <ArticleMedia
+                caption="Начало конвертации в Shutter Encoder"
+                src="tools/shutter-encoder/convert/start-function-vp9.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>Используем конвертированные видео на странице</Divider>
+          <p>
+            Как уже сказано ранее, одни браузеры поддерживают{" "}
+            <mark className="video">VP9</mark> и <mark className="video">AV1</mark> с
+            прозрачностью, а другие — нет. Таблицы совместимости форматов и кодеков
+            браузерами можно посмотреть по ссылкам ниже.
+          </p>
+          <div className="flexible-links">
+            <a href="https://caniuse.com/webm">Поддержка WEBM (VP8, VP9)</a>
+            <a href="https://caniuse.com/av1">Поддержка AV1</a>
+            <a href="https://caniuse.com/mpeg4">Поддержка H.264</a>
+            <a href="https://caniuse.com/hevc">Поддержка H.265 (HEVC)</a>
+          </div>
+          <p>
+            Для тега <mark className="code">{`<video>`}</mark> можно указать несколько
+            источников, и браузер выберет первый поддерживаемый вариант, проходя по{" "}
+            <mark className="code">{`<source>`}</mark> сверху вниз. Чтобы видео с
+            прозрачностью корректно отображалось в <mark className="app">Safari</mark>,
+            разместите первым вариант с <mark className="video">H.265</mark>, а затем{" "}
+            <mark className="video">WEBM</mark>. Учтите, что для{" "}
+            <mark className="video">H.265</mark> с альфа-каналом нужно указать тип и кодек{" "}
+            <mark className="code">type=&quot;video/mp4;codecs=hvc1&quot;</mark>, иначе
+            прозрачность может не отобразиться.
+          </p>
+          <p>
+            В остальных браузерах, например <mark className="app">Firefox</mark> или{" "}
+            <mark className="app">Chrome</mark> для воспроизведения видео будет
+            использоваться <mark className="video">WEBM</mark>.
+          </p>
+          <CodeSnippet language="html">
+            {`<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Использование видео с прозрачностью в разных браузерах</title>
+  </head>
+  <body>
+    <video
+      loop
+      controls
+      autoplay
+    >
+      <source
+        src="images/aefaq@aechat_alpha.mp4"
+        type="video/mp4;codecs=hvc1"
+      />
+      <source
+        src="images/aefaq@aechat_alpha.webm"
+        type="video/webm"
+      />
+    </video>
+  </body>
+</html>`}
+          </CodeSnippet>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="gif"
+          title="Анимированный GIF"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> нельзя вывести
+            анимированный <mark className="image">GIF</mark> стандартными средствами.
+            Однако это можно сделать тремя способами: с помощью стороннего расширения{" "}
+            <mark className="plugin">GifGun</mark>, конвертацией промежуточного результата
+            через веб-сервис <mark className="web">Ezgif</mark> или экспортом через{" "}
+            <mark className="app">Adobe Media Encoder</mark>.
+          </p>
+          <Addition type="danger">
+            <ul>
+              <li>
+                <p>
+                  Если вы собираетесь использовать <mark className="image">GIF</mark> на
+                  веб-странице, лучше рассмотреть в качестве альтернативы{" "}
+                  <mark className="video">WEBM</mark> или{" "}
+                  <mark className="video">H.264</mark>. Они обеспечивают лучшее качество
+                  при меньшем размере файла. <mark className="image">GIF</mark> сжимается
+                  значительно менее эффективно, поэтому итоговый файл может получиться
+                  очень большим, особенно при высоком разрешении или частоте кадров.
+                </p>
+                <p>
+                  Для веба обычно достаточно разрешения до 1024×576 и частоты до 15 FPS.
+                  Тяжёлые <mark className="image">GIF</mark> создают дополнительную
+                  нагрузку на браузер и могут замедлять работу сайта, особенно на
+                  мобильных устройствах.{" "}
+                  <em className="article-note-muted">
+                    Я уж не говорю про скрипты на этом сайте...
+                  </em>
+                </p>
+              </li>
+              <li>
+                <mark className="image">GIF</mark> ограничен 256 цветами, а прозрачность
+                работает только в бинарном режиме. Из-за этого он плохо подходит для
+                плавных градиентов, точной цветопередачи и полупрозрачных элементов.
+              </li>
+            </ul>
+          </Addition>
+          <Divider>
+            Экспортируем композицию с помощью <mark className="plugin">GifGun</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Если у вас установлено расширение <mark className="plugin">GifGun</mark> —
+                откройте его через меню{" "}
+                <mark className="select">«Window» → «Extensions» → «GifGun»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Открываем расширение GifGun"
+                src="after-effects/plugins/gifgun/open.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если расширение установлено, но не открывается при нажатии в меню —
+                    активируйте debug-режим, согласно <Link to="/reg">инструкции</Link>.
+                  </li>
+                  <li>
+                    Для корректной работы расширения необходимо в настройках{" "}
+                    <mark className="select">
+                      «Edit» → «Preferences» → «Scripting & Expressions»
+                    </mark>{" "}
+                    установить флажок у параметра{" "}
+                    <mark className="select">
+                      «Allow Scripts to Write Files and Access Network»
+                    </mark>
+                    .
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне расширения вы увидите простой интерфейс с двумя
+                элементами: кнопкой <mark className="select">«Make GIF»</mark> для запуска
+                экспорта и иконкой шестерёнки для доступа к настройкам.
+              </p>
+              <ArticleMedia
+                caption="Основное меню GifGun"
+                src="after-effects/plugins/gifgun/main.png"
+                type="image"
+              />
+            </li>
+
+            <li>
+              <p>
+                Для изменения настроек нажмите на иконку шестерёнки в главном окне
+                расширения. Здесь можно указать максимальный размер файла, разрешение,
+                сжатие, частоту кадров и директорию для сохранения анимации.
+              </p>
+              <ArticleMedia
+                caption="Настройки экспорта в GifGun"
+                src="after-effects/plugins/gifgun/export-settings.png"
+                type="image"
+              />
+            </li>
+
+            <li>
+              <p>
+                После завершения настройки нажмите{" "}
+                <mark className="select">«Make GIF»</mark> и дождитесь окончания экспорта.
+                Если включён чекбокс <mark className="select">«Open GIF folder»</mark>,
+                после завершения расширение автоматически откроет директорию в проводнике
+                с сохранённой анимацией.
+              </p>
+            </li>
+          </ul>
+          <Divider>
+            Конвертируем готовое видео через <mark className="app">Ezgif</mark>
+          </Divider>
+          <p>
+            Если вы не хотите устанавливать расширение или у вас уже есть готовое видео,
+            которое нужно конвертировать в <mark className="image">GIF</mark>,
+            воспользуйтесь онлайн-сервисом <mark className="web">Ezgif</mark>. Он
+            обеспечивает хорошее соотношение качества и размера файла.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для начала конвертации перейдите на{" "}
+                <a href="https://ezgif.com/video-to-gif">сайт</a>{" "}
+                <mark className="web">Ezgif</mark>, перетащите видео в область загрузки
+                или выберите его вручную через <mark className="select">«Обзор»</mark>, а
+                затем нажмите <mark className="select">«Upload Video»</mark>.
+              </p>
+              <Addition type="warning">
+                Максимальный размер загружаемого файла — 200 МБ.
+              </Addition>
+              <ArticleMedia
+                caption="Импорт файла в Ezgif"
+                src="tools/ezgif/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После загрузки можно настроить частоту кадров, разрешение, соотношение
+                сторон и метод сжатия итогового файла. После изменения параметров нажмите{" "}
+                <mark className="select">«Convert to GIF!»</mark> для начала конвертации.
+              </p>
+              <Addition type="warning">
+                Максимальная длительность <mark className="image">GIF</mark> зависит от
+                выбранной частоты кадров: до 60 секунд при 5 FPS или до 15 секунд при 20
+                FPS.
+              </Addition>
+              <ArticleMedia
+                caption="Настройка конвертации в Ezgif"
+                src="tools/ezgif/export-settings.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После завершения конвертации готовый <mark className="image">GIF</mark>{" "}
+                появится в разделе <mark className="select">«Output GIF Animation»</mark>.
+                Для сохранения нажмите <mark className="key">ПКМ</mark> по анимации и
+                выберите <mark className="select">«Сохранить изображение как...»</mark>.
+              </p>
+              <Addition type="info">
+                При необходимости размер <mark className="image">GIF</mark> можно
+                дополнительно уменьшить, воспользовавшись инструментом{" "}
+                <a href="https://ezgif.com/optimize">оптимизации</a>.
+              </Addition>
+              <ArticleMedia
+                caption="Сохранение результата конвертации"
+                src="tools/ezgif/save-result.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем композицию с помощью{" "}
+            <mark className="app">Adobe Media Encoder</mark>
+          </Divider>
+          <p>
+            <mark className="image">GIF</mark> можно экспортировать и через{" "}
+            <mark className="app">Adobe Media Encoder</mark>. Несмотря на то, что многие
+            его обходят стороной, он предлагает больше вариантов форматов для экспорта по
+            сравнению с «чистым» <mark className="app">Adobe After Effects</mark>.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Для начала отправьте композицию<sup>1</sup> из{" "}
+                <mark className="app">Adobe After Effects</mark> в{" "}
+                <mark className="app">Adobe Media Encoder</mark> через меню{" "}
+                <mark className="select">
+                  «File» → «Export» → «Add to Adobe Media Encoder Queue»
+                </mark>{" "}
+                и дождитесь запуска программы, либо откройте{" "}
+                <mark className="app">Adobe Media Encoder</mark> и импортируйте готовое
+                видео вручную.
+              </p>
+              <Addition type="info">
+                <sup>1</sup> Композиция корректно отправится в{" "}
+                <mark className="app">Adobe Media Encoder</mark> только если версии обеих
+                программ совпадают по году выпуска и они установлены в стандартные папки.{" "}
+                <a href="#match-version">Всмысле?</a>
+              </Addition>
+              <ArticleMedia
+                caption="Импорт файла в Adobe Media Encoder"
+                src="media-encoder/import-file.mp4"
+                type="video"
+              />
+            </li>
+            <li>
+              <p>
+                После импорта файла выберите формат{" "}
+                <mark className="select">«Animated GIF»</mark>. Для настройки разрешения,
+                частоты кадров и других параметров откройте{" "}
+                <mark className="select">«Export Settings»</mark>, нажав на название
+                пресета.
+              </p>
+              <Addition type="warning">
+                Если выбрать <mark className="select">«GIF»</mark> без{" "}
+                <mark className="select">«Animated»</mark>, будет создана
+                последовательность отдельных кадров, которая заполнит директорию для
+                сохранения.
+              </Addition>
+              <ArticleMedia
+                caption="Выбор формата Animated GIF в Adobe Media Encoder"
+                src="media-encoder/select-animated-gif.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После настройки параметров в{" "}
+                <mark className="select">«Export Settings»</mark> нажмите{" "}
+                <mark className="select">«OK»</mark>, чтобы закрыть окно, и запустите
+                экспорт, нажав на зелёную иконку треугольника в правом верхнем углу окна
+                очереди экспорта.
+              </p>
+              <ArticleMedia
+                caption="Начало экспорта GIF в Adobe Media Encoder"
+                src="media-encoder/start-queue-gif.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="telegram"
+          title="Telegram (Стикеры, эмодзи, TGS)"
+        >
+          <p>
+            Из <mark className="app">Adobe After Effects</mark> нельзя вывести некоторые
+            типы анимации в формате <mark className="file">TGS</mark> и композиции в{" "}
+            <mark className="image">WEBP</mark> и <mark className="video">VP9</mark>{" "}
+            стандартными способами.
+          </p>
+          <Divider>
+            Разбираемся с типами стикеров в <mark className="app">Telegram</mark>
+          </Divider>
+          <p>
+            В <mark className="app">Telegram</mark> доступны несколько типов стикеров и
+            эмодзи для создания, между которыми некоторые пользователи часто путаются.
+            Стикеры и эмодзи могут быть статичными, видео или анимированными.
+          </p>
+          <Addition type="info">
+            Подробнее о требованиях для того или иного типа стикеров вы можете прочитать в{" "}
+            <a href="https://core.telegram.org/stickers">документации</a>{" "}
+            <mark className="app">Telegram</mark>.
+          </Addition>
+          <ul>
+            <li>
+              <p>
+                <mark className="word">Статичный стикер</mark> или{" "}
+                <mark className="word">статичный эмодзи</mark> — обычная картинка, которую
+                отправляют собеседнику. Её можно создать в любом графическом редакторе,
+                например в <mark className="app">Adobe Photoshop</mark> или{" "}
+                <mark className="app">GIMP</mark>, или экспортировать из{" "}
+                <mark className="app">Adobe After Effects</mark> как{" "}
+                <a href="#how-to-export-still">один кадр</a>.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Для создания принимаются изображения формата{" "}
+                    <mark className="image">PNG</mark> или{" "}
+                    <mark className="image">WEBP</mark> с прозрачным или непрозрачным
+                    фоном.
+                  </li>
+                  <li>
+                    Для статичных стикеров максимальное разрешение составляет 512×512
+                    пикселей, при этом допускается любое соотношение сторон, если ни одна
+                    из сторон не превышает установленный лимит. Для статичных эмодзи
+                    размер должен быть строго 100×100 пикселей.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                <mark className="word">Анимированный стикер</mark> или{" "}
+                <mark className="word">анимированные эмодзи</mark> — это векторная
+                анимация, которая не теряет в качестве при воспроизведении на разных
+                устройствах. По своей сути она похожа на анимацию{" "}
+                <mark className="image">Lottie</mark> и имеет ряд ограничений по эффектам
+                и параметрам экспорта. Для экспорта композиции в эти форматы используется{" "}
+                <mark className="plugin">Bodymovin-TG</mark> или{" "}
+                <mark className="plugin">Bodymovin</mark> с последующей конвертацией{" "}
+                <mark className="file">JSON</mark> в <mark className="file">TGS</mark>{" "}
+                через встроенный в статью конвертер.
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Для анимированных стикеров разрешение композиции должно быть ровно
+                    512×512 пикселей, а для анимированных эмодзи — ровно 100×100 пикселей.
+                  </li>
+                  <li>
+                    Частота кадров должна быть строго 30 или 60 FPS, иначе экспорт может
+                    завершиться ошибкой.
+                  </li>
+                  <li>
+                    Длительность анимации не должна превышать 3 секунд, а итоговый файл —
+                    64 Кб.
+                  </li>
+                </ul>
+              </Addition>
+              <Addition type="danger">
+                <p>
+                  Для корректного вывода анимации в файл формата{" "}
+                  <mark className="file">TGS</mark>, согласно{" "}
+                  <a href="https://core.telegram.org/stickers#animated-stickers">
+                    документации
+                  </a>
+                  , в композиции недопустимы следующие эффекты и свойства:
+                </p>
+                <ul>
+                  <li>
+                    Выражения не поддерживаются, но их можно конвертировать в ключи. Для
+                    этого выделите нужное свойство с выражением, нажмите{" "}
+                    <mark className="key">ПКМ</mark> и выберите{" "}
+                    <mark className="select">
+                      «Keyframe Assistant» → «Convert Expression to Keyframes»
+                    </mark>
+                    .
+                  </li>
+                  <li>
+                    У ключевых кадров не поддерживается интерполяция скорости с помощью{" "}
+                    <mark className="select">«Auto Bezier»</mark>. Для смены типа
+                    интерполяции выделите нужные ключи, нажмите{" "}
+                    <mark className="key">Ctrl + Alt + K</mark> и отключите автоматический
+                    Безье.
+                  </li>
+                  <li>
+                    Слои с изображениями не поддерживаются. Если такой слой всё-таки
+                    нужен, выполните автотрассировку для конвертации в вектор в{" "}
+                    <mark className="app">Adobe Illustrator</mark> или другой программе, а
+                    затем импортируйте как слой-фигуру.{" "}
+                    <a href="https://helpx.adobe.com/illustrator/using/image-trace-results-optimization.html">
+                      Подробнее...
+                    </a>
+                  </li>
+                  <li>
+                    Текстовые слои не поддерживаются, но могут быть преобразованы в
+                    фигуры. Для этого нажмите <mark className="key">ПКМ</mark> по слою с
+                    текстом и выберите{" "}
+                    <mark className="select">«Create» → «Create Shapes from Text»</mark>.
+                  </li>
+                  <li>
+                    Нельзя использовать <mark className="select">«Time Remapping»</mark> и{" "}
+                    <mark className="select">«Auto-Oriented Layers»</mark>. Проверить
+                    скорость слоя можно в столбце{" "}
+                    <mark className="select">«Stretch»</mark>. Автоориентацию можно
+                    выключить, выделив слой и нажав{" "}
+                    <mark className="key">Ctrl + Alt + O</mark>, затем выбрав{" "}
+                    <mark className="select">«Off»</mark>.
+                  </li>
+                  <li>
+                    Эффекты из <mark className="select">«Effects & Presets»</mark>{" "}
+                    использовать нельзя — они не сохраняются в итоговой анимации.
+                  </li>
+                  <li>
+                    <mark className="select">«Solid Layer»</mark>, маски, трёхмерные слои
+                    и элементы слоёв-фигур, включая{" "}
+                    <mark className="select">«Merge Paths»</mark>,{" "}
+                    <mark className="select">«Repeater»</mark>,{" "}
+                    <mark className="select">«Star Shape»</mark> и{" "}
+                    <mark className="select">«Gradient Stroke»</mark>, не поддерживаются.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                <mark className="word">Видеостикер</mark> — обычное видео в формате{" "}
+                <mark className="video">WEBM</mark> с кодеком{" "}
+                <mark className="video">VP9</mark>. Для экспорта в данном формате сначала
+                выполните экспорт в промежуточный файл, после чего конвертируйте его с
+                помощью стороннего конвертера.{" "}
+                <a href="#how-to-export-webm">Подробнее...</a>
+              </p>
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Для видеостикеров максимальное разрешение составляет 512×512 пикселей,
+                    при этом допускается любое соотношение сторон, если ни одна из сторон
+                    не превышает установленный лимит. Для видеоэмодзи размер должен быть
+                    строго 100×100 пикселей.
+                  </li>
+                  <li>Частота кадров не должна превышать 30 FPS.</li>
+                  <li>
+                    Длительность видео не должна превышать 3 секунд, а итоговый файл — 256
+                    Кб.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем анимированный стикер или эмодзи через{" "}
+            <mark className="app">Bodymovin-Telegram</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для экспорта из <mark className="app">Adobe After Effects</mark> в стикеры
+                формата <mark className="file">TGS</mark> понадобится бесплатное стороннее
+                расширение{" "}
+                <a href="https://github.com/TelegramMessenger/bodymovin-extension">
+                  Bodymovin-TG
+                </a>
+                . После установки он появится в меню{" "}
+                <mark className="select">
+                  «Window» → «Extensions» → «Bodymovin for Telegram Stickers»
+                </mark>
+                .
+              </p>
+              <ArticleMedia
+                caption="Открываем расширение Bodymovin-TG"
+                src="after-effects/plugins/bodymovin-tg/open.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если расширение установлено, но не открывается при нажатии в меню —
+                    активируйте debug-режим, согласно <Link to="/reg">инструкции</Link>.
+                  </li>
+                  <li>
+                    Для корректной работы расширения необходимо в настройках{" "}
+                    <mark className="select">
+                      «Edit» → «Preferences» → «Scripting & Expressions»
+                    </mark>{" "}
+                    установить флажок у параметра{" "}
+                    <mark className="select">
+                      «Allow Scripts to Write Files and Access Network»
+                    </mark>
+                    .
+                  </li>
+                </ul>
+              </Addition>
+              <Addition type="warning">
+                Данное расширение давно не обновлялось и могут возникать ошибки при работе
+                с последними версиями <mark className="app">Adobe After Effects</mark>.
+                Кроме того, в нём меньше функций по сравнению с оригинальным{" "}
+                <mark className="plugin">Bodymovin</mark>, который можно использовать в
+                качестве альтернативы.
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне можно выбрать композицию для экспорта, указать путь
+                сохранения и запустить рендер с помощью кнопки{" "}
+                <mark className="select">«Export»</mark>. Перед запуском убедитесь, что
+                анимация соответствует требованиям для анимированных стикеров или эмодзи.
+              </p>
+              <ArticleMedia
+                caption="Основное меню Bodymovin-TG"
+                src="after-effects/plugins/bodymovin-tg/main.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После успешного экспорта перейдите в{" "}
+                <a href="https://t.me/Stickers">бот</a> для создания стикеров и начните
+                создание набора. Если что-то пойдёт не так, бот сообщит об этом и укажет
+                на проблему. Чаще всего ошибки связаны со слишком большим размером файла
+                или неверно выбранным типом стикера в начале работы.
+              </p>
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем анимированный стикер или эмодзи через{" "}
+            <mark className="plugin">Bodymovin</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Если экспорт через <mark className="plugin">Bodymovin-TG</mark> завершился
+                сбоем или вам не хватает функциональности оригинального расширения,
+                попробуйте использовать <mark className="plugin">Bodymovin</mark>
+                <sup>1</sup>, а затем конвертировать полученный файл через конвертер из
+                статьи.
+              </p>
+              <Addition type="info">
+                <sup>1</sup> Чтобы бесплатно скачать расширение, зарегистрируйтесь или
+                войдите в аккаунт на <a href="https://aescripts.com">aescripts</a>, а
+                затем на странице{" "}
+                <a href="https://aescripts.com/bodymovin/">дополнения</a> установите
+                значение <mark className="copy">0</mark> в поле{" "}
+                <mark className="select">«Name Your Own Price»</mark> и оформите заказ.
+                Ссылка на скачивание появится{" "}
+                <a href="https://aescripts.com/downloadable/customer/products/">
+                  в вашем профиле
+                </a>
+                .
+              </Addition>
+            </li>
+            <li>
+              <p>
+                После установки <mark className="plugin">Bodymovin</mark> он появится в
+                меню <mark className="select">«Window» → «Extensions» → «Bodymovin»</mark>
+                .
+              </p>
+              <ArticleMedia
+                caption="Открываем расширение Bodymovin"
+                src="after-effects/plugins/bodymovin/open.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если расширение установлено, но не открывается при нажатии в меню —
+                    активируйте debug-режим, согласно <Link to="/reg">инструкции</Link>.
+                  </li>
+                  <li>
+                    Для корректной работы расширения необходимо в настройках{" "}
+                    <mark className="select">
+                      «Edit» → «Preferences» → «Scripting & Expressions»
+                    </mark>{" "}
+                    установить флажок у параметра{" "}
+                    <mark className="select">
+                      «Allow Scripts to Write Files and Access Network»
+                    </mark>
+                    .
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне можно выбрать композицию для экспорта, указать путь
+                сохранения и запустить рендер с помощью кнопки{" "}
+                <mark className="select">«Export»</mark>. Перед запуском убедитесь, что
+                анимация соответствует требованиям для анимированных стикеров или эмодзи.
+                Совместимость эффектов для выделенного свойства или слоя можно проверить
+                прямо в <mark className="plugin">Bodymovin</mark> во вкладке{" "}
+                <mark className="select">«Support Features»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Основное меню Bodymovin"
+                src="after-effects/plugins/bodymovin/main.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После успешного экспорта анимации в <mark className="file">JSON</mark>{" "}
+                поместите файл в конвертер ниже и нажмите{" "}
+                <mark className="select">«Скачать преобразованный TGS»</mark>.
+              </p>
+              <JsonToTgsConverter />
+            </li>
+            <li>
+              <p>
+                После успешного экспорта перейдите в{" "}
+                <a href="https://t.me/Stickers">бот</a> для создания стикеров и начните
+                создание набора. Если что-то пойдёт не так, бот сообщит об этом и укажет
+                на проблему. Чаще всего ошибки связаны со слишком большим размером файла
+                или неверно выбранным типом стикера в начале работы.
+              </p>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="frame"
+          title="Текущий кадр предпросмотра как изображение (JPEG, PNG, TIFF)"
+        >
+          <Divider>
+            Экспортируем кадр композиции через{" "}
+            <mark className="select">«Render Queue»</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Чтобы быстро отправить текущий кадр композиции в очередь рендеринга,
+                нажмите <mark className="key">Ctrl + Alt + S</mark> или перейдите в меню{" "}
+                <mark className="select">«Composition» → «Save Frame As» → «File»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Экспорт текущего кадра стандартными средствами"
+                src="after-effects/export/save-frame-as-file.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После этого откроется <mark className="select">«Render Queue»</mark>, где
+                по умолчанию будет предложен экспорт в формат{" "}
+                <mark className="image">PSD</mark>. Формат изображения можно изменить в
+                настройках <mark className="select">«Output Module»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Текущий кадр композиции в очереди рендера"
+                src="after-effects/export/save-frame-as-file-render-queue.png"
+                type="image"
+              />
+              <Addition type="info">
+                Вы можете создать собственный шаблон для экспорта кадров и установить его
+                по умолчанию, чтобы не менять формат файла каждый раз вручную.
+              </Addition>
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем кадр композиции с помощью{" "}
+            <mark className="plugin">FX Console</mark>
+          </Divider>
+          <ul>
+            <li>
+              <p>
+                Для сохранения текущего кадра в файл или буфер обмена с помощью{" "}
+                <mark className="plugin">FX Console</mark> воспользуйтесь кнопкой{" "}
+                <mark className="select">«Export»</mark>, оформленной в виде иконки
+                загрузки, или <mark className="key">«Take a Screenshot»</mark>
+                <sup>1</sup>, оформленной в виде иконки фотоаппарата.
+              </p>
+              <Addition type="info">
+                <sup>1</sup> Созданные скриншоты отправляются в галерею{" "}
+                <mark className="plugin">FX Console</mark>, откуда их позже можно
+                экспортировать в буфер обмена или сохранить в файл.
+              </Addition>
+              <ArticleMedia
+                caption="Экспорт текущего кадра с помощью FX Console"
+                src="after-effects/plugins/fx-console/copy-to-clipboard.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Если вам нужно сохранять скриншоты в полном разрешении независимо от
+                разрешения, установленного в окне предпросмотра, для начала перейдите в{" "}
+                <mark className="select">«Settings»</mark>, оформленную в виде иконки
+                шестерёнки.
+              </p>
+              <ArticleMedia
+                caption="Открытие настроек FX Console"
+                src="after-effects/plugins/fx-console/open-settings.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Затем установите чекбокс напротив параметра{" "}
+                <mark className="select">«Full Resolution Screenshots»</mark> и нажмите{" "}
+                <mark className="key">«OK»</mark> для сохранения изменений.
+              </p>
+              <ArticleMedia
+                caption="Включение возможности сохранения скриншотов в полном разрешении в FX Console"
+                src="after-effects/plugins/fx-console/enable-full-resolution-screenshots.png"
+                type="image"
+              />
+            </li>
+          </ul>
+          <Divider>
+            Экспортируем кадр композиции с помощью{" "}
+            <mark className="select">«Copy Frame to Clipboard»</mark>
+          </Divider>
+          <p>
+            Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">26.3</mark> и выше, разработчики добавили
+            возможность скопировать текущий кадр предпросмотра композиции в буфер обмена.
+          </p>
+          <ul>
+            <li>
+              <p>
+                Чтобы скопировать текущий кадр предпросмотра в буфер обмена, нажмите на
+                иконку <mark className="select">«Copy Frame to Clipboard»</mark> в окне
+                предпросмотра или нажмите{" "}
+                <mark className="key">Ctrl + Alt + Shift + F5</mark>.
+              </p>
+              <ArticleMedia
+                caption="Копирование текущего кадра в буфер обмена"
+                src="after-effects/interface/copy-frame-to-clipboard.png"
+                type="image"
+              />
+              <Addition type="info">
+                Некоторые пользователи ошибочно считают, что кнопка{" "}
+                <mark className="select">«Take Snapshot»</mark> (иконка фотоаппарата в
+                окне предпросмотра) также сохраняет текущий кадр в файл. На самом деле она
+                сохраняет его только во временную память программы для сравнения с другими
+                кадрами предпросмотра композиции.
+              </Addition>
+            </li>
+            <li>
+              Затем вставьте скопированное в буфер обмена изображение в любой графический
+              редактор, например <mark className="app">GIMP</mark> или{" "}
+              <mark className="app">Adobe Photoshop</mark> или мессенджер с помощью
+              комбинации клавиш <mark className="key">Ctrl + V</mark>. Далее вы можете
+              продолжить работу с изображением как хотите.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="sequence"
+          title="Секвенция изображений (JPEG, PNG, TIFF)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта секвенции изображений нужно выбрать значение с припиской{" "}
+                <mark className="select">«Sequence»</mark> в названии, например{" "}
+                <mark className="select">«PNG Sequence»</mark> или{" "}
+                <mark className="select">«JPG Sequence»</mark> в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата секвенции изображений"
+                src="after-effects/export/export-image-sequence.png"
+                type="image"
+              />
+              <Addition type="info">
+                <p>
+                  Если вы выбрали формат, поддерживающий альфа-канал, например{" "}
+                  <mark className="image">PNG</mark> и вы хотите экспортировать композицию
+                  с альфа-каналом — не забудьте указать значение{" "}
+                  <mark className="select">«RGB + Alpha»</mark> в параметре{" "}
+                  <mark className="select">«Channels»</mark>.
+                </p>
+                <ArticleMedia
+                  caption="Включаем сохранение альфа-канала для секвенции PNG"
+                  src="after-effects/export/png-rgb+alpha.png"
+                  type="image"
+                />
+              </Addition>
+            </li>
+            <li>
+              <p>
+                После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+                <mark className="select">«Render Queue»</mark>.
+              </p>
+              <Addition type="info">
+                При экспорте секвенции <mark className="app">Adobe After Effects</mark> по
+                умолчанию создаёт отдельную подпапку для изображений. Это поведение можно
+                отключить, убрав флажок{" "}
+                <mark className="select">«Save in subfolder»</mark> при выборе пути
+                сохранения.
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="audio"
+          title="Аудио (MP3, WAV, AIFF)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта аудио в форматах <mark className="audio">MP3</mark>,{" "}
+                <mark className="audio">WAV</mark> или <mark className="audio">AIFF</mark>{" "}
+                нужно выбрать соответствующие значения в списке{" "}
+                <mark className="select">«Format»</mark> в настройках модуля вывода.
+              </p>
+              <ArticleMedia
+                caption="Выбор формата аудио"
+                src="after-effects/export/export-audio.png"
+                type="image"
+              />
+            </li>
+            <li>
+              После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+              <mark className="select">«Render Queue»</mark>.
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="mogrt"
+          title="Шаблоны для Adobe Premiere (MOGRT)"
+        >
+          <ul>
+            <li>
+              <p>
+                Для экспорта композиции в виде шаблона <mark className="file">MOGRT</mark>
+                , предназначенного для дальнейшего использования в{" "}
+                <mark className="app">Adobe Premiere</mark>, используется окно{" "}
+                <mark className="select">«Essential Graphics»</mark>, которое можно
+                открыть через меню{" "}
+                <mark className="select">«Window» → «Essential Graphics»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Основное окно «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-main.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После открытия окна <mark className="select">«Essential Graphics»</mark>{" "}
+                выберите в поле <mark className="select">«Primary»</mark> нужную вам
+                композицию.
+              </p>
+              <ArticleMedia
+                caption="Выбор композиции для работы в «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-select-composition.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После выбора композиции при необходимости укажите в поле{" "}
+                <mark className="select">«Name»</mark> собственное имя шаблона и нажмите
+                на <mark className="select">«Export as Motion Graphics Template»</mark>.
+              </p>
+
+              <ArticleMedia
+                caption="Начало экспорта MOGRT из окна «Essential Graphics»"
+                src="media/after-effects/export/essential-graphics-export-mogrt.png"
+                type="image"
+              />
+              <Addition type="warning">
+                <p>
+                  Экспортировать шаблон не получится, если вы не добавили в панель{" "}
+                  <mark className="select">«Essential Graphics»</mark> хотя бы одно
+                  свойство слоя или контроллер. Для этого перетащите свойства из таймлайна
+                  в эту панель.
+                </p>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                В открывшемся окне укажите местоположение шаблона, ключевые слова для
+                быстрого поиска среди шаблонов в{" "}
+                <mark className="app">Adobe Premiere</mark> и настройте предупреждения о
+                используемых шрифтах, которые не находятся в{" "}
+                <mark className="app">Adobe Fonts</mark> и необходимости об установленном{" "}
+                <mark className="app">Adobe After Effects</mark> при использовании
+                некоторых<sup>1</sup> элементов для повышения совместимости. Для начала
+                экспорта шаблона нажмите на <mark className="select">«OK»</mark> в нижней
+                части окна.
+              </p>
+              <ArticleMedia
+                caption="Настройка параметров экспорта MOGRT"
+                src="media/after-effects/export/export-as-motion-graphics-template.png"
+                type="image"
+              />
+              <Addition type="warning">
+                <p>
+                  <sup>1</sup> Для корректной работы шаблона{" "}
+                  <mark className="file">MOGRT</mark> в{" "}
+                  <mark className="app">Adobe Premiere</mark> без использования движка{" "}
+                  <mark className="app">Adobe After Effects</mark> необходимо соблюдать
+                  следующие ограничения.
+                </p>
+                <ul>
+                  <li>
+                    Поддерживаются все стандартные эффекты, кроме{" "}
+                    <mark className="plugin">Camera-Shake Deblur</mark>,{" "}
+                    <mark className="plugin">Maxon Cineware</mark>,{" "}
+                    <mark className="plugin">Warp Stabilizer</mark> и{" "}
+                    <mark className="plugin">Puppet</mark>.
+                  </li>
+                  <li>Сторонние плагины, очевидно, не поддерживаются.</li>
+                  <li>
+                    При использовании трёхмерных слоёв поддерживается только рендер{" "}
+                    <mark className="plugin">Classic 3D</mark>.
+                  </li>
+                  <li>
+                    Некоторые видеоформаты и футажи, связанные через{" "}
+                    <mark className="plugin">Dynamic Link</mark>, могут не работать.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              После экспорта шаблона, проверьте его работу в{" "}
+              <mark className="app">Adobe Premiere</mark>.
+            </li>
+          </ul>
+          <Divider>Дополнительные материалы</Divider>
+          <ArticleMedia
+            src="tHDnFgW9NpQ"
+            type="youtube"
+          />
+        </NestedDetailsSummary>
+        <p>
+          Помимо параметров формата, в <mark className="select">«Output Module»</mark>{" "}
+          доступны и параметры цвета во вкладке <mark className="select">«Color»</mark>.
+          Здесь можно переопределить цветовое пространство экспортируемого файла или
+          отключить управление цветом.
+        </p>
         <ArticleMedia
-          caption="Output Module Settings"
-          src="legacy/aftereffects/output_module_settings.png"
+          caption="Настройки цветового пространства в модуле вывода"
+          src="after-effects/export/output-module-color.png"
+          type="image"
+        />
+        <Divider>
+          Вникаем в <mark className="select">«Render Settings»</mark>
+        </Divider>
+        <p>
+          <mark className="select">«Render Settings»</mark> отвечает за настройки
+          разрешения рендера композиции, качество слоёв, использование прокси, рабочую
+          область рендера и позволяет переопределить некоторые параметры, например
+          отключить все эффекты или принудительно включить рендер слоёв-направляющих.
+        </p>
+        <ArticleMedia
+          caption="Настройки рендера композиции"
+          src="after-effects/export/render-settings.png"
           type="image"
         />
         <Divider>
@@ -97,834 +2534,51 @@ const AeExport: React.FC = () => {
         <p>
           <mark className="select">«Output To»</mark> задаёт путь для сохранения файла. В
           зависимости от выбранного формата к названию автоматически добавляется
-          расширение. Для имён файлов можно использовать стандартный шаблон или создать
-          собственный.
+          расширение. Для имён и расположения файлов можно использовать стандартные
+          шаблоны или создать собственный.
         </p>
         <ArticleMedia
-          caption="Render Queue"
-          src="legacy/aftereffects/filename_preset_render_queue.png"
-          type="image"
-        />
-        <p>
-          Если в списке шаблонов для <mark className="select">«Output To»</mark> выбрать{" "}
-          <mark className="select">«Custom»</mark>, откроется окно{" "}
-          <mark className="select">«File Name and Location Template»</mark>, где можно
-          изменить шаблон названия, создать собственный или установить его по умолчанию.
-        </p>
-        <p>
-          Для шаблонов имени поддерживаются относительные пути, что обеспечивает гибкость
-          управления расположением экспортируемых файлов. Кнопка{" "}
-          <mark className="select">«Add Property»</mark> позволяет добавить в структуру
-          имени дополнительные параметры.
-        </p>
-        <ArticleMedia
-          caption="File Name and Location Template"
-          src="legacy/aftereffects/filename_and_location_template.png"
-          type="image"
-        />
-        <Addition type="info">
-          <ul>
-            <li>
-              Чтобы сохранить композицию на уровень выше папки с проектом, используйте
-              конструкцию{" "}
-              <mark className="code">[projectFolder]\..\[compName].[fileExtension]</mark>.
-            </li>
-            <li>
-              Чтобы сохранить файл в подпапку внутри папки проекта, используйте
-              конструкцию{" "}
-              <mark className="code">
-                [projectFolder]\renders\[compName].[fileExtension]
-              </mark>
-              , где вместо <mark className="path">renders</mark> можно указать любое
-              другое название.
-            </li>
-          </ul>
-        </Addition>
-        <Divider>
-          Разбираемся с <mark className="select">«Render Settings»</mark>
-        </Divider>
-        <p>
-          <mark className="select">«Render Settings»</mark> — необязательный, но полезный
-          раздел настроек. В нём можно задать разрешение, включить или отключить
-          определённые свойства слоёв и указать, использовать ли прокси в финальном
-          экспорте.
-        </p>
-        <ArticleMedia
-          caption="Render Settings"
-          src="legacy/aftereffects/render_settings.png"
-          type="image"
-        />
-        <Divider>Управляем очередью рендеринга</Divider>
-        <ul>
-          <li>
-            <p>
-              Если вы отправили в очередь несколько композиций, но экспортировать нужно
-              лишь некоторые из них, установите или снимите флажки напротив нужных
-              элементов.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/select_comp_queue.png"
-              type="image"
-            />
-          </li>
-          <li>
-            Чтобы убрать композицию из очереди, выделите её и нажмите{" "}
-            <mark className="key">Delete</mark>.
-          </li>
-          <li>
-            <p>
-              Чтобы экспортировать одну композицию в нескольких форматах, нажмите на
-              кнопку «плюса» рядом с <mark className="select">«Output Module»</mark> и
-              укажите нужные форматы. Этот подход экономит время при работе со сложными
-              проектами, так как <mark className="app">Adobe After Effects</mark> рендерит
-              композицию один раз, а затем упаковывает её в разные форматы.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/multiple_formats_render_queue.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              Чтобы повторить экспорт уже отрендеренной или случайно отменённой
-              композиции, нажмите <mark className="key">ПКМ</mark> на нужном элементе в
-              очереди и выберите <mark className="select">«Duplicate»</mark>. Если вы
-              хотите перезаписать исходный файл, выберите{" "}
-              <mark className="select">«Duplicate with File Name»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/duplicate_with_filename_render_queue.png"
-              type="image"
-            />
-          </li>
-        </ul>
-        <Divider>
-          Создаём шаблон для <mark className="select">«Output Module»</mark> и назначаем
-          его по умолчанию
-        </Divider>
-        <p>
-          Чтобы не настраивать параметры экспорта каждый раз заново, их можно сохранить в
-          собственный шаблон. Для этого добавьте композицию в очередь с помощью{" "}
-          <mark className="key">Ctrl + M</mark> и нажмите на значок стрелки рядом с{" "}
-          <mark className="select">«Output Module»</mark>. В контекстном меню выберите{" "}
-          <mark className="select">«Make Template»</mark> — откроется окно для создания и
-          настройки шаблонов. Это же окно можно вызвать через{" "}
-          <mark className="select">«Edit» → «Templates» → «Output Module»</mark>.
-        </p>
-        <ArticleMedia
-          caption="Make Template"
-          src="legacy/aftereffects/render_queue_make_template.png"
-          type="image"
-        />
-        <p>
-          В открывшемся окне появится пресет <mark className="select">«Untitled»</mark>,
-          который можно переименовать позже. В разделе{" "}
-          <mark className="select">«Defaults»</mark> можно назначить созданный шаблон
-          стандартным для определённых типов задач.
-        </p>
-        <p>
-          Чтобы отредактировать шаблон, нажмите <mark className="select">«Edit»</mark>,
-          после чего откроется окно{" "}
-          <mark className="select">«Output Module Settings»</mark>. Окно редактирования
-          шаблона экспорта практически не отличается от обычной настройки типа вывода.
-        </p>
-        <ArticleMedia
-          caption="Output Module Templates"
-          src="legacy/aftereffects/output_module_templates.png"
-          type="image"
-        />
-        <Divider>
-          Создаём шаблон для <mark className="select">«Render Settings»</mark> и назначаем
-          его по умолчанию
-        </Divider>
-        <p>
-          Процесс создания пресета для <mark className="select">«Render Settings»</mark>{" "}
-          аналогичен созданию шаблона для модуля вывода. Для этого нажмите на значок
-          стрелки рядом с <mark className="select">«Render Settings»</mark> и выберите{" "}
-          <mark className="select">«Make Template»</mark>. Это же окно можно вызвать через{" "}
-          <mark className="select">«Edit» → «Templates» → «Render Settings»</mark>.
-        </p>
-        <ArticleMedia
-          caption="Render Queue"
-          src="legacy/aftereffects/make_template_render_settings.png"
-          type="image"
-        />
-        <p>
-          В открывшемся окне будет создан пресет с названием{" "}
-          <mark className="select">«Untitled»</mark>, которое можно заменить на любое
-          другое. В разделе <mark className="select">«Defaults»</mark> можно задать его в
-          качестве пресета по умолчанию для других типов файлов.
-        </p>
-        <p>
-          Чтобы отредактировать шаблон, нажмите <mark className="select">«Edit»</mark>,
-          после чего откроется окно <mark className="key">Render Settings</mark>. Окно
-          редактирования шаблона ничем не отличается от обычной настройки рендеринга.
-        </p>
-        <ArticleMedia
-          caption="Render Settings Templates"
-          src="legacy/aftereffects/render_settings_templates.png"
+          caption="Выбор расположения для экспорта композиции"
+          src="after-effects/export/output-to.png"
           type="image"
         />
       </DetailsSummary>
       <DetailsSummary
-        anchor="advanced-export-settings"
-        tag="настройки экспорта, export settings, кодек, битрейт, cbr, vbr, cq, crf, voukoder, аудио, prores, h.264, качество видео, разрешение, контейнер, gop, цветовая субдискретизация, color space"
-        title="Какие параметры экспорта могут влиять на качество и размер видеофайла?"
-      >
-        <Addition type="tldr">
-          <ul>
-            <li>
-              На качество изображения и размер итогового видеофайла влияют кодек, битрейт
-              и метод кодирования: <mark className="select">«CQ»</mark>,{" "}
-              <mark className="select">«VBR»</mark> или{" "}
-              <mark className="select">«CBR»</mark>, а также «сложность» и динамика
-              происходящего в композиции.
-            </li>
-            <li>
-              Размер импортированных исходников никак не влияет на вес итогового файла
-              после экспорта. Если вы импортировали <mark className="file">MP4</mark>{" "}
-              объёмом 200 МБ, то, экспортировав композицию с этим исходником из{" "}
-              <mark className="app">Adobe After Effects</mark> без изменений и наложения
-              эффектов, вы не получите файл идентичного размера.
-            </li>
-            <li>
-              Эта статья содержит только «душную» теорию, поэтому, если вы ищете, как
-              настроить экспорт, — прочитайте другие статьи, например{" "}
-              <a href="#export-mp4">«Как экспортировать композицию в MP4?»</a> или{" "}
-              <a href="#export-prores">«Как экспортировать композицию в Apple ProRes?»</a>{" "}
-              для демонстрации настроек тех или иных параметров экспорта в{" "}
-              <mark className="app">Adobe After Effects</mark>.
-            </li>
-          </ul>
-        </Addition>
-        <p>
-          После того как вы <a href="#import-workflow">подготовили исходники</a> и
-          завершили работу над проектом, наступает не менее важный этап — экспорт.
-          Правильно подобранные настройки помогут получить качественное изображение,
-          оптимальный размер файла и обеспечить совместимость с различными платформами.
-        </p>
-        <p>
-          В этой статье мы разберём ключевые параметры экспорта, которые позволят вам
-          контролировать финальный результат и донести вашу работу до зрителя в наилучшем
-          виде.
-        </p>
-        <Divider>Подбираем кодек для экспорта</Divider>
-        <p>
-          <mark className="word">Кодеки</mark> условно делятся на две большие группы, и
-          выбор между ними зависит от вашей задачи, что вы хотите позже сделать с вашим
-          полученным видео.
-        </p>
-        <ul>
-          <li>
-            <p>
-              Просмотровые (потоковые) кодеки, такие как{" "}
-              <mark className="video">H.264</mark>,{" "}
-              <mark className="video">HEVC (H.265)</mark>,{" "}
-              <mark className="video">VP9</mark> и <mark className="video">AV1</mark>,
-              предназначены для конечного зрителя. Они сильно сжимают видео для экономии
-              места и быстрой передачи по сети, что делает их идеальными для публикации в
-              интернете. При одинаковых настройках{" "}
-              <mark className="video">HEVC (H.265)</mark> и{" "}
-              <mark className="video">AV1</mark> создают файлы меньшего объёма, чем{" "}
-              <mark className="video">H.264</mark> и <mark className="video">VP9</mark>.
-            </p>
-            <p>
-              Однако для монтажа такие видео не всегда подходят, так как их сложное сжатие
-              создаёт «тормоза» и артефакты на ровном месте из-за постоянной нагрузки при
-              декодировании. Некоторые видеокарты, например{" "}
-              <mark className="hardware">NVIDIA RTX 5000</mark> и процессоры{" "}
-              <mark className="hardware">Intel Core</mark> со встроенным видеоядром,
-              поддерживают аппаратное ускорение этого процесса для{" "}
-              <mark className="video">H.264</mark>, но даже оно не всегда работает
-              корректно, если вы работаете с подобными исходниками.
-            </p>
-            <ArticleMedia
-              src="cfz3jwdo1v0"
-              type="youtube"
-            />
-          </li>
-          <li>
-            <p>
-              Монтажные кодеки, например <mark className="video">Apple ProRes 4444</mark>{" "}
-              или <mark className="video">DNxHD</mark>, созданы для дальнейшего
-              использования в монтажных программах.
-            </p>
-            <p>
-              Они сохраняют максимум качества, почти не сжимая изображение, и меньше
-              нагружают ресурсы вашего устройства при декодировании, что обеспечивает
-              плавную работу в редакторах. Главный их недостаток — огромный размер файлов,
-              для работы с которыми может потребоваться быстрый накопитель.
-            </p>
-          </li>
-        </ul>
-        <p>
-          При экспорте часть параметров — например, разрешение и частота кадров — обычно
-          наследуется из настроек композиции. Другие, такие как битрейт и цветовая
-          субдискретизация, задаются вручную, если кодек это позволяет. Однако есть
-          исключения: у некоторых форматов, в частности{" "}
-          <mark className="video">Apple ProRes</mark>, битрейт не настраивается и зависит
-          от разрешения и частоты кадров.
-        </p>
-        <Addition type="info">
-          <p>
-            Не стоит путать кодек с контейнером. Несмотря на то, что они оба относятся к
-            видеофайлам, они предназначены для разных целей.
-          </p>
-          <ul>
-            <li>
-              <mark className="word">Кодек</mark> — это технология или алгоритм, который
-              сжимает (кодирует) каждый поток для уменьшения размера файла, а затем
-              распаковывает (декодирует) его для просмотра. При сжатии с потерями кодек
-              отбрасывает часть визуальной информации, которую считает избыточной. Чем
-              ниже битрейт, тем агрессивнее сжатие и заметнее артефакты: изображение
-              начнёт рассыпаться на квадраты, детали — размываться, а плавные градиенты
-              превратятся в грубые полосы.
-            </li>
-            <li>
-              <p>
-                <mark className="word">Контейнер</mark> — оболочка, внутри которого
-                хранятся видео и аудио, субтитры и служебная информация, а также
-                обеспечивает их синхронизацию при воспроизведении. Расширение файла,
-                например <mark className="file">MP4</mark>,{" "}
-                <mark className="file">MKV</mark>, <mark className="file">MOV</mark> как
-                раз и указывает на тип контейнера.
-              </p>
-              <p>
-                Поскольку <mark className="word">контейнер</mark> — это лишь «обёртка»,
-                его иногда можно сменить без перекодирования и конвертации. Например, если
-                видео с кодеком <mark className="video">H.264</mark> упаковано в{" "}
-                <mark className="file">MOV</mark>, в большинстве случаев оно будет
-                корректно работать, если просто изменить расширение файла на{" "}
-                <mark className="file">MP4</mark>.
-              </p>
-            </li>
-          </ul>
-        </Addition>
-        <Divider>Настраиваем «качество» перед экспортом</Divider>
-        <p>
-          Обычно за визуальное качество видео отвечает битрейт. Если битрейта не хватит
-          для передачи движения происходящего в вашем видео — оно начнёт неизбежно
-          «сыпаться».
-        </p>
-        <p>
-          Однако, если файл уже был сильно сжат, допустим до 1 Мбит/с, вернуть исходное
-          качество, просто повысив битрейт при повторной конвертации, не получится. Видео
-          не работает как архив, который можно сжать и распаковать без потерь. Если
-          установить битрейт значительно выше, чем у пережатого оригинала, вы лишь
-          увеличите размер файла, но не улучшите качество.
-        </p>
-        <Addition type="info">
-          Если вам нужно улучшить качество исходника, воспользуйтесь{" "}
-          <a href="#upscale-video-photo">программами для апскейла видео</a>.
-        </Addition>
-        <p>
-          Для управления битрейтом, или скоростью передачи данных, при кодировании
-          используются три основных метода: <mark className="select">«CBR»</mark>,{" "}
-          <mark className="select">«VBR»</mark> и{" "}
-          <mark className="select">«CQ» («CQP»/«CRF»)</mark>.
-        </p>
-        <ArticleMedia
-          src="eN5a2kHHP7s"
-          type="youtube"
-        />
-        <ul>
-          <li>
-            При постоянном битрейте <mark className="select">«CBR»</mark> скорость
-            передачи данных остаётся неизменной на протяжении всего видео. Этот режим
-            предсказуем и идеально подходит для прямых трансляций, например на{" "}
-            <mark className="web">YouTube</mark> или <mark className="web">Twitch</mark>,
-            но для хранения обычных видео он не идеален. Кодировщик в таком случае тратит
-            одинаковое количество данных и на статичные, и на динамичные сцены, что порой
-            делает размер файла неоправданно большим.
-          </li>
-          <li>
-            <p>
-              При переменном битрейте <mark className="select">«VBR»</mark> скорость
-              динамически меняется в зависимости от сложности кадра — увеличивается в
-              динамичных сценах и уменьшается в статичных. Это позволяет достичь
-              приемлемого качества при меньшем размере файла и часто используется в
-              сервисах по типу <mark className="app">Netflix</mark> или{" "}
-              <mark className="app">КиноПоиск</mark>. Однако этот вариант не подходит для
-              сцен с резкими перепадами динамики, когда требуется выделить поток данных,
-              значительно превышающий заданный.
-            </p>
-            <p>
-              У переменного битрейта есть два режима:{" "}
-              <mark className="select">«1 pass»</mark> и{" "}
-              <mark className="select">«2 pass»</mark>.
-            </p>
-            <ul>
-              <li>
-                В режиме <mark className="select">«1 pass»</mark> кодировщик обрабатывает
-                видео за один проход, сжимая его «на лету». Это быстро, но менее
-                эффективно.
-              </li>
-              <li>
-                В режиме <mark className="select">«2 pass»</mark> на первом проходе
-                кодировщик анализирует всё видео и создаёт «карту» сложных и простых сцен.
-                На втором проходе он использует эту карту, чтобы грамотно распределить
-                битрейт: больше данных отдаётся сложным сценам, меньше — простым. Этот
-                способ медленнее, но гораздо эффективнее для достижения заданного размера
-                файла.
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>
-              Метод постоянного качества<sup>1</sup> позволяет задать кодировщику целевой
-              уровень качества со словами:{" "}
-              <mark className="quote">
-                «Я задал такой-то уровень качества, а битрейт подбирай сам»
-              </mark>
-              . Он сам решает, сколько данных выделить каждому кадру, чтобы картинка
-              выглядела одинаково хорошо и в спокойных, и в динамичных сценах.
-            </p>
-            <p>
-              Это идеальный вариант для сохранения максимального качества без ручного
-              подбора битрейта: он не раздувает файл, как{" "}
-              <mark className="select">«CBR»</mark>, и зачастую сжимает видео эффективнее
-              и качественнее, чем <mark className="select">«VBR»</mark>.
-            </p>
-            <Addition type="info">
-              <sup>1</sup> Параметр постоянного качества может называться по-разному в
-              зависимости от кодека: <mark className="select">«CQP»</mark>,{" "}
-              <mark className="select">«QP»</mark>, <mark className="select">«CRF»</mark>{" "}
-              или <mark className="select">«CQ»</mark>.
-            </Addition>
-            <p>
-              Этот уровень качества вы задаёте по абстрактной шкале от 0 до 51, где 0 —
-              сжатие без потерь, а 51 — максимально возможное сжатие с наихудшим
-              качеством.
-            </p>
-            <ul>
-              <li>
-                Значение по умолчанию в большинстве случаев — 23. Этого более чем
-                достаточно для экспорта на <mark className="web">YouTube</mark>,{" "}
-                <mark className="web">VK Видео</mark> и подобные площадки. Но учтите:
-                видеохостинги всё равно пережмут ваш ролик по-своему, чтобы сэкономить
-                место на своих серверах.
-              </li>
-              <li>
-                Если нужно сохранить видео с максимальным качеством, установите значение
-                от 17 до 20. Размер файла, само собой, заметно вырастет. Выбирать значение
-                ниже 15 смысла нет: серьёзного прироста качества вы не заметите, а вот
-                размер файла раздуете значительно.
-              </li>
-            </ul>
-            <Addition type="warning">
-              <ul>
-                <li>
-                  Этот тип кодирования доступен только в{" "}
-                  <mark className="video">H.264</mark>,{" "}
-                  <mark className="video">H.265</mark>, <mark className="video">VP9</mark>
-                  , <mark className="video">AV1</mark> и их производных.
-                </li>
-                <li>
-                  <p>
-                    При экспорте из <mark className="app">Adobe After Effects</mark> и{" "}
-                    <mark className="app">Adobe Media Encoder</mark> стандартными
-                    средствами этот вариант кодирования выбрать нельзя. Для этого нужно
-                    использовать сторонний плагин-экспортёр{" "}
-                    <mark className="plugin">Voukoder Classic</mark>
-                    <sup>1</sup> или <mark className="plugin">Voukoder Pro</mark> или
-                    сторонние конвертеры, использующие <mark className="app">FFmpeg</mark>
-                    , например <mark className="app">Shutter Encoder</mark>.
-                  </p>
-                  <ul>
-                    <li>
-                      <sup>1</sup> <mark className="plugin">Voukoder Classic</mark>{" "}
-                      доступен только для Windows и больше не доступен на официальном
-                      сайте и в репозитории{" "}
-                      <a href="https://github.com/Vouk/voukoder/releases/tag/13.4.1">
-                        GitHub
-                      </a>
-                      . Архив с этой версией экспортёра и «коннекторами» вы можете найти в{" "}
-                      <a href="https://t.me/+Qd9xu7A4TeIwNzY6">
-                        «складе стройматериалов»
-                      </a>{" "}
-                      по хештегу <mark className="tag">#voukoder</mark>.
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </Addition>
-          </li>
-        </ul>
-        <Divider>
-          Разбираемся, почему видео «рассыпается» даже при высоком битрейте
-        </Divider>
-        <p>
-          Если видео, экспортированное в <mark className="video">H.264</mark> или его
-          производные с высоким битрейтом, «рассыпается» в динамичных сценах, причина,
-          скорее всего, не в битрейте, а в структуре{" "}
-          <mark className="codec-param">GOP</mark> — группы кадров.
-        </p>
-        <p>
-          Чтобы понять почему, нужно знать, что большинство кодеков, включая{" "}
-          <mark className="video">H.264</mark>, для максимального сжатия используют
-          межкадровую компрессию (<mark className="word">Inter-frame compression</mark>).
-          В отличие от внутрикадрового сжатия (
-          <mark className="word">Intra-frame compression</mark>,{" "}
-          <mark className="word">All-Intra</mark> или{" "}
-          <mark className="word">I-frame only</mark>), где каждый кадр — это полноценное
-          изображение, при межкадровой компрессии кодек хранит не саму последовательность
-          картинок, а набор инструкций о том, как один кадр должен превратиться в другой.
-          То есть записываются только изменения между ними, и от того, как эти изменения
-          сгруппированы в GOP, и зависит финальный результат.
-        </p>
-        <p>
-          <mark className="codec-param">GOP</mark> или{" "}
-          <mark className="codec-param">Group of Pictures</mark> — это последовательность,
-          начинающаяся с одного <mark className="codec-param">I-кадра</mark> и включающая
-          несколько <mark className="codec-param">P-кадров</mark> и{" "}
-          <mark className="codec-param">B-кадров</mark> до следующего опорного. От длины
-          этой группы напрямую зависит поведение видео при сжатии.
-        </p>
-        <ul>
-          <li>
-            <mark className="codec-param">I-кадры</mark> — ключевые или опорные кадры. Это
-            полноценные, самодостаточные изображения, подобные{" "}
-            <mark className="image">JPEG</mark>. Они содержат всю визуальную информацию и
-            служат основой для декодирования остальных кадров.
-          </li>
-          <li>
-            <mark className="codec-param">P-кадры</mark> — прогнозируемые. Они не хранят
-            целое изображение, а только данные о различиях относительно предыдущего{" "}
-            <mark className="codec-param">I-кадра</mark> или{" "}
-            <mark className="codec-param">P-кадра</mark>: например, «сдвинуть этот блок
-            пикселей вправо» или «немного осветлить область». Это позволяет значительно
-            экономить место.
-          </li>
-          <li>
-            <mark className="codec-param">B-кадры</mark> — двунаправленные. Они
-            анализируют и предыдущие, и последующие кадры, вычисляя, как между ними
-            изменяется картинка. Такой подход обеспечивает ещё большее сжатие, но требует
-            больше вычислений при кодировании и декодировании.
-          </li>
-        </ul>
-        <ArticleMedia
-          src="v1WgvdbCSs0"
-          type="youtube"
-        />
-        <ul>
-          <li>
-            При длинном <mark className="codec-param">GOP</mark>, например 250 кадров
-            между опорными, кодек получает больше пространства для предсказаний и экономии
-            данных. Это даёт лучший результат при низком битрейте и уменьшает размер
-            файла. Однако при резких движениях или смене сцены качество может резко
-            упасть, так как кодеку не хватает свежих{" "}
-            <mark className="codec-param">I-кадров</mark> для восстановления точной
-            картинки.
-          </li>
-          <li>
-            При коротком <mark className="codec-param">GOP</mark>, например 12–25 кадров,
-            ключевые кадры появляются чаще. Это делает видео более устойчивым к артефактам
-            и потере качества, но увеличивает размер файла. Именно поэтому монтажные
-            кодеки вроде <mark className="video">Apple ProRes</mark> используют только{" "}
-            <mark className="codec-param">I-кадры</mark> — такой режим называют{" "}
-            <mark className="word">All-Intra</mark>. Он обеспечивает стабильность при
-            редактировании и идеально подходит для постпродакшена.
-          </li>
-        </ul>
-        <p>
-          Для экспорта в веб чаще применяют <mark className="word">длинный GOP</mark>, так
-          как это стандарт для стриминговых сервисов. Но если вы замечаете, что на резких
-          сменах сцены картинка «сыпется» или цветопередача на однотонных участках
-          искажается, попробуйте поэкспериментировать с длиной{" "}
-          <mark className="select">«GOP»</mark> в настройках кодека. Это можно сделать,
-          например, в <mark className="plugin">Voukoder</mark> или{" "}
-          <mark className="app">Shutter Encoder</mark>.
-        </p>
-        <ArticleMedia
-          src="nFGmb8Z2zLw"
-          type="youtube"
-        />
-        <Divider>Сохраняем «цвета» при экспорте</Divider>
-        <p>
-          Цвета на видео могут зависеть от настроек вашего проекта, в частности указанного
-          рабочего цветового пространства и от выбора варианта экспорта.
-        </p>
-        <p>
-          Если вам важна точность цветопередачи, например при экспорте композиции с жёстко
-          заданным цветом фона — экспортируйте видео в кодеке с цветовой субдискретизацией{" "}
-          <mark className="codec-param">4:4:4</mark>, например{" "}
-          <mark className="video">Apple ProRes 4444</mark>. Этот вариант хорош для
-          дальнейшего видеопроизводства, но при загрузке на видеохостинги ролик всё равно
-          будет перекодирован с субдискретизацией{" "}
-          <mark className="codec-param">4:2:0</mark>, и точность исходного цвета
-          потеряется. Если ваш заказчик настаивает на конкретном оттенке, проще объяснить
-          ему этот метод сжатия видео, чем пытаться что-то исправить.
-        </p>
-        <p>
-          <mark className="word">Цветовая субдискретизация</mark> — это метод сжатия
-          изображения, при котором информация о цвете для группы пикселей усредняется,
-          чтобы сэкономить место. Он основан на том, что человеческий глаз гораздо
-          чувствительнее к перепадам яркости, чем к перепадам цвета. Поскольку мы плохо
-          различаем мелкие детали цвета, на этой информации можно сэкономить много места,
-          и человеческий глаз этого почти не заметит. Визуально уловить разницу с
-          оригинальным файлом почти невозможно, если не проверять цвет пипеткой в
-          графическом редакторе.
-        </p>
-        <p>
-          Работает это за счёт того, что видеосигнал разделяется на две составляющие,
-          которые наш глаз воспринимает по-разному:{" "}
-          <mark className="word">яркостную</mark> и{" "}
-          <mark className="word">цветность</mark>. Такой подход используется, например, в
-          цветовой модели <mark className="term">YCbCr</mark>, широко применяемой в
-          цифровом видео.
-        </p>
-        <ul>
-          <li>
-            <mark className="word">Яркость</mark> (Luma, Y) — это фактически
-            детализированная чёрно-белая версия изображения. Она отвечает за контуры,
-            текстуры и чёткость. Наш глаз особенно чувствителен к этой информации.
-          </li>
-          <li>
-            <mark className="word">Цветность</mark> (Chroma, Cb/Cr) — это информация о
-            цвете, которая «раскрашивает» чёрно-белую основу. Главный принцип
-            субдискретизации: мы сохраняем всю или почти всю информацию о яркости, но
-            выбрасываем часть информации о цвете.
-          </li>
-        </ul>
-        <p>
-          Основные форматы цветовой субдискретизации —{" "}
-          <mark className="codec-param">4:2:0</mark>,{" "}
-          <mark className="codec-param">4:2:2</mark> и{" "}
-          <mark className="codec-param">4:4:4</mark>. Первая цифра в этой схеме отвечает
-          за количество сэмплов яркости, вторая — за количество сэмплов цвета в первой
-          строке пикселей, а третья — во второй. Иногда встречается и четвёртая цифра,
-          которая указывает на наличие альфа-канала.
-        </p>
-        <ArticleMedia
-          src="aF_RCHoc89U"
-          type="youtube"
-        />
-        <ul>
-          <li>
-            В <mark className="codec-param">4:2:0</mark> изображение получается самым
-            сжатым: на четыре пикселя у каждого сохраняется собственная яркость, но
-            цветовая информация берётся общей для целого квадрата из двух по горизонтали и
-            двух по вертикали. Кодек делает ставку на то, что в небольшом квадрате 2×2
-            пикселя цвет вряд ли сильно меняется, и наш глаз «согласится» с усреднённым
-            вариантом, пока детализация по яркости остаётся высокой. Этот вариант
-            используется практически везде: на <mark className="web">YouTube</mark>,{" "}
-            <mark className="web">TikTok</mark> и других популярных видеоплощадках.
-          </li>
-          <li>
-            В <mark className="codec-param">4:2:2</mark> компромисс мягче: яркость
-            остаётся у каждого пикселя своя, а цвет делится попарно по горизонтали. То
-            есть первый и второй пиксель получают одинаковый цвет, третий и четвертый —
-            тоже. В этом случае кодек отбрасывает половину горизонтальной информации о
-            цвете. Наш мозг смотрит на два соседних пикселя и как бы думает:{" "}
-            <mark className="quote">„Они так близко, наверное, одного цвета“</mark>. И мы
-            не замечаем подмены. Этот вариант часто используется в профессиональных
-            камерах.
-          </li>
-          <li>
-            В <mark className="codec-param">4:4:4</mark> или{" "}
-            <mark className="codec-param">4:4:4:4</mark> и яркость, и цвет уникальны для
-            каждого пикселя, вследствие чего цвета после экспорта не исказятся. Никакой
-            экономии — никакой потери цветовой информации, однако размер такого файла вас
-            вряд ли обрадует.
-          </li>
-        </ul>
-        <Divider>Избегаем «дерганого» видео из-за частоты кадров</Divider>
-        <p>
-          Если частота кадров исходного материала и проекта не совпадают, это может
-          привести к нежелательным артефактам. Например, если вы импортировали видео с
-          частотой 25 FPS, а в настройках композиции указали 30 FPS, некоторые кадры будут
-          повторяться, что приведёт к прерывистому, «дёрганому» движению. Чтобы этого
-          избежать, убедитесь, что частота кадров проекта соответствует частоте кадров
-          исходников. Это можно проверить в окне <mark className="select">«Project»</mark>{" "}
-          в столбце <mark className="select">«Frame Rate»</mark>.
-        </p>
-        <p>
-          Если вы импортировали в проект видео с переменной частотой кадров, например
-          снятое на iPhone, его стоит конвертировать в видео с постоянной частотой — 30
-          или 60 FPS — с помощью конвертера вроде{" "}
-          <mark className="app">Shutter Encoder</mark>. О том, как это сделать, вы можете
-          прочитать в <a href="#import-pipeline">этой статье</a>. Такие видео проще
-          редактировать и ротоскопировать.
-        </p>
-        <ArticleMedia
-          import-workflow
-          src="vzh-41y1gxQ"
-          type="youtube"
-        />
-        <Divider>Настраиваем аудио</Divider>
-        <p>
-          При экспорте видео можно настроить звук, изменив его{" "}
-          <mark className="word">битрейт</mark>, <mark className="word">битность</mark>,{" "}
-          <mark className="word">кодек</mark> и{" "}
-          <mark className="word">частоту дискретизации</mark>. Однако в повседневной
-          работе к этим настройкам обращаются редко и обычно оставляют настройки экспорта
-          по умолчанию. Разницу в качестве между исходным и экспортированным звуком на
-          слух замечают не все, но упомянуть об этих параметрах стоит для расширения
-          кругозора.
-        </p>
-        <ul>
-          <li>
-            С <mark className="word">битрейтом</mark> мы уже знакомы, но не с его
-            типичными значениями для аудио. Как правило, для получения хорошего звука
-            после экспорта и публикации на <mark className="web">YouTube</mark> и других
-            площадках достаточно значения 256 Кбит/с, а для остальных случаев — 320 Кбит/с
-            при условии, что изначально был импортирован качественный аудиофайл.
-          </li>
-          <li>
-            <p>
-              С аудиокодеками всё немного запутаннее: пользователи часто путают форматы
-              сжатия звука с кодеками, применяемыми в беспроводных наушниках. Между собой
-              они различаются и по способу сжатия, и по качеству итогового звучания.
-            </p>
-            <p>
-              Например, при экспорте из <mark className="app">Adobe After Effects</mark>{" "}
-              звук обычно кодируется в <mark className="audio">AAC</mark> с потерями при{" "}
-              <a href="#export-mp4">любом из трёх видов</a> экспорта в{" "}
-              <mark className="video">H.264</mark> или остаётся несжатым при экспорте в{" "}
-              <mark className="video">Apple ProRes</mark>.
-            </p>
-            <ArticleMedia
-              src="6IVmlBWMxVA"
-              type="youtube"
-            />
-            <p>
-              Если вам нужно экспортировать композицию с аудиодорожкой, закодированной в
-              специфическом формате<sup>1</sup>, и упаковать её в определённый контейнер,
-              воспользуйтесь плагинами <mark className="plugin">Voukoder Classic</mark>
-              <sup>2</sup> или <mark className="plugin">Voukoder Pro</mark>.
-            </p>
-            <Addition type="warning">
-              <ul>
-                <li>
-                  <sup>1</sup> Некоторые форматы, например{" "}
-                  <mark className="audio">WAV</mark>, могут не воспроизводиться на ряде
-                  устройств.
-                </li>
-                <li>
-                  <sup>2</sup> <mark className="plugin">Voukoder Classic</mark> доступен
-                  только для устройств на Windows и больше не доступен на официальном
-                  сайте и в репозитории{" "}
-                  <a href="https://github.com/Vouk/voukoder/releases/tag/13.4.1">
-                    {" "}
-                    GitHub{" "}
-                  </a>{" "}
-                  . Архив с этой версией экспортёра и «коннекторами» вы можете найти в{" "}
-                  <a href="https://t.me/+Qd9xu7A4TeIwNzY6">«складе стройматериалов»</a> по
-                  хештегу <mark className="tag">#voukoder</mark>.
-                </li>
-              </ul>
-            </Addition>
-          </li>
-          <li>
-            <p>
-              И самое интересное — <mark className="word">частота дискретизации</mark> и{" "}
-              <mark className="word">битность</mark>.
-            </p>
-            <ul>
-              <li>
-                <p>
-                  <mark className="word">Частота дискретизации</mark> показывает, сколько
-                  раз в секунду аналоговый звуковой сигнал «снимается» и превращается в
-                  цифровые данные — примерно как количество кадров в секунду для видео.
-                  Измеряется в герцах или килогерцах. Стандартным значением считается{" "}
-                  48000 Гц, именно с ним по умолчанию работают{" "}
-                  <mark className="app">Adobe After Effects</mark> и{" "}
-                  <mark className="app">Adobe Premiere</mark>.
-                </p>
-                <Addition type="info">
-                  Если в одном проекте используются аудиодорожки с разной частотой
-                  дискретизации, например 44100 Гц и 48000 Гц, могут возникнуть сложности
-                  с их синхронизацией.
-                </Addition>
-              </li>
-              <li>
-                <p>
-                  <mark className="word">Битность</mark> — это количество битов информации
-                  в одном образце звука. Она определяет его динамический диапазон и
-                  точность передачи амплитуды (громкости). Чем выше битность, тем
-                  детальнее и качественнее получается цифровое аудио.
-                </p>
-                <p>
-                  Стандартные значения — 16 и 24 бита. Для финального экспорта на площадки
-                  вроде <mark className="web">YouTube</mark> обычно достаточно 16 бит.
-                  Если же предстоит дальнейшая обработка звука, лучше работать с 24-битным
-                  аудио: оно даёт больше простора для редактирования и лучше сохраняет
-                  исходное качество.
-                </p>
-              </li>
-            </ul>
-            <ArticleMedia
-              src="w6f6FeRRjPU"
-              type="youtube"
-            />
-          </li>
-        </ul>
-        <Divider>Дополнительные материалы</Divider>
-        <div className="flexible-links">
-          <a href="https://blog.frame.io/2017/02/15/choose-the-right-codec/">
-            Выбор кодека для проекта
-          </a>
-          <a href="https://aws.amazon.com/ru/blogs/rus/media-part-1-back-to-basics-gops-explained/">
-            Что такое «GOP»?
-          </a>
-        </div>
-        <ArticleMedia
-          src="MprgQSTqL9E"
-          type="youtube"
-        />
-        <ArticleMedia
-          src="gqDuIcJ-alM"
-          type="youtube"
-        />
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="stop-use-ame"
-        tag="dynamic link, проблемы при экспорте"
-        title="Почему «из каждого утюга» советуют не использовать Adobe Media Encoder для экспорта?"
+        anchor="media-encoder-issues"
+        tag="dynamic link, проблемы при экспорте, медиа енкодер, ame"
+        title="Почему «из каждого утюга» советуют не использовать Adobe Media Encoder для экспорта композиций?"
       >
         <p>
-          Долгие годы <mark className="app">Adobe Media Encoder</mark> считался
-          практически безальтернативным решением для экспорта из{" "}
-          <mark className="app">Adobe After Effects</mark> в популярный кодек{" "}
-          <mark className="video">H.264</mark>. Это было связано с тем, что в старых
-          версиях <mark className="app">Adobe After Effects</mark> отсутствовала
-          возможность напрямую экспортировать композиции в этом формате. В этой статье мы
-          рассмотрим, с какими «сюрпризами» можно столкнуться при использовании{" "}
-          <mark className="app">Adobe Media Encoder</mark>.
+          Исторически долгие годы <mark className="app">Adobe Media Encoder</mark>{" "}
+          оставался практически безальтернативным решением для экспорта из{" "}
+          <mark className="app">Adobe After Effects</mark> в кодек{" "}
+          <mark className="video">H.264</mark> и ряд других форматов. Однако в{" "}
+          <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">23.0 (2023)</mark> и новее возможность экспорта в{" "}
+          <mark className="video">H.264</mark> вернулась спустя несколько лет, поэтому
+          обращаться к <mark className="app">Adobe Media Encoder</mark> для этой цели
+          можно значительно реже.
         </p>
-        <p>
-          Изначально <mark className="app">Adobe Media Encoder</mark> был разработан для
-          конвертации исходников из одного формата в другой, а также для создания
-          прокси-файлов, которые затем использовались в{" "}
-          <mark className="app">Adobe Premiere</mark>.
-        </p>
-        <p>
-          Однако со временем в <mark className="app">Adobe Media Encoder</mark> появилась
-          функция экспорта композиций из <mark className="app">Adobe After Effects</mark>,
-          и пошло-поехало. Некоторые пользователи по привычке или из-за незнания
-          альтернатив продолжают полагаться только на{" "}
-          <mark className="app">Adobe Media Encoder</mark>.
-        </p>
-        <p>
-          С выходом <mark className="app">Adobe Media Encoder</mark>{" "}
-          <mark className="version">23.0 (2023)</mark> и выше необходимость в{" "}
-          <mark className="app">Adobe Media Encoder</mark> для экспорта в{" "}
-          <mark className="video">H.264</mark> заметно уменьшилась: в{" "}
-          <mark className="app">Adobe After Effects</mark> вернули нативную функцию
-          экспорта в этот кодек. Если вы используете старые версии программы, лучше
-          воспользоваться плагинами, такими как{" "}
+        <Addition type="info">
+          Если вы используете <mark className="app">Adobe After Effects</mark> ниже{" "}
+          <mark className="version">23.0 (2023)</mark>, вместо{" "}
+          <mark className="app">Adobe Media Encoder</mark> лучше воспользоваться плагинами{" "}
           <mark className="plugin">AfterCodecs</mark> или{" "}
-          <mark className="plugin">Voukoder</mark>. <a href="#export-mp4">Подробнее...</a>
-        </p>
-        <Addition type="info">
-          Если нужно поставить на рендеринг сразу несколько композиций из разных проектов,
-          создайте один пустой проект в <mark className="app">Adobe After Effects</mark> и
-          импортируйте в него нужные проекты. Затем вы сможете добавить все композиции в
-          очередь и запустить экспорт.
+          <mark className="plugin">Voukoder</mark>.{" "}
+          <a href="#how-to-export-mp4">Подробнее...</a>
         </Addition>
+        <p>
+          Изначально <mark className="app">Adobe Media Encoder</mark> создавался как
+          инструмент для конвертации медиафайлов между различными форматами и создания
+          прокси-файлов для <mark className="app">Adobe Premiere</mark>. Позже он получил
+          поддержку экспорта композиций из{" "}
+          <mark className="app">Adobe After Effects</mark> в{" "}
+          <mark className="video">H.264</mark>, поэтому многие пользователи по привычке
+          или из-за незнания альтернатив продолжают пользоваться им. Несмотря на это,
+          программа по-прежнему остаётся востребованной в некоторых сценариях, а при
+          работе с ней можно столкнуться с рядом особенностей, о которых и пойдёт речь в
+          этой статье.
+        </p>
         <Divider>
           Какие проблемы могут возникнуть при использовании{" "}
           <mark className="app">Adobe Media Encoder</mark>?
@@ -970,19 +2624,10 @@ const AeExport: React.FC = () => {
             При экспорте через <mark className="app">Adobe Media Encoder</mark> на
             сторонних эффектах могут появиться красные кресты, водяные знаки или другие
             признаки отсутствия лицензии. Даже если в{" "}
-            <mark className="app">Adobe After Effects</mark> с активацией всё в порядке,
+            <mark className="app">Adobe After Effects</mark> с активацией всё в порядке —
             не факт, что она корректно подхватится в{" "}
             <mark className="app">Adobe Media Encoder</mark>, поскольку лицензии многих
             сторонних эффектов привязаны именно к{" "}
-            <mark className="app">Adobe After Effects</mark>.
-          </li>
-          <li>
-            Если вы используете английскую локализацию{" "}
-            <mark className="app">Adobe After Effects</mark> и экспортируете композицию с
-            выражениями, а <mark className="app">Adobe Media Encoder</mark> настроен на
-            русский язык интерфейса, выражения могут работать со сбоями из-за различий в
-            локализации. Обычно это исправляется сменой языка интерфейса{" "}
-            <mark className="app">Adobe Media Encoder</mark> или экспортом напрямую из{" "}
             <mark className="app">Adobe After Effects</mark>.
           </li>
           <li>
@@ -1011,2343 +2656,249 @@ const AeExport: React.FC = () => {
         </ul>
       </DetailsSummary>
       <DetailsSummary
-        anchor="quality-videoplatforms"
-        tag="соцсети, youtube, tiktok, сжатие видео, fps, frame rate, warp stabilizer"
-        title="Почему видеоплощадки так нещадно портят качество изображения?"
+        anchor="fix-color-banding"
+        tag="color banding, полосы, шум, глубина цвета, bit depth, цветовой бэндинг"
+        title="Как избавиться от ступенчатого градиента после экспорта?"
       >
         <p>
-          Представьте, что <mark className="web">YouTube</mark>,{" "}
-          <mark className="web">Instagram</mark>
-          <sup>1</sup>, <mark className="web">TikTok</mark> и прочие — это огромные
-          склады, куда пользователи ежедневно загружают миллионы часов материала. Главная
-          причина агрессивного сжатия видео — экономия места на серверах. Если бы площадки
-          хранили всё в исходном качестве, им потребовались бы невообразимые объёмы
-          памяти. Это нереально дорого, особенно для площадок, предоставляющий бесплатный
-          доступ к контенту своим пользователями.
+          <mark className="word">Ступенчатый градиент</mark>, или{" "}
+          <mark className="word">Color Banding</mark>, — это визуальный артефакт, при
+          котором плавный переход между оттенками превращается в заметные цветовые
+          «ступени». Этот дефект особенно заметен на участках с низкой контрастностью: на
+          небе, в тумане или в местах, где близкие оттенки плавно переходят друг в друга.
         </p>
+        <ArticleMedia
+          autoPlay
+          loop
+          caption="Полосы в градиенте, дефект усилен с помощью эффекта Posterize"
+          src="shared/export/color-banding-example.mp4"
+          type="video"
+        />
+        <p>
+          Основная причина такого явления — недостаточное количество оттенков, доступных
+          для хранения или отображения изображения. В 8-битном изображении, которое чаще
+          всего встречается в интернете и на видеоплощадках, доступно всего 256 градаций
+          на каждый цветовой канал. При работе с тёмными или малоконтрастными градиентами
+          часть этих уровней не используется, из-за чего переходы между оттенками
+          становятся менее плавными.
+        </p>
+        <p>
+          Если доступных уровней недостаточно для такого перехода, значения округляются до
+          ближайших доступных, из-за чего появляются заметные «ступени». Дополнительно
+          ситуацию могут усугублять потери при сжатии кодеками, например{" "}
+          <mark className="video">H.264</mark> и <mark className="video">H.265</mark>,
+          особенно при низком битрейте.
+        </p>
+        <ArticleMedia
+          src="h9j89L8eQQk"
+          type="youtube"
+        />
+        <Divider>Боремся с «полосатостью»</Divider>
         <Addition type="danger">
-          <sup>1</sup> <mark className="web">Instagram</mark> и{" "}
-          <mark className="company">Meta</mark> признаны экстремистскими организациями и
-          запрещены на территории Российской Федерации.
+          Описанные ниже способы не всегда помогут полностью избавиться от вышеописанных
+          артефактов. Полученный результат будет зависеть от происходящего в композиции
+          или способа борьбы с ним.
         </Addition>
-        <p>
-          Вторая причина — скорость доставки контента. Мало кто захочет скачивать два
-          гигабайта ради пятисекундного ролика, особенно если интернет медленный. Поэтому,
-          чтобы видео воспроизводилось без задержек, его нужно сделать максимально
-          «лёгким».
-        </p>
-        <p>
-          Ваша цель — отдать площадке настолько качественный исходник, чтобы даже после её
-          «мясорубки» он выглядел достойно. Если есть время, экспериментируйте: загружайте
-          тестовые ролики с разными настройками экспорта в режиме приватного доступа на{" "}
-          <mark className="web">YouTube</mark> или другую площадку и сравнивайте
-          результат. Но, пожалуйста, не зацикливайтесь на мелких деталях. Обычный зритель,
-          скорее всего, всё равно не заметит той разницы между загруженным видео и
-          исходником, которая так бросается вам в глаза.
-        </p>
-        <p>
-          Популярный техноблогер{" "}
-          <a href="https://www.youtube.com/@mkbhd">Маркус Браунли</a> однажды провёл
-          эксперимент: он тысячу раз загружал на <mark className="web">YouTube</mark> одно
-          и то же видео, чтобы посмотреть, что с ним станет. Результат оказался
-          предсказуемым: с каждой новой загрузкой площадка сжимала ролик заново, и
-          качество падало. Это работает по тому же принципу, что и копирование старых
-          VHS-кассет: каждая следующая копия всегда хуже предыдущей.
-        </p>
-        <ArticleMedia
-          src="JR4KHfqw-oE"
-          type="youtube"
-        />
-        <p>
-          Однако итоговый результат зависит не только от{" "}
-          <mark className="word">битрейта</mark>, но и от самого контента. Динамичные
-          сцены со сложной графикой или множеством мелких частиц требуют очень высокого
-          битрейта для сохранения деталей. При низком значении битрейта{" "}
-          <mark className="word">кодек</mark> не справляется, так как его принцип работы —
-          экономить на статичных участках кадра, чтобы направить все ресурсы на прорисовку
-          движения. Если поток данных слишком большой для выделенного битрейта — качество
-          видео неизбежно пострадает.
-        </p>
-        <ArticleMedia
-          src="r6Rp-uo6HmI"
-          type="youtube"
-        />
-        <p>
-          Если вы ограничены битрейтом, например требованиями видеохостинга, можно
-          попробовать «упростить» изображение, чтобы помочь кодеку сжать видео без
-          значительной потери качества.
-        </p>
         <ul>
           <li>
-            Тряска камеры заставляет каждый пиксель в кадре постоянно меняться, что
-            требует огромного битрейта. Попробуйте применить эффект стабилизации, например{" "}
-            <mark className="plugin">Warp Stabilizer</mark>, чтобы сделать изображение
-            статичнее и помочь кодеку сохранить детали, а не тратить ресурсы на обработку
-            дрожания.
+            <p>
+              Измените цвета вашего градиента на более яркие, это позволит использовать
+              больше уровней цвета и сделать переходы плавнее.
+            </p>
+            <Addition type="warning">
+              Изменение яркости с помощью эффектов по типу{" "}
+              <mark className="plugin">Brightness & Contrast</mark> или{" "}
+              <mark className="plugin">Curves</mark> не исправит данную ситуацию, так как
+              они изменяют уже имеющиеся значения, но не добавляют новые оттенки.
+            </Addition>
           </li>
           <li>
-            Резкие и хаотичные движения плохо сжимаются при ограниченном битрейте. В
-            результате такие сцены с большой вероятностью превратятся в «кашу» из
-            артефактов и размытых блоков.
+            <p>
+              Если вы используете эффекты для создания градиента, например{" "}
+              <mark className="plugin">Gradient Ramp</mark> или{" "}
+              <mark className="plugin">S_Gradient</mark>, изучите их настройки. Возможно,
+              там есть параметры вроде <mark className="select">«Add Noise»</mark> для
+              создания шума или <mark className="select">«Ramp Scatter»</mark> для
+              смешивания цветов градиента между собой.
+            </p>
+            <p>
+              Если таких параметров нет — смешайте цвета градиента с помощью стандартного
+              эффекта <mark className="plugin">Scatter</mark> или{" "}
+              <mark className="plugin">S_Deband</mark> из пакета{" "}
+              <mark className="plugin">Boris FX Sapphire</mark>.
+            </p>
+            <Addition type="warning">
+              Эффекты для генерации и подавления шума, а также смешивания пикселей требуют
+              больше ресурсов устройства, что повышает риск ошибок вроде{" "}
+              <mark className="warning">«Out of Memory»</mark>.
+            </Addition>
           </li>
           <li>
-            Некоторые кодеки, например <mark className="video">H.264</mark> и его
-            производные, экономят место, объединяя похожие оттенки в один блок, из-за чего
-            теряются детали. Старайтесь избегать низкоконтрастных градиентов на важных
-            объектах, чтобы сохранить их детализацию.
+            <p>
+              При необходимости сначала уменьшите лишний шум с помощью эффектов вроде
+              стандартного <mark className="plugin">Remove Grain</mark> или{" "}
+              <mark className="plugin">Denoiser III</mark> из пакета{" "}
+              <mark className="plugin">Red Giant Magic Bullet Suite</mark> или их
+              аналогов. После этого добавьте небольшое количество шума с помощью эффектов{" "}
+              <mark className="plugin">«Add Grain»</mark> или{" "}
+              <mark className="plugin">Noise</mark> со значением 1–5% — это может помочь
+              скрыть ступенчатость градиента.
+            </p>
+            <Addition type="info">
+              Если вы часто работаете с градиентами, создайте собственный пресет для
+              быстрого устранения «полосатости».
+            </Addition>
+          </li>
+          <li>
+            <p>
+              Попробуйте повысить глубину цвета проекта. Для этого откройте{" "}
+              <mark className="select">«Project Settings»</mark> с помощью комбинации
+              клавиш <mark className="key">Ctrl + Alt + Shift + K</mark>, перейдите во
+              вкладку <mark className="select">«Color»</mark> и в параметре{" "}
+              <mark className="select">«Bit Depth»</mark> установите значение 16 бит или
+              32 бит на канал.
+            </p>
+            <Addition type="warning">
+              При увеличении глубины цвета для рендеринга одного кадра потребуется больше
+              ресурсов устройства, что повышает риск ошибок вроде{" "}
+              <mark className="warning">«Out of Memory»</mark>.
+            </Addition>
+            <ArticleMedia
+              caption="Project Settings"
+              src="media/after-effects/settings/project-settings-change-bit-depth.png"
+              type="image"
+            />
+            <p>
+              Однако если исходники уже созданы в 8 бит на канал или вы экспортируете
+              композицию в формат, который поддерживает только 8 бит на канал, например
+              стандартный <mark className="video">H.264</mark>, этот способ не поможет.
+            </p>
+            <Addition type="info">
+              Количество поддерживаемых цветов для выбранного формата можно узнать в
+              выпадающем списке параметра <mark className="select">«Color»</mark> в{" "}
+              <mark className="select">«Output Module Settings»</mark>.
+            </Addition>
+          </li>
+          <li>
+            <p>
+              Попробуйте экспортировать композицию в другом формате, например{" "}
+              <mark className="plugin">Apple ProRes 4444</mark>, который может сохранять
+              больше цветовой информации и не использует цветовую субдискретизацию.
+            </p>
+            <Addition type="warning">
+              После публикации видео на видеоплощадке оно всё равно будет перекодировано в
+              8 бит с цветовой субдискретизацией{" "}
+              <mark className="codec-param">4:2:0</mark>, из-за чего часть информации о
+              цвете будет потеряна. С этим вы ничего поделать не сможете.
+            </Addition>
           </li>
         </ul>
       </DetailsSummary>
       <DetailsSummary
-        anchor="export-mp4"
-        tag="h264, h265, hevc, avc1, voukoder, aftercodecs"
-        title="Как экспортировать композицию в MP4?"
+        anchor="fix-rendering-error-while-writing-to-file"
+        tag="ошибка экспорта, файл занят, видео используется другим процессом"
+        title="«Rendering error while writing to file (...). Unable to delete existing file» или «An unexpected error occurred while exporting a composition. Error code: 9988»"
       >
         <p>
-          Обычно под экспортом в <mark className="video">MP4</mark> из{" "}
-          <mark className="app">Adobe After Effects</mark> подразумевают экспорт в{" "}
-          <mark className="video">H.264</mark> — один из самых популярных кодеков, с
-          которым ежедневно сталкиваются пользователи интернета, будь то в социальных
-          сетях, на видеохостингах, сайтах или даже на телевидении. Первая версия этого
-          стандарта была выпущена в 2003 году, и до сих пор он активно используется.
-          Помимо <mark className="video">H.264</mark>, существуют более эффективные
-          наследники, такие как <mark className="video">H.265 (HEVC)</mark> и{" "}
-          <mark className="video">AV1</mark>, но они менее популярны из-за проблем с
-          совместимостью на старых устройствах.
+          Скорее всего, вы пытаетесь перезаписать файл, который сейчас используется другой
+          программой, например открыт в видеоплеере или отправляется в мессенджере.
         </p>
         <p>
-          В этой статье мы рассмотрим, как экспортировать композицию в{" "}
-          <mark className="video">H.264</mark> и его производных напрямую из{" "}
-          <mark className="app">Adobe After Effects</mark> без использования{" "}
-          <mark className="app">Adobe Media Encoder</mark>. Это можно сделать несколькими
-          способами: с помощью стандартного экспортёра{" "}
-          <mark className="video">H.264</mark>, доступного в{" "}
+          Для решения проблемы закройте программу, которая использует файл, и повторите
+          экспорт. Если ошибка не исчезнет — измените путь сохранения, выберите другой
+          формат экспорта или перезагрузите устройство.
+        </p>
+      </DetailsSummary>
+      <DetailsSummary
+        anchor="fix-export-1kb-h264"
+        tag="не экспортируется, битый файл, кириллица в пути"
+        title="Почему при экспорте в MP4 с помощью стандартного H.264 сохраняется файл размером 1 КБ?"
+      >
+        <p>
+          Скорее всего, вы столкнулись с багом{" "}
           <mark className="app">Adobe After Effects</mark>{" "}
-          <mark className="version">23.0 (2023)</mark> и выше, или сторонних плагинов —{" "}
-          <mark className="plugin">Voukoder</mark> и{" "}
-          <mark className="plugin">AfterCodecs</mark>. Какой способ выбрать — зависит от
-          вас, цели экспорта и вашего проекта.
+          <mark className="version">23.1 (2023)</mark>. Из-за кириллицы или символов вне{" "}
+          <mark className="term">ASCII</mark> в пути сохранения при экспорте через
+          встроенный кодек <mark className="video">H.264</mark> получается повреждённый
+          файл размером 1 КБ, который не открывается ни одной программой.
+        </p>
+        <p>
+          Для решения этой проблемы достаточно обновить{" "}
+          <mark className="app">Adobe After Effects</mark> до версии{" "}
+          <mark className="version">23.6 (2023)</mark> или выше и повторить экспорт.
         </p>
         <Addition type="info">
-          Перед чтением этой статьи рекомендуется <a href="#render-queue">ознакомиться</a>{" "}
-          с интерфейсом окна <mark className="select">«Render Queue»</mark> и его
-          функционалом, если вы впервые экспортируете композиции из{" "}
-          <mark className="app">Adobe After Effects</mark>.
-        </Addition>
-        <Addition type="danger">
           <ul>
             <li>
-              <p>
-                Обратите внимание: с помощью кодеков <mark className="video">H.264</mark>{" "}
-                и <mark className="video">H.265</mark>
-                <sup>1</sup> не получится экспортировать видео с прозрачностью. Для
-                экспорта композиции с прозрачным фоном лучше использовать формат{" "}
-                <mark className="video">QuickTime (Apple ProRes 4444)</mark>.
-              </p>
-              <ul>
-                <li>
-                  <sup>1</sup> У кодека <mark className="video">H.265</mark> всё же есть
-                  нюанс — чтобы получить видео с этим кодеком и альфа-каналом, нужно
-                  сначала экспортировать композицию в{" "}
-                  <mark className="video">Apple ProRes 4444</mark>, а затем конвертировать
-                  её через <mark className="app">Shutter Encoder</mark> с включённой
-                  опцией <mark className="select">«Enable alpha channel»</mark>. Однако
-                  альфа-канал в <mark className="video">H.265</mark> на практике можно
-                  увидеть только в браузере <mark className="app">Safari</mark> — в{" "}
-                  <mark className="app">Adobe After Effects</mark> и других монтажных
-                  программах он отображаться не будет.
-                </li>
-              </ul>
+              Проверить текущую версию <mark className="app">Adobe After Effects</mark>{" "}
+              можно в меню <mark className="select">«Help» → «About After Effects»</mark>.
             </li>
             <li>
-              Из-за особенностей стандарта <mark className="video">H.264</mark> и его
-              производных, не получится экспортировать композицию с нечётным разрешением,
-              например 725×501. В таком случае{" "}
-              <mark className="app">Adobe After Effects</mark> автоматически растянет
-              видео до разрешения 726×502 или выдаст ошибку при экспорте.
+              Если вы не хотите или не можете обновить программу по каким-либо причинам —
+              укажите путь сохранения композиции без кириллицы или экспортируйте видео в{" "}
+              <mark className="video">H.264</mark> через альтернативные способы.{" "}
+              <a href="#how-to-export-mp4">Подробнее...</a>
             </li>
           </ul>
-        </Addition>
-        <Divider>
-          Экспортируем с помощью стандартного <mark className="video">H.264</mark>
-        </Divider>
-        <Addition type="info">
-          Если вы используете <mark className="app">Adobe After Effects</mark>{" "}
-          <mark className="version">22.6 (2022)</mark> и ниже, пролистайте эту статью
-          дальше для ознакомления с альтернативными способами экспорта.
-        </Addition>
-        <p>
-          Начнём с самого простого способа экспорта видео в{" "}
-          <mark className="video">MP4</mark> — через стандартный экспортёр{" "}
-          <mark className="plugin">H.264</mark>. Его добавили в{" "}
-          <mark className="app">Adobe After Effects</mark>{" "}
-          <mark className="version">23.0 (2023)</mark>, и теперь он используется по
-          умолчанию вместо старого пресета{" "}
-          <mark className="select">«AVI (Animation)»</mark>, который был стандартом в
-          более ранних версиях.
-        </p>
-        <p>
-          Вслед за этим были добавлены новые пресеты{" "}
-          <mark className="select">«H.264 (15 Мбит/c)»</mark>,{" "}
-          <mark className="select">«H.264 (5 Мбит/c)»</mark> и{" "}
-          <mark className="select">«H.264 (40 Мбит/c)»</mark> для быстрого применения
-          настроек.
-        </p>
-        <Addition type="warning">
-          <p>
-            Учтите, что у встроенного в <mark className="app">Adobe After Effects</mark>{" "}
-            экспортёра <mark className="plugin">H.264</mark> есть несколько проблем и
-            ограничений. Если вы с ними столкнётесь, программа выдаст предупреждение.
-          </p>
-          <ul>
-            <li>
-              Он не умеет экспортировать видео с нестандартной частотой кадров, например{" "}
-              20 FPS. Если проигнорировать предупреждение, ролик получится ускоренным и
-              закончится раньше звуковой дорожки. При использовании{" "}
-              <mark className="plugin">AfterCodecs</mark>,{" "}
-              <mark className="plugin">Voukoder</mark> или других форматов такой проблемы
-              нет.
-            </li>
-            <li>Он плохо дружит с неквадратными пикселями в настройках композиции.</li>
-            <li>
-              Из-за особенностей самого стандарта <mark className="video">H.264</mark> у
-              вас не получится экспортировать композицию с нечётным разрешением, например{" "}
-              725×501. В этом случае <mark className="app">Adobe After Effects</mark>{" "}
-              автоматически растянет видео до 726×502.
-            </li>
-            <li>
-              Видео, экспортированные через стандартный{" "}
-              <mark className="plugin">H.264</mark>, могут не открываться в стандартном{" "}
-              <mark className="app">медиаплеере Windows</mark> и на некоторых устройствах,
-              например iPhone. Обычно это решается повторной конвертацией видео через
-              любой конвертер (например, <mark className="app">Shutter Encoder</mark>) или
-              экспортом через альтернативные плагины.
-            </li>
-          </ul>
-        </Addition>
-        <ul>
-          <li>
-            <p>
-              Чтобы отправить на экспорт текущую композицию или выделенную в окне{" "}
-              <mark className="select">«Project»</mark>, нажмите{" "}
-              <mark className="key">Ctrl + M</mark> или выберите в меню{" "}
-              <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/render_queue_h264.png"
-              type="image"
-            />
-            <p>
-              Когда откроется окно <mark className="select">«Render Queue»</mark>,
-              убедитесь, что у вас выбран стандартный пресет для экспорта в{" "}
-              <mark className="video">H.264</mark>. Выбрать нужный шаблон можно с помощью
-              значка стрелки справа от <mark className="select">«Output Module»</mark>.
-            </p>
-          </li>
-          <li>
-            <p>
-              Чтобы изменить битрейт или другие параметры, нажмите на название шаблона —
-              откроется окно <mark className="select">«Output Module»</mark>. Параметры,
-              связанные с изменением битрейта для <mark className="video">H.264</mark>,
-              находятся в разделе <mark className="select">«Format Options»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Output Module Settings"
-              src="legacy/aftereffects/output_module_format_options.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              В этом окне можно выбрать режим битрейта: переменный или постоянный. Для
-              динамичных сцен с множеством частиц выберите{" "}
-              <mark className="select">«CBR»</mark> и установите битрейт повыше. Режим{" "}
-              <mark className="select">«VBR»</mark> сэкономит место, но может ухудшить
-              качество.
-            </p>
-            <Addition type="info">
-              Если вы не хотите подбирать битрейт вручную, но нужно получить максимальное
-              качество, ваш выбор — режим <mark className="select">«CQ»</mark> в плагине{" "}
-              <mark className="plugin">Voukoder</mark>. В стандартном{" "}
-              <mark className="plugin">H.264</mark> этот режим кодирования отсутствует.
-            </Addition>
-            <ArticleMedia
-              caption="H.264 Options"
-              src="legacy/aftereffects/h264_options.png"
-              type="image"
-            />
-          </li>
-          <li>
-            После того как вы указали нужный битрейт или настроили другие параметры
-            экспорта, нажимайте <mark className="select">«OK»</mark>, пока не закроются
-            все окна настроек.
-          </li>
-          <li>
-            <p>
-              В <mark className="select">«Output To»</mark> укажите путь и имя файла. Для
-              запуска экспорта нажмите <mark className="select">«Render»</mark> или
-              клавишу <mark className="key">Enter</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/start_render_button.png"
-              type="image"
-            />
-          </li>
-          <li>
-            Когда экспорт композиции закончится, файл появится в указанной вами
-            директории. С полученным видео делайте что хотите: передайте клиенту,
-            опубликуйте в соцсетях или удалите.
-          </li>
-        </ul>
-        <Divider>
-          Экспортируем с помощью <mark className="plugin">Voukoder</mark>
-        </Divider>
-        <ContentFilter
-          windowsContent={
-            <>
-              <Addition type="info">
-                <ul>
-                  <li>
-                    В этой статье демонстрируется{" "}
-                    <mark className="plugin">Voukoder Classic</mark>{" "}
-                    <mark className="version">13.4.1</mark>, недоступный для устройств на
-                    macOS.
-                  </li>
-                  <li>
-                    <mark className="plugin">Voukoder Classic</mark> в некоторых случаях
-                    может исказить цвет. Если вам нужно сохранить точность цветопередачи,
-                    используйте экспорт в <mark className="video">Apple ProRes</mark> и
-                    конвертируйте видео с помощью стороннего ПО, например{" "}
-                    <mark className="app">Shutter Encoder</mark> или используйте другие
-                    удобные вам способы экспорта.
-                  </li>
-                </ul>
-              </Addition>
-              <p>
-                Если результат экспорта через стандартный{" "}
-                <mark className="video">H.264</mark> вас не устраивает, попробуйте плагин{" "}
-                <mark className="plugin">Voukoder</mark>. Прежде чем им воспользоваться,
-                нужно установить саму утилиту вместе с «коннекторами» с помощью
-                установочных файлов.
-              </p>
-              <p>
-                К сожалению, исходный репозиторий этой версии{" "}
-                <mark className="plugin">Voukoder</mark> на{" "}
-                <a href="https://github.com/Vouk/voukoder/releases/tag/13.4.1">GitHub</a>{" "}
-                был удалён, так как её заменили платной{" "}
-                <mark className="plugin">Voukoder Pro</mark>. Архив с этой версией
-                экспортёра и «коннекторами» вы можете найти в{" "}
-                <a href="https://t.me/+Qd9xu7A4TeIwNzY6">складе стройматериалов</a> по
-                хештегу <mark className="tag">#voukoder</mark>. После корректной установки{" "}
-                <mark className="plugin">Voukoder</mark> должен появиться в списке{" "}
-                <mark className="select">«Format»</mark> в окне{" "}
-                <mark className="select">«Output Module»</mark>.
-              </p>
-              <Addition type="warning">
-                Для корректной установки <mark className="plugin">Voukoder</mark>{" "}
-                убедитесь, что <mark className="app">Adobe After Effects</mark> был
-                установлен в директорию по умолчанию.
-              </Addition>
-              <ul>
-                <li>
-                  <p>
-                    Чтобы отправить на экспорт текущую композицию или выделенную в окне{" "}
-                    <mark className="select">«Project»</mark>, нажмите{" "}
-                    <mark className="key">Ctrl + M</mark> или выберите в меню{" "}
-                    <mark className="select">
-                      «File» → «Export» → «Add to Render Queue»
-                    </mark>
-                    .
-                  </p>
-                  <ArticleMedia
-                    caption="Render Queue"
-                    src="legacy/aftereffects/render_queue_h264.png"
-                    type="image"
-                  />
-                  <p>
-                    Чтобы выбрать <mark className="plugin">Voukoder</mark> в качестве
-                    формата для экспорта, нажмите на название текущего пресета, чтобы
-                    открыть окно <mark className="select">«Output Module»</mark>.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    В открывшемся окне <mark className="select">«Output Module»</mark>{" "}
-                    выберите в <mark className="select">«Format</mark> значение{" "}
-                    <mark className="select">«Voukoder»</mark>. Чтобы открыть основное
-                    окно дополнительных настроек <mark className="plugin">Voukoder</mark>{" "}
-                    для выбора кодека и его параметров, нажмите на{" "}
-                    <mark className="select">«Format Options»</mark>.
-                  </p>
-                  <ArticleMedia
-                    caption="Output Module Settings"
-                    src="legacy/aftereffects/selecting_voukoder.png"
-                    type="image"
-                  />
-                </li>
-                <li>
-                  <p>
-                    После открытия настроек <mark className="plugin">Voukoder</mark> нужно
-                    выбрать кодек. По умолчанию выбрано значение{" "}
-                    <mark className="select">«H.264»</mark>, а в скобках — технология
-                    аппаратного ускорения кодирования<sup>1</sup>. При необходимости вы
-                    можете выбрать более эффективный по сжатию кодек{" "}
-                    <mark className="video">HEVC (H.265)</mark>, если нужно сохранить
-                    такое же качество при меньшем размере файла по сравнению с{" "}
-                    <mark className="video">H.264</mark>.
-                  </p>
-                  <ArticleMedia
-                    caption="Voukoder 13.4.1"
-                    src="legacy/aftereffects/select_codec_in_voukoder.png"
-                    type="image"
-                  />
-                  <Addition type="info">
-                    <ul>
-                      <li>
-                        <p>
-                          <sup>1</sup> Варианты показаны на примере связки «процессор{" "}
-                          <mark className="hardware">AMD</mark> + видеокарта{" "}
-                          <mark className="hardware">NVIDIA</mark>». Выбор на вашем
-                          устройстве может отличаться.
-                        </p>
-                        <ul>
-                          <li>
-                            <mark className="select">«x264»</mark> или{" "}
-                            <mark className="select">«x265»</mark> — кодирование с
-                            использованием только процессора. Стабильно, но не всегда
-                            быстро.
-                          </li>
-                          <li>
-                            <mark className="select">«NVIDIA NVENC»</mark> — кодирование с
-                            использованием аппаратного ускорения видеокарты{" "}
-                            <mark className="hardware">NVIDIA</mark>. Это может ускорить
-                            рендеринг, но не гарантирует полное использование видеокарты,
-                            особенно при использовании «тяжёлых» эффектов.
-                          </li>
-                          <li>
-                            <mark className="select">«AMD AMF»</mark> — то же самое, но
-                            для видеокарт и встроенной графики{" "}
-                            <mark className="hardware">AMD Radeon</mark>.
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        Кодеки <mark className="video">AV1</mark> и{" "}
-                        <mark className="video">VP9</mark> редко используются для экспорта
-                        из <mark className="app">Adobe After Effects</mark>. Если вам
-                        нужен этот формат, проще экспортировать композицию в условном{" "}
-                        <mark className="video">Apple ProRes 4444</mark>, а затем
-                        переконвертировать видео через{" "}
-                        <a href="https://www.shutterencoder.com/">Shutter Encoder</a> или
-                        другие конвертеры.
-                      </li>
-                    </ul>
-                  </Addition>
-                </li>
-                <li>
-                  <p>
-                    После выбора нужного кодека, например{" "}
-                    <mark className="select">«H.264 (NVIDIA NVENC)»</mark>, перейдите во
-                    вкладку <mark className="select">«Параметры»</mark>. Здесь можно
-                    настроить качество видео с помощью метода постоянного качества
-                    <sup>1</sup>, который нацелен на поддержание постоянного
-                    воспринимаемого качества, не заботясь о размере файла.
-                  </p>
-                  <Addition type="info">
-                    <sup>1</sup> Параметр постоянного качества может называться по-разному
-                    в зависимости от выбранного кодека:{" "}
-                    <mark className="select">«CQP»</mark>,{" "}
-                    <mark className="select">«QP»</mark>,{" "}
-                    <mark className="select">«CRF»</mark> или{" "}
-                    <mark className="select">«CQ»</mark>.
-                  </Addition>
-                  <ArticleMedia
-                    caption="Voukoder 13.4.1"
-                    src="legacy/aftereffects/codec_parameter_voukoder.png"
-                    type="image"
-                  />
-                  <p>
-                    При использовании метода постоянного качества кодировщик сам решает,
-                    какой битрейт выделить для каждого кадра, чтобы соответствовать
-                    заданному уровню качества. Этот уровень устанавливается значением{" "}
-                    <mark className="select">«CQP»</mark> от 0 до 51, где 0 — сжатие без
-                    потерь с огромным размером файла, а 51 — наименьший размер и наихудшее
-                    качество.
-                  </p>
-                  <ul>
-                    <li>
-                      По умолчанию для параметра постоянного качества установлено значение
-                      23. Этого более чем достаточно для экспорта на{" "}
-                      <mark className="web">YouTube</mark>,{" "}
-                      <mark className="web">VK Видео</mark> и подобные платформы. Учтите,
-                      что видеохостинги всё равно пережмут видео по-своему, чтобы
-                      сэкономить место на своих серверах.
-                    </li>
-                    <li>
-                      Если нужно сохранить почти максимальное качество, укажите для
-                      параметра постоянного качества значение от 17 до 20. Размер файла
-                      заметно возрастёт. Ставить значение меньше 15 нет смысла: серьёзного
-                      прироста качества вы не заметите, а вот размер файла раздуете не на
-                      шутку.
-                    </li>
-                    <li>
-                      Если хотите получить хорошее соотношение «качество/минимальный вес»,
-                      укажите для параметра постоянного качества значение 30.
-                      Экстремальные значения, например 50, использовать не рекомендуется,
-                      так как в итоге вы можете получить «кашу» из пикселей.
-                      Экспериментируйте со значениями с умом.
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <p>
-                    Если больше ничего настраивать не нужно, нажимайте{" "}
-                    <mark className="select">«OK»</mark>, пока не закроются все окна
-                    настроек. Не забудьте указать в{" "}
-                    <mark className="select">«Output To»</mark> путь и имя файла. Для
-                    запуска экспорта нажмите <mark className="select">«Render»</mark> или
-                    клавишу <mark className="key">Enter</mark>.
-                  </p>
-                  <ArticleMedia
-                    caption="Render Queue"
-                    src="legacy/aftereffects/start_render_button.png"
-                    type="image"
-                  />
-                </li>
-              </ul>
-            </>
-          }
-        />
-        <Divider>
-          Экспортируем с помощью <mark className="plugin">AfterCodecs</mark>
-        </Divider>
-        <p>
-          Ещё одна хорошая альтернатива для экспорта <mark className="video">H.264</mark>{" "}
-          из <mark className="app">Adobe After Effects</mark> — сторонний экспортёр{" "}
-          <mark className="plugin">AfterCodecs</mark> от{" "}
-          <mark className="company">Autokroma</mark>.
-        </p>
-        <ul>
-          <li>
-            <p>
-              Чтобы отправить на экспорт текущую композицию или выделенную в окне{" "}
-              <mark className="select">«Project»</mark>, нажмите{" "}
-              <mark className="key">Ctrl + M</mark> или выберите в меню{" "}
-              <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/render_queue_h264.png"
-              type="image"
-            />
-            <p>
-              Чтобы выбрать <mark className="plugin">AfterCodecs</mark> в качестве формата
-              для экспорта, нажмите на название текущего пресета, чтобы открыть окно{" "}
-              <mark className="select">«Output Module»</mark>.
-            </p>
-          </li>
-          <li>
-            <p>
-              В открывшемся окне <mark className="select">«Output Module»</mark> выберите
-              в <mark className="select">«Format</mark> значение{" "}
-              <mark className="select">«AfterCodecs MP4»</mark>. Чтобы открыть основное
-              окно дополнительных настроек <mark className="plugin">AfterCodecs</mark> для
-              выбора кодека и его параметров, нажмите на{" "}
-              <mark className="select">«Format Options»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Output Module Settings"
-              src="legacy/aftereffects/selecting_aftercodecs.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              В открывшемся окне можно настроить качество и скорость кодирования. По
-              умолчанию в параметре <mark className="select">«Quality»</mark> установлено
-              значение 70, а для <mark className="select">«Speed»</mark> — 5.
-            </p>
-            <ArticleMedia
-              caption="AfterCodecs 1.11.5 for Adobe After Effects"
-              src="legacy/aftereffects/aftercodecs_settings.png"
-              type="image"
-            />
-            <ul>
-              <li>
-                Параметр <mark className="select">«Tradeoff»</mark> определяет тип
-                кодирования. <mark className="select">«Quality»</mark> ставит в приоритет
-                качество (задаётся в процентах), а результат похож на смесь{" "}
-                <mark className="select">«VBR»</mark> и режима постоянного качества.
-                <mark className="select">«Bitrate»</mark> задаёт постоянный битрейт на всё
-                видео. <mark className="select">«File Size»</mark> подгоняет качество с
-                помощью переменного битрейта, чтобы уложиться в заданный размер файла.
-              </li>
-              <li>
-                Параметр <mark className="select">«Speed»</mark> определяет скорость
-                кодирования. Чем ниже значение, тем медленнее процесс, но лучше итоговое
-                качество и эффективнее сжатие.
-              </li>
-              <li>
-                В разделе <mark className="select">«Colors»</mark> можно настроить
-                битность и цветовой диапазон, но обычно эти параметры не трогают.
-              </li>
-              <li>
-                Параметр <mark className="select">«Audio Bitrate»</mark> отвечает за
-                качество звука. Автоматический режим может работать некорректно, поэтому
-                лучше вручную выставить значение <mark className="copy">320</mark> Кбит/с
-                или <mark className="copy">512</mark> Кбит/с, чтобы не жертвовать
-                качеством.
-              </li>
-              <li>
-                Параметр <mark className="select">«GOP»</mark> определяет, сколько{" "}
-                <mark className="codec-param">P-кадров</mark> и{" "}
-                <mark className="codec-param">B-кадров</mark> вставляется между ключевыми{" "}
-                <mark className="codec-param">I-кадрами</mark>.
-              </li>
-              <li>
-                Параметры <mark className="select">«Tuning»</mark>,{" "}
-                <mark className="select">«H.264 Profiles»</mark>,{" "}
-                <mark className="select">«VR Meta»</mark> и{" "}
-                <mark className="select">«Fast Start»</mark> лучше не трогать, если на то
-                нет веской причины.
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>
-              Если больше ничего настраивать не нужно, нажимайте{" "}
-              <mark className="select">«OK»</mark>, пока не закроются все окна настроек.
-              Не забудьте указать в <mark className="select">«Output To»</mark> путь и имя
-              файла. Для запуска экспорта нажмите <mark className="select">«Render»</mark>{" "}
-              или клавишу <mark className="key">Enter</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/start_render_button.png"
-              type="image"
-            />
-          </li>
-        </ul>
-        <Addition type="info">
-          Более подробную информацию о рекомендуемом процессе ввода и вывода можно найти в
-          Telegram-посте от <a href="https://t.me/montage_tutors/2">Montage Tutors</a>.
         </Addition>
       </DetailsSummary>
       <DetailsSummary
-        anchor="export-web"
-        tag="видео с прозрачностью, webm, vp9, av1, h265, alpha channel"
-        title="Как экспортировать композицию для веб-страницы?"
+        anchor="fix-output-file-will-be-resized"
+        tag="settings mismatch, output file will be resized from to meet format constraints, frame rate of output file will be adjusted to meet format constraints, audio may not synchronize, odd resolution, нечетное разрешение, ограничения форматов"
+        title="Как исправить «Settings mismatch» или почему при экспорте изменяется разрешение или частота кадров композиции?"
       >
         <p>
-          Рано или поздно наступает момент, когда нужно подготовить видео для публикации
-          на веб-странице. Современные браузеры без проблем воспроизводят{" "}
-          <mark className="video">H.264</mark> в контейнере{" "}
-          <mark className="video">MP4</mark>, но этот формат не всегда даёт оптимальное
-          соотношение качества и размера файла. Для веба существуют и более эффективные
-          варианты — например, <mark className="video">WEBM</mark> с кодеками{" "}
-          <mark className="video">VP9</mark> или <mark className="video">AV1</mark>. Эти
-          современные алгоритмы сжатия от <mark className="company">Google</mark>{" "}
-          обеспечивают заметно лучшее качество при том же битрейте и часто применяются в
-          вебе и мобильных приложениях.
+          <mark className="app">Adobe After Effects</mark> может автоматически изменить
+          параметры выходного файла, например разрешение или частоту кадров, если они не
+          соответствуют требованиям выбранного формата. Такое может произойти при
+          использовании нечётного разрешения с кодеками{" "}
+          <mark className="video">H.264</mark>, <mark className="video">H.265</mark> и их
+          производными, экспорте в формат с фиксированным размером кадра, например{" "}
+          <mark className="video">DV PAL</mark>, или при использовании формата с
+          нестандартным соотношением сторон пикселя.
         </p>
         <p>
-          На веб-странице можно указать несколько источников для одного тега{" "}
-          <mark className="code">{`<video>`}</mark> — браузер сам выберет первый, который
-          поддерживается устройством пользователя. Это нужно на случай, если тот или иной
-          кодек не будет работать в браузере или на устройстве.
-        </p>
-        <CodeSnippet language="html">
-          {`<!DOCTYPE html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>aefaq@aechat</title>
-  </head>
-  <body>
-    <video controls autoplay>
-      <source src="aefaq.webm" type="video/webm" />
-      <source src="aefaq.mp4" type="video/mp4" />
-    </video>
-  </body>
-</html>`}
-        </CodeSnippet>
-        <p>
-          Если видео на странице не требует прозрачности, его можно экспортировать в{" "}
-          <mark className="video">H.264</mark>, используя{" "}
-          <a href="#export-mp4">те же способы</a>, что и при обычном рендере. Затем
-          останется указать файл в качестве источника в исходном коде. Главное — следить
-          за размером файла: не каждый посетитель захочет ждать, пока загрузится видео на
-          сотни мегабайт.
-        </p>
-        <p>
-          А вот экспортировать композицию в более эффективные{" "}
-          <mark className="video">VP9</mark> или <mark className="video">AV1</mark> с
-          поддержкой альфа-канала<sup>1</sup> напрямую из{" "}
-          <mark className="app">Adobe After Effects</mark> не получится<sup>2</sup>.
-          Придётся сначала вывести её в качественном монтажном кодеке, например{" "}
-          <mark className="video">Apple ProRes</mark>, а затем перекодировать результат
-          через <mark className="app">Shutter Encoder</mark>.
-        </p>
-        <Addition type="danger">
-          <ul>
-            <li>
-              <sup>1</sup> <mark className="app">Safari</mark> на iOS и macOS, а также
-              многие программы для монтажа не поддерживают{" "}
-              <mark className="video">WEBM</mark> с прозрачностью, поэтому вместо
-              альфа-канала вы просто увидите чёрный фон.
-            </li>
-            <li>
-              <sup>2</sup> Несмотря на то, что существует сторонний плагин для экспорта{" "}
-              <a href="https://fnord.com/">WEBM</a> от <mark className="user">fnord</mark>{" "}
-              для <mark className="app">Adobe Media Encoder</mark>, я категорически не
-              рекомендую его использовать. Он часто выдаёт видео с жуткими артефактами,
-              отвратительным качеством или просто «падает» посреди рендера без всякой
-              причины.
-            </li>
-          </ul>
-        </Addition>
-        <Divider>Экспортируем композицию в промежуточном формате</Divider>
-        <ul>
-          <li>
-            Прежде чем экспортировать композицию в{" "}
-            <mark className="video">Apple ProRes</mark>, добавьте её в очередь рендеринга
-            с помощью комбинации клавиш <mark className="key">Ctrl + M</mark> или через
-            меню <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>
-            .
-          </li>
-          <li>
-            Нажмите на название пресета в очереди рендера, чтобы открыть настройки{" "}
-            <mark className="select">«Output Module»</mark>.
-          </li>
-          <li>
-            <p>
-              В параметре <mark className="select">«Format»</mark> выберите{" "}
-              <mark className="select">«QuickTime»</mark>, а в{" "}
-              <mark className="select">«Format Options»</mark> — подходящий тип кодека{" "}
-              <mark className="video">Apple ProRes</mark>.
-            </p>
-            <Addition type="info">
-              <ul>
-                <li>
-                  Для экспорта без альфа-канала выберите{" "}
-                  <mark className="video">Apple ProRes 422</mark> или другой подходящий
-                  вариант.
-                </li>
-                <li>
-                  Для экспорта с альфа-каналом выберите кодек{" "}
-                  <mark className="video">Apple ProRes 4444</mark> и не забудьте в
-                  параметре <mark className="select">«Channels»</mark> установить значение{" "}
-                  <mark className="select">«RGB + Alpha»</mark>.
-                </li>
-              </ul>
-            </Addition>
-          </li>
-          <li>
-            <p>
-              Если другие настройки не требуются, нажмите{" "}
-              <mark className="select">«OK»</mark>. Не забудьте указать путь и имя файла в{" "}
-              <mark className="select">«Output To»</mark>, а затем запустите экспорт
-              кнопкой <mark className="select">«Render»</mark> или клавишей{" "}
-              <mark className="key">Enter</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/start_render_button.png"
-              type="image"
-            />
-          </li>
-        </ul>
-        <Divider>Разбираемся с целью экспорта и альфа-каналом в браузерах</Divider>
-        <p>
-          После получения промежуточного результата, нужно разобраться как и для чего вы
-          хотите экспортировать видео.
-        </p>
-        <ul>
-          <li>
-            Если нужно расположить на страницу обычное видео без альфа-канала, то как было
-            сказано ранее, вы можете конвертировать промежуточный результат в{" "}
-            <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Video_codecs#common_codecs">
-              популярные кодеки
-            </a>
-            , которые поддерживаются браузерами, и указать несколько источников для одного
-            HTML-тега <mark className="code">{`<video>`}</mark>.
-          </li>
-          <li>
-            Если же нужно получить видео с альфа-каналом, и при этом добиться корректного
-            отображения во всех браузерах — включая <mark className="app">Safari</mark>,{" "}
-            <mark className="app">Firefox</mark> и браузеры на базе{" "}
-            <mark className="app">Chromium</mark> — придётся подготовить два файла:
-            специальный <mark className="video">H.265</mark> для{" "}
-            <mark className="app">Safari</mark> и <mark className="video">WEBM</mark> для
-            остальных. Дело в том, что <mark className="app">Safari</mark> на iOS и macOS
-            не поддерживает <mark className="video">WEBM</mark> с прозрачностью, поэтому
-            при единственном источнике вместо альфа-канала вы просто увидите чёрный фон.
-          </li>
-        </ul>
-        <Divider>Конвертируем промежуточный результат</Divider>
-        <p>
-          Для конвертации промежуточного результата в этой статье мы воспользуемся
-          бесплатной<sup>1</sup> сторонней программой{" "}
-          <mark className="app">Shutter Encoder</mark>.
-        </p>
-        <Addition type="info">
-          <ul>
-            <li>
-              <sup>1</sup> Если <mark className="app">Shutter Encoder</mark> у вас не
-              установлен, скачайте его по{" "}
-              <a href="https://www.shutterencoder.com/">этой</a> ссылке. Чтобы скачать
-              программу бесплатно, на сайте установите чекбокс{" "}
-              <mark className="select">
-                «I do not wish to participate in the development of the software»
-              </mark>
-              , а затем нажмите на кнопку скачивания для вашей операционной системы.
-            </li>
-            <li>
-              В <mark className="app">Shutter Encoder</mark> лучше сразу переключиться на
-              английский интерфейс. Перевод на русский язык в этой программе некорректен,
-              из-за чего можно легко запутаться и включить не те параметры. Чтобы открыть
-              настройки, нажмите на значок шестерёнки в левой части заголовка окна.
-            </li>
-          </ul>
-        </Addition>
-        <ul>
-          <li>
-            <p>
-              Для начала конвертации, откройте{" "}
-              <mark className="app">Shutter Encoder</mark>
-              <sup>1</sup> и импортируйте в него полученный файл с помощью кнопки{" "}
-              <mark className="select">«Browse»</mark> или перетащите их в окно программы
-              для добавления в очередь.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/shutter_encoder_import.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              Затем выберите в <mark className="select">«Choose Function»</mark> нужный
-              формат для конвертации, например <mark className="video">VP9</mark>,{" "}
-              <mark className="video">AV1</mark>
-              <sup>1</sup> или <mark className="video">H.265</mark>. Изменение данного
-              параметра будет относиться ко всем файлам в очереди конвертации.
-            </p>
-            <Addition type="info">
-              <sup>1</sup> <mark className="video">AV1</mark> сжимает видео эффективнее,
-              чем <mark className="video">VP9</mark>, но хуже поддерживается старыми
-              устройствами.
-            </Addition>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/select_vp9_shutter_encoder.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              Измените тип кодирования, переключив его с{" "}
-              <mark className="select">«VBR»</mark> на{" "}
-              <mark className="select">«CQ»</mark>.
-            </p>
-            <p>
-              Почему не <mark className="select">«VBR»</mark> и не{" "}
-              <mark className="select">«CBR»</mark>? Режим{" "}
-              <mark className="select">«CQ»</mark> распределяет битрейт динамически в
-              зависимости от сложности сцены и поддерживает стабильное качество на всём
-              протяжении ролика. В то время как <mark className="select">«VBR»</mark>{" "}
-              требует настройки целевого и максимального битрейта, подобрать которые с
-              первого раза непросто, особенно если важно сохранить высокое качество и при
-              этом не получить слишком тяжёлый файл. А{" "}
-              <mark className="select">«CBR»</mark> нередко приводит к «раздутому» размеру
-              файла и не гарантирует стабильное качество в разных промежутках видео.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/shutter_encoder_change_cq_h264.mp4"
-              type="video"
-            />
-            <Addition type="info">
-              <ul>
-                <li>
-                  Чем меньше значение <mark className="select">«CQ»</mark>, тем лучше
-                  качество. По умолчанию устанавливается 23 — этого достаточно для
-                  большинства случаев.
-                </li>
-                <li>
-                  Если нужно сохранить почти максимальное качество, укажите значение от 17
-                  до 20. Однако размер файла при этом заметно возрастёт.
-                </li>
-                <li>
-                  Экстремальные значения, например 50, использовать не рекомендуется, так
-                  как в итоге вы можете получить «кашу» из пикселей.
-                </li>
-              </ul>
-            </Addition>
-          </li>
-          <li>
-            <p>
-              Укажите битрейт для аудио в параметре{" "}
-              <mark className="select">«Audio Bitrate»</mark>; достаточно установить
-              значение <mark className="copy">320</mark> Кбит/с.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/shutter_encoder_change_audio_bitrate_h264.mp4"
-              type="video"
-            />
-          </li>
-          <li>
-            <p>
-              Если при конвертации нужно сохранить альфа-канал, справа в разделе{" "}
-              <mark className="select">«Advanced Settings»</mark> включите параметр{" "}
-              <mark className="select">«Enable alpha channel»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/enable_alpha_shutter_encoder.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              При необходимости включите аппаратное ускорение для декодирования видео в
-              параметре <mark className="select">«Hardware Acceleration»</mark>. В
-              большинстве случаев это ускорит процесс конвертации видео.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/shutter_encoder_enable_hardware_acceleration_h264.png"
-              type="image"
-            />
-            <Addition type="info">
-              Выбор значений в этом параметре зависит от выбранного кодека, вашего
-              устройства и установленных драйверов.
-            </Addition>
-            <Addition type="warning">
-              На Windows при включенном аппаратном ускорении для{" "}
-              <mark className="video">H.265</mark> нельзя включить опцию сохранения
-              альфа-канала.
-            </Addition>
-          </li>
-          <li>
-            <p>
-              После настройки нужных параметров нажмите на кнопку{" "}
-              <mark className="select">«Start function»</mark> для начала конвертации. По
-              умолчанию программа сохраняет конвертированные файлы в ту же папку, откуда
-              были импортированы исходники.
-            </p>
-            <ArticleMedia
-              caption="Shutter Encoder"
-              src="legacy/shutter_encoder_start_function.png"
-              type="image"
-            />
-            <Addition type="info">
-              <ul>
-                <li>
-                  Если в программу добавлено несколько исходников, они будут
-                  конвертированы последовательно в соответствии с вашими настройками.
-                </li>
-                <li>
-                  При необходимости вы можете указать свою директорию для сохранения
-                  файлов во вкладке <mark className="select">«Output»</mark>.
-                </li>
-              </ul>
-            </Addition>
-          </li>
-        </ul>
-        <Divider>
-          Используем конвертированное видео с прозрачностью на веб-странице
-        </Divider>
-        <p>
-          После того как вы экспортировали видео в <mark className="video">VP9</mark>,
-          <mark className="video">AV1</mark> или <mark className="video">H.265</mark> с
-          альфа-каналом, укажите их как источники для HTML-тега{" "}
-          <mark className="code">{`<video>`}</mark>. Браузер сам выберет нужный формат:
-          например, <mark className="app">Chrome</mark> и{" "}
-          <mark className="app">Firefox</mark> будут использовать{" "}
-          <mark className="video">VP9</mark>, а <mark className="app">Safari</mark> —{" "}
-          <mark className="video">HEVC</mark>.
-        </p>
-        <CodeSnippet language="html">
-          {`<video loop controls autoplay>
-  <source
-    src="images/aefaq@aechat_alpha.mp4"
-    type="video/mp4;codecs=hvc1"
-  />
-  <source
-    src="images/aefaq@aechat_alpha.webm"
-    type="video/webm"
-  />
-</video>`}
-        </CodeSnippet>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-gif"
-        tag="gifgun, ezgif, animated gif"
-        title="Как экспортировать композицию в GIF?"
-      >
-        <p>
-          <mark className="image">GIF</mark> — старый, но до сих пор популярный формат,
-          разработанный в 1987 году. Его ценят за простоту: любой браузер или мессенджер
-          открывает его без проблем, поэтому он и закрепился в культуре мемов, стикеров и
-          коротких анимаций.
-        </p>
-        <p>
-          Стандартного экспорта в <mark className="image">GIF</mark> из{" "}
-          <mark className="app">Adobe After Effects</mark> нет, но есть обходные пути.{" "}
-          <mark className="image">GIF</mark> можно создать с помощью стороннего расширения{" "}
-          <mark className="plugin">GifGun</mark>, через{" "}
-          <mark className="app">Adobe Media Encoder</mark> или с помощью
-          онлайн-конвертера, например <a href="https://ezgif.com/video-to-gif">Ezgif</a>.
-          Последний, пожалуй, даёт лучший результат по соотношению «качество/размер».
-        </p>
-        <Addition type="warning">
-          <p>
-            Имейте в виду: у формата <mark className="image">GIF</mark> множество
-            ограничений и особенностей. Для веб-страниц разумнее использовать{" "}
-            <mark className="video">WEBM</mark> или <mark className="video">H.264</mark> —
-            они обеспечивают лучшее качество при меньшем размере файла.
-          </p>
-          <ul>
-            <li>
-              Нет поддержки полупрозрачности: пиксель либо полностью прозрачный, либо нет.
-            </li>
-            <li>
-              Палитра ограничена 256 цветами, поэтому о плавных градиентах и точной
-              цветопередаче придётся забыть.
-            </li>
-            <li>
-              Полученный файл может быть огромным по весу, если указать высокое разрешение
-              или частоту кадров. Для веба лучше придерживаться максимум 1024×576 и 15
-              FPS. Тяжёлые <mark className="image">GIF</mark> перегружают браузер и
-              замедляют сайты, особенно на мобильных устройствах.
-            </li>
-            <li>
-              <mark className="image">GIF</mark> сжимается крайне посредственно по
-              сравнению с <mark className="video">WEBM</mark> или{" "}
-              <mark className="video">MP4</mark>, поэтому почти всегда получается больше
-              по размеру и хуже по качеству.
-            </li>
-          </ul>
-        </Addition>
-        <Divider>
-          Экспортируем с помощью <mark className="plugin">GifGun</mark>
-        </Divider>
-        <ul>
-          <li>
-            <p>
-              Предположим, что вы уже установили расширение{" "}
-              <mark className="plugin">GifGun</mark>. Откройте его через меню{" "}
-              <mark className="select">«Window» → «Extensions» → «GifGun»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Открываем расширение «GifGun»"
-              src="legacy/aftereffects/open_gifgun.png"
-              type="image"
-            />
-            <Addition type="info">
-              <ul>
-                <li>
-                  <ContentFilter
-                    macContent={
-                      <div>
-                        Если расширение есть в списке, но не открывается, убедитесь, что
-                        вы выполнили в <mark className="app">Терминале</mark> команды для
-                        включения debug-режима, необходимые для работы сторонних
-                        расширений. Чтобы скопировать команды в буфер обмена, достаточно
-                        на них нажать.
-                        <CodeSnippet>
-                          defaults write com.adobe.CSXS.5 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.6 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.7 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.8 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.9 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.10 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.11 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.12 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.13 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.14 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.15 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.16 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.17 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.18 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.19 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.20 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.21 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.22 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.23 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.24 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.25 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.26 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.27 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.28 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.29 PlayerDebugMode 1
-                          <br />
-                          defaults write com.adobe.CSXS.30 PlayerDebugMode 1
-                          <br />
-                        </CodeSnippet>
-                      </div>
-                    }
-                    windowsContent={
-                      <div>
-                        Если расширение есть в списке, но не открывается, убедитесь, что
-                        вы подтвердили слияние записей с{" "}
-                        <a
-                          download
-                          href="files/Enable Extensions Adobe.reg"
-                        >
-                          файлом реестра
-                        </a>
-                        , включающим debug-режим для корректной работы сторонних
-                        расширений.
-                      </div>
-                    }
-                  />
-                </li>
-                <li>
-                  Для корректной работы расширения рекомендуется в настройках{" "}
-                  <mark className="select">
-                    «Edit» → «Preferences» → «Scripting & Expressions»
-                  </mark>{" "}
-                  установить флажок у параметра{" "}
-                  <mark className="select">
-                    «Allow Scripts to Write Files and Access Network»
-                  </mark>
-                  .
-                </li>
-              </ul>
-            </Addition>
-          </li>
-          <li>
-            <p>
-              В открывшемся окне расширения вы увидите две основные кнопки:{" "}
-              <mark className="select">«Make GIF»</mark> для запуска экспорта и кнопка с
-              шестерёнкой для настроек.
-            </p>
-            <ArticleMedia
-              caption="GifGun"
-              src="legacy/aftereffects/gifgun_main.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              В настройках вы можете указать максимальный размер файла, частоту кадров и
-              путь сохранения.
-            </p>
-            <ArticleMedia
-              caption="GifGun"
-              src="legacy/aftereffects/gifgun_settings.png"
-              type="image"
-            />
-          </li>
-          <li>
-            Чтобы начать экспорт <mark className="image">GIF</mark> с заданными вами
-            настройками, просто нажмите на <mark className="select">«Make GIF»</mark> из
-            главного окна расширения и ожидайте получения результата. Если чекбокс{" "}
-            <mark className="select">«Open GIF folder»</mark> был включен, расширение
-            автоматически откроет системный проводник с директорией, куда была сохранена
-            анимация.
-          </li>
-        </ul>
-        <Divider>
-          Конвертируем через <mark className="app">Ezgif</mark>
-        </Divider>
-        <p>
-          Если вы не хотите возиться с дополнениями или у вас уже есть готовое видео,
-          которое нужно просто конвертировать в <mark className="image">GIF</mark>,
-          воспользуйтесь онлайн-сервисом{" "}
-          <a href="https://ezgif.com/video-to-gif">Ezgif</a>. Он обеспечивает хорошее
-          соотношение качества и размера файла.
-        </p>
-        <ul>
-          <li>
-            <p>
-              Сначала загрузите видео на сайт — просто перетащите его в область публикации
-              и нажмите кнопку <mark className="select">«Upload Video»</mark>.
-            </p>
-            <Addition type="warning">
-              Максимальный размер загружаемого файла — 200 МБ.
-            </Addition>
-            <ArticleMedia
-              caption="Ezgif"
-              src="legacy/ezgif_main.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              После загрузки можно настроить частоту кадров и разрешение итогового файла.
-              Выбор параметров не слишком широкий, но для простой конвертации этого вполне
-              достаточно. После указания нужных параметров, нажмите{" "}
-              <mark className="select">«Convert to GIF!»</mark>.
-            </p>
-            <Addition type="warning">
-              Максимальная длительность <mark className="image">GIF</mark> зависит от
-              выбранной частоты кадров: до 60 секунд при 5 FPS или до 15 секунд при 20
-              FPS.
-            </Addition>
-            <ArticleMedia
-              caption="Ezgif"
-              src="legacy/ezgif_settings.png"
-              type="image"
-            />
-          </li>
-          <li>
-            После конвертации готовый <mark className="image">GIF</mark> появится ниже — в
-            разделе <mark className="select">«Output GIF Animation»</mark>. Сохраните его,
-            нажав <mark className="key">ПКМ</mark> по анимации и выбрав{" "}
-            <mark className="select">«Сохранить изображение как...»</mark>.
-          </li>
-        </ul>
-        <Divider>
-          Экспортируем с помощью <mark className="app">Adobe Media Encoder</mark>
-        </Divider>
-        <p>
-          <mark className="image">GIF</mark> можно экспортировать и через{" "}
-          <mark className="app">Adobe Media Encoder</mark>. Несмотря на то, что многие его
-          обходят стороной, он всё же предлагает больше вариантов форматов экспорта по
-          сравнению с «чистым» <mark className="app">Adobe After Effects</mark>.
-        </p>
-        <ul>
-          <li>
-            <p>
-              Для начала отправьте композицию<sup>1</sup> из{" "}
-              <mark className="app">Adobe After Effects</mark> в{" "}
-              <mark className="app">Adobe Media Encoder</mark> через меню{" "}
-              <mark className="select">
-                «File» → «Export» → «Add to Adobe Media Encoder Queue»
-              </mark>{" "}
-              и дождитесь открытия программы, либо откройте{" "}
-              <mark className="app">Adobe Media Encoder</mark> и импортируйте в него
-              готовое видео.
-            </p>
-            <Addition type="info">
-              <sup>1</sup> Композиция корректно отправится в{" "}
-              <mark className="app">Adobe Media Encoder</mark> только если версии обеих
-              программ совпадают по году выпуска и они установлены в стандартные папки.
-            </Addition>
-          </li>
-          <li>
-            <p>
-              В очереди экспорта выберите формат{" "}
-              <mark className="select">«Animated GIF»</mark>. Там же можно задать пресет и
-              путь сохранения. Для детальной настройки разрешения, частоты кадров и других
-              параметров нажмите на название пресета, чтобы открыть окно{" "}
-              <mark className="select">«Export Settings»</mark>.
-            </p>
-            <Addition type="warning">
-              Если выбрать формат <mark className="select">«GIF»</mark> без слова{" "}
-              <mark className="select">«Animated»</mark>, вы получите последовательность
-              отдельных кадров, которая заполнит всю папку сохранения.
-            </Addition>
-            <ArticleMedia
-              caption="Media Encoder"
-              src="legacy/aftereffects/selecting_animated_gif_media_encoder.png"
-              type="image"
-            />
-          </li>
-          <li>
-            После настройки параметров в <mark className="select">«Export Settings»</mark>{" "}
-            нажмите <mark className="select">«OK»</mark>, чтобы закрыть окно, и запустите
-            экспорт, нажав на зелёную иконку в очереди экспорта.
-          </li>
-        </ul>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-dxv"
-        tag="resolume, дхв"
-        title="Как экспортировать композицию в DXV?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="export-prores"
-        tag="prores 4444, prores 422, quicktime, видео с прозрачностью, alpha channel"
-        title="Как экспортировать композицию в Apple ProRes?"
-      >
-        <p>
-          <mark className="video">Apple ProRes</mark> — это семейство высококачественных
-          кодеков, разработанное <mark className="company">Apple</mark> в 2007 году и
-          широко используемое в сфере видеопроизводства. Из{" "}
-          <mark className="app">Adobe After Effects</mark> можно напрямую экспортировать
-          композицию в кодеках <mark className="video">Apple ProRes 422</mark>
-          <sup>1</sup> и <mark className="video">Apple ProRes 4444</mark>
-          <sup>2</sup>, а затем применять их по назначению.
-        </p>
-        <Addition type="warning">
-          В предыдущих версиях <mark className="app">Adobe After Effects</mark> нельзя
-          было импортировать файлы с кодеком <mark className="app">Apple ProRes</mark> и
-          экспортировать композиции в <mark className="app">Apple ProRes</mark>. Данная
-          возможность появилась в <mark className="app">Adobe After Effects</mark>{" "}
-          <mark className="version">16.0.1 (2019)</mark> и выше.
-        </Addition>
-        <p>
-          Ключевая особенность монтажных кодеков, включая{" "}
-          <mark className="video">Apple ProRes</mark>, в отличие от кодеков,
-          предназначенных для просмотра видео, например{" "}
-          <mark className="video">H.264</mark> или <mark className="video">VP9</mark>,
-          заключается в том, что они меньше сжимают видео и работают стабильнее в
-          монтажных программах, хотя занимают больше места на диске.
-        </p>
-        <Addition type="info">
-          <ul>
-            <li>
-              <sup>1</sup> <mark className="video">Apple ProRes 422</mark> включает
-              несколько вариантов, различающихся степенью сжатия и битрейтом. Все они
-              поддерживают 10-битную глубину цвета и цветовую субдискретизацию{" "}
-              <mark className="codec-param">4:2:2</mark>. Битрейт зависит от разрешения,
-              частоты кадров и сложности контента. Хороши для дальнейшего монтажа, если не
-              требуется альфа-канал или максимально точное сохранение цвета.{" "}
-              <a href="https://ru.m.wikipedia.org/wiki/Apple_ProRes#Apple_ProRes_422">
-                Подробнее о вариантах...
-              </a>
-            </li>
-            <li>
-              <sup>2</sup> <mark className="video">Apple ProRes 4444</mark> и{" "}
-              <mark className="video">Apple ProRes 4444 XQ</mark> — версии с максимальным
-              качеством, без цветовой субдискретизации и поддержкой 12-битного цвета и
-              альфа-канала. Идеальны для экспорта графики с прозрачностью или без
-              изменения цвета после конвертации.
-            </li>
-          </ul>
-        </Addition>
-        <Divider>
-          Экспортируем в <mark className="video">Apple ProRes</mark>
-        </Divider>
-        <ul>
-          <li>
-            <p>
-              Чтобы отправить на экспорт текущую композицию или выделенную в окне{" "}
-              <mark className="select">«Project»</mark>, нажмите{" "}
-              <mark className="key">Ctrl + M</mark> или выберите в меню{" "}
-              <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/render_queue_h264.png"
-              type="image"
-            />
-          </li>
-          <li>
-            Чтобы изменить формат экспорта, нажмите на название шаблона — откроется окно{" "}
-            <mark className="select">«Output Module»</mark>.
-          </li>
-          <li>
-            В открывшемся окне в параметре <mark className="select">«Format»</mark>{" "}
-            выберите <mark className="select">«QuickTime»</mark>, а затем перейдите в{" "}
-            <mark className="select">«Format Options»</mark>.
-          </li>
-          <li>
-            В открывшемся окне в параметре <mark className="select">«Video Codec»</mark>{" "}
-            выберите нужный вам вариант <mark className="video">Apple ProRes</mark>.
-          </li>
-          <li>
-            Если вы собираетесь экспортировать композицию с альфа-каналом — не забудьте в{" "}
-            <mark className="select">«Channels»</mark> установить параметр{" "}
-            <mark className="select">«RGB + Alpha»</mark>.
-          </li>
-          <li>
-            Затем укажите путь сохранения и нажмите кнопку{" "}
-            <mark className="select">«Render»</mark>.
-          </li>
-        </ul>
-        <p></p>
-        <ArticleMedia
-          caption="Экспорт видео в Apple ProRes"
-          src="legacy/aftereffects/export_to_prores.mp4"
-          type="video"
-        />
-        <Divider>Проверяем наличие прозрачности в композиции</Divider>
-        <p>
-          Перед экспортом убедитесь, что в вашей композиции действительно есть
-          прозрачность. Чтобы проверить это, нажмите на кнопку{" "}
-          <mark className="select">«Toggle Transparency Grid»</mark> под окном
-          предпросмотра. Она заменяет фон на сетку в виде шахматной доски, показывая
-          прозрачные области.
+          Вы можете продолжить экспорт, согласившись с автоматической адаптацией
+          параметров выходного файла. При этом настройки самой композиции останутся без
+          изменений.{" "}
+          <em className="article-note-muted">Однако не всегда такой вариант подходит.</em>
         </p>
         <ArticleMedia
-          caption="Composition"
-          src="legacy/aftereffects/toggle_transparency_grid.png"
-          type="image"
-        />
-        <Addition type="info">
-          Для просмотра видео, закодированных в{" "}
-          <mark className="video">Apple ProRes</mark>, рекомендуется использовать
-          сторонние плееры, например <mark className="app">VLC</mark> или{" "}
-          <mark className="app">MPC-HC</mark>. Учтите, что не все плееры могут корректно
-          отобразить видео с альфа-каналом.
-        </Addition>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-audio"
-        tag="аудио, звук, музыка, wav, mp3, aiff"
-        title="Как экспортировать из композиции только аудио?"
-      >
-        <p>
-          Несмотря на то, что <mark className="app">Adobe After Effects</mark> не является
-          аудиоредактором, иногда всё же возникает необходимость экспорта целой звуковой
-          композиции отдельным файлом.
-        </p>
-        <ul>
-          <li>
-            Прежде чем экспортировать композицию как аудиофайл, добавьте её в очередь
-            рендеринга с помощью комбинации клавиш <mark className="key">Ctrl + M</mark>{" "}
-            или через меню{" "}
-            <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-          </li>
-          <li>
-            Нажмите на название пресета в очереди рендера, чтобы открыть настройки{" "}
-            <mark className="select">«Output Module»</mark>.
-          </li>
-          <li>
-            В параметре <mark className="select">«Format»</mark> выберите один из
-            аудиоформатов: <mark className="audio">WAV</mark>,{" "}
-            <mark className="audio">MP3</mark> или <mark className="audio">AIFF</mark>.
-          </li>
-          <li>
-            В <mark className="select">«Output To»</mark> укажите путь и имя файла. Для
-            запуска экспорта нажмите <mark className="select">«Render»</mark> или клавишу{" "}
-            <mark className="key">Enter</mark>.
-          </li>
-        </ul>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-tgs"
-        tag="стикеры, tgs, lottie, animated stickers"
-        title="Как экспортировать анимацию для стикеров и эмодзи в Telegram?"
-      >
-        <Addition type="tldr">
-          Для экспорта анимации в <mark className="file">TGS</mark> используйте стороннее
-          расширение <mark className="plugin">Bodymovin for Telegram</mark>. В качестве
-          альтернативы вы можете экспортировать вашу анимацию в{" "}
-          <mark className="file">JSON</mark> с помощью{" "}
-          <mark className="plugin">Bodymovin</mark> и конвертировать полученный файл в{" "}
-          <mark className="file">TGS</mark> с помощью конвертера в статье.
-        </Addition>
-        <p>
-          В современном мире только ленивый не слышал о мессенджере{" "}
-          <mark className="app">Telegram</mark> и о возможности отправлять стикеры
-          собеседнику. В стикерах можно хранить шутки, мемы и другой контент. Но мало кто
-          знает, как их создавать и экспортировать композицию из{" "}
-          <mark className="app">Adobe After Effects</mark> в соответствии с требованиями{" "}
-          <mark className="app">Telegram</mark>. Стикеры делятся на четыре вида, и у
-          каждого свой подход к экспорту из программы и импорту в{" "}
-          <mark className="app">Telegram</mark>.
-        </p>
-        <Divider>Разбираемся с типами стикеров</Divider>
-        <ul>
-          <li>
-            <p>
-              <mark className="word">Статичный стикер</mark>, или{" "}
-              <mark className="word">статичный эмодзи</mark>, — это обычная картинка,
-              которую отправляют собеседнику. Её можно создать в любом графическом
-              редакторе, например в <mark className="app">Adobe Photoshop</mark> или{" "}
-              <mark className="app">GIMP</mark>, или экспортировать из{" "}
-              <mark className="app">Adobe After Effects</mark> как{" "}
-              <a href="#export-still">один кадр</a>.
-            </p>
-            <ul>
-              <li>
-                Для создания принимаются изображения формата{" "}
-                <mark className="image">PNG</mark> или <mark className="image">WEBP</mark>{" "}
-                с прозрачным или непрозрачным фоном.
-              </li>
-              <li>
-                Разрешение такого стикера должно быть не более 512×512 пикселей. Такие
-                стикеры можно сделать с любым соотношением сторон, главное, чтобы ни одна
-                сторона не была больше 512 пикселей.
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>
-              <mark className="word">Анимированный стикер</mark> — это векторный стикер с
-              анимацией, который не теряет в качестве при воспроизведении на разных
-              устройствах. По своей сути он похож на анимацию{" "}
-              <mark className="image">Lottie</mark> и имеет ряд ограничений по эффектам и
-              размеру файла. Разрешение композиции должно быть 512×512 пикселей. Частота
-              кадров композиции должна быть строго 30 или 60, иначе рендер завершится с
-              ошибкой.
-            </p>
-            <Addition type="danger">
-              <p>
-                Для корректного вывода анимации в файл формата{" "}
-                <mark className="file">TGS</mark> в вашей композиции не должно быть
-                следующих эффектов и свойств:
-              </p>
-              <ul>
-                <li>
-                  Выражения не поддерживаются, но их можно конвертировать в ключи. Для
-                  этого выделите нужное свойство с выражением, нажмите{" "}
-                  <mark className="key">ПКМ</mark> и выберите{" "}
-                  <mark className="select">
-                    «Keyframe Assistant» → «Convert Expression to Keyframes»
-                  </mark>
-                  .
-                </li>
-                <li>
-                  Не поддерживается интерполяция скорости с помощью{" "}
-                  <mark className="select">«Auto Bezier»</mark> у ключевых кадров. Для
-                  смены типа интерполяции выделите нужные ключи, нажмите{" "}
-                  <mark className="key">Ctrl + Alt + K</mark> и избавьтесь от
-                  автоматического Безье.
-                </li>
-                <li>
-                  Слои с изображениями не поддерживаются. Если такой слой всё-таки нужен,
-                  выполните его автотрассировку для конвертации в вектор в{" "}
-                  <mark className="app">Adobe Illustrator</mark> или другой программе, а
-                  затем импортируйте как слой-фигуру.{" "}
-                  <a href="https://helpx.adobe.com/illustrator/using/image-trace-results-optimization.html">
-                    Подробнее...
-                  </a>
-                </li>
-                <li>
-                  Эффекты из <mark className="select">«Effects & Presets»</mark>{" "}
-                  использовать нельзя, иначе они просто пропадут из финальной анимации.
-                </li>
-                <li>
-                  Нельзя растягивать слои и использовать{" "}
-                  <mark className="select">«Time Remapping»</mark>. Проверить растяжение
-                  можно в столбце <mark className="select">«Stretch»</mark>.
-                </li>
-                <li>
-                  Текстовые слои не поддерживаются, их нужно конвертировать в фигуры. Для
-                  этого нажмите <mark className="key">ПКМ</mark> по слою с текстом и
-                  выберите{" "}
-                  <mark className="select">«Create» → «Create Shapes from Text»</mark>.
-                </li>
-                <li>
-                  Не поддерживается поворот слоёв с помощью{" "}
-                  <mark className="select">«Auto-Oriented Layers»</mark>. Автоориентацию
-                  можно выключить, выделив слой и нажав{" "}
-                  <mark className="key">Ctrl + Alt + O</mark>. В открывшемся окне выберите
-                  параметр <mark className="select">«Off»</mark>.
-                </li>
-                <li>
-                  Маски для слоёв, трёхмерные слои,{" "}
-                  <mark className="select">«Solid Layer»</mark>,{" "}
-                  <mark className="select">«Merge Paths»</mark>,{" "}
-                  <mark className="select">«Repeater»</mark>,{" "}
-                  <mark className="select">«Star Shape»</mark> и{" "}
-                  <mark className="select">«Gradient Stroke»</mark> не поддерживаются.
-                </li>
-              </ul>
-            </Addition>
-          </li>
-          <li>
-            <p>
-              <mark className="word">Анимированные эмодзи</mark> по своей сути похожи на{" "}
-              <mark className="word">анимированные стикеры</mark>. К ним применяются те же
-              ограничения по эффектам и возможностям{" "}
-              <mark className="app">Adobe After Effects</mark>, и выводятся они
-              аналогичным образом.
-            </p>
-            <ul>
-              <li>
-                Для анимированных эмодзи нужно указать размер композиции 100×100 пикселей.
-                Ни больше, ни меньше.
-              </li>
-              <li>
-                Ограничения по эффектам такие же, как и у{" "}
-                <mark className="word">анимированных стикеров</mark>.
-              </li>
-            </ul>
-          </li>
-          <li>
-            <mark className="word">Видеостикер</mark> — обычное видео в формате{" "}
-            <mark className="video">WEBM</mark> с кодеком{" "}
-            <mark className="video">VP9</mark>. Максимальное разрешение такого стикера —
-            512×512 пикселей.
-          </li>
-        </ul>
-        <Addition type="info">
-          Подробнее о требованиях для того или иного типа стикеров вы можете прочитать на{" "}
-          <a href="https://core.telegram.org/stickers">сайте Telegram</a>.
-        </Addition>
-        <Divider>
-          Экспортируем анимированный стикер через{" "}
-          <mark className="app">Bodymovin-Telegram</mark>
-        </Divider>
-        <p>
-          Для экспорта из <mark className="app">Adobe After Effects</mark> в стикеры
-          формата <mark className="file">TGS</mark> понадобится бесплатное стороннее
-          расширение{" "}
-          <a href="https://github.com/TelegramMessenger/bodymovin-extension">
-            Bodymovin-TG
-          </a>
-          . Учтите, что оно давно не обновлялось и могут возникать ошибки при работе с
-          последними версиями <mark className="app">Adobe After Effects</mark>. Кроме
-          того, в нём меньше функций по сравнению с оригинальным{" "}
-          <mark className="plugin">Bodymovin</mark>.
-        </p>
-        <p>
-          После установки <mark className="plugin">Bodymovin-TG</mark> появится в меню{" "}
-          <mark className="select">
-            «Window» → «Extensions» → «Bodymovin for Telegram Stickers»
-          </mark>
-          . Если вы уверены, что ваша анимация соответствует всем требованиям для
-          анимированных стикеров или эмодзи, откройте окно расширения, выделите в нём
-          нужную композицию, укажите путь для сохранения и нажмите{" "}
-          <mark className="select">«Export»</mark>. Если при экспорте что-то пойдёт не
-          так, расширение сообщит об этом.
-        </p>
-        <ArticleMedia
-          caption="Bodymovin for Telegram Stickers"
-          src="legacy/aftereffects/bodymovin_tg_export_window.png"
-          type="image"
-        />
-        <Addition type="warning">
-          Для корректной работы расширения нужно установить флажок{" "}
-          <mark className="select">
-            «Allow Scripts to Write Files and Access Network»
-          </mark>{" "}
-          в{" "}
-          <mark className="select">
-            «Edit» → «Preferences» → «Scripting & Expressions»
-          </mark>
-          .
-        </Addition>
-        <p>
-          После экспорта перейдите в{" "}
-          <a href="https://t.me/Stickers">бот для создания стикеров</a> и начните процесс
-          создания стикера. Если что-то пойдёт не так, бот сообщит об этом и укажет на
-          проблему. Чаще всего ошибки возникают из-за слишком большого размера файла или
-          неверно указанного типа стикера в начале работы.
-        </p>
-        <Divider>
-          Альтернативный вывод анимированного стикера через обычный Bodymovin
-        </Divider>
-        <Addition type="danger">
-          Описанный ниже способ не всегда работает стабильно и приведён в качестве
-          экспериментальной альтернативы.
-        </Addition>
-        <p>
-          Если экспорт через <mark className="plugin">Bodymovin-TG</mark> завершился сбоем
-          или вам не хватает функциональности оригинального расширения, попробуйте
-          экспортировать анимацию через обычный <mark className="plugin">Bodymovin</mark>,
-          а затем конвертировать полученный файл с помощью{" "}
-          <em className="article-note-muted">самодельного</em> конвертера из этой статьи.
-        </p>
-        <p>
-          Прежде чем экспортировать анимацию в <mark className="file">JSON</mark>, нужно
-          установить стороннее бесплатное<sup>1</sup> расширение{" "}
-          <mark className="plugin">Bodymovin</mark>, которое можно загрузить с{" "}
-          <a href="https://aescripts.com/bodymovin/">aescripts</a>. После установки оно
-          появится в меню{" "}
-          <mark className="select">«Window» → «Extensions» → «Bodymovin»</mark>.
-        </p>
-        <Addition type="info">
-          <sup>1</sup> Чтобы бесплатно скачать расширение, зарегистрируйтесь или войдите в
-          аккаунт на <a href="https://aescripts.com">aescripts</a>, а затем на странице
-          дополнения установите значение <mark className="copy">0</mark> в поле{" "}
-          <mark className="select">«Name Your Own Price»</mark> и оформите заказ. Ссылка
-          на скачивание появится{" "}
-          <a href="https://aescripts.com/downloadable/customer/products/">
-            в вашем профиле
-          </a>
-          .
-        </Addition>
-        <Addition type="warning">
-          <ul>
-            <li>
-              Перед экспортом убедитесь, что ваша анимация поддерживается расширением{" "}
-              <mark className="plugin">Bodymovin</mark>. Совместимость эффектов можно
-              проверить прямо в <mark className="plugin">Bodymovin</mark> на вкладке{" "}
-              <mark className="select">«Support Features»</mark>. Если какой-то эффект или
-              действие не поддерживается, в итоговой композиции могут отсутствовать
-              некоторые объекты, слои или анимация.
-            </li>
-            <li>
-              Для корректной работы расширения нужно установить флажок{" "}
-              <mark className="select">
-                «Allow Scripts to Write Files and Access Network»
-              </mark>{" "}
-              в{" "}
-              <mark className="select">
-                «Edit» → «Preferences» → «Scripting & Expressions»
-              </mark>
-              .
-            </li>
-          </ul>
-        </Addition>
-        <p>
-          Для экспорта векторной анимации в <mark className="file">JSON</mark> откройте
-          вкладку <mark className="select">«Compositions»</mark> в расширении{" "}
-          <mark className="plugin">Bodymovin</mark>, выделите нужную композицию, укажите
-          путь для сохранения и нажмите <mark className="select">«Export»</mark>. Если при
-          экспорте что-то пойдёт не так, расширение сообщит об этом.
-        </p>
-        <ArticleMedia
-          caption="Bodymovin"
-          src="legacy/aftereffects/bodymovin_export_window.png"
-          type="image"
-        />
-        <Addition type="info">
-          Полученную анимацию можно посмотреть на вкладке{" "}
-          <mark className="select">«Preview»</mark> в самом расширении или в{" "}
-          <a href="https://www.svgsprite.com/tools/lottie-player/">Lottie Player</a>.
-        </Addition>
-        <p>
-          После успешного экспорта анимации в <mark className="file">JSON</mark> поместите
-          файл в конвертер ниже и нажмите{" "}
-          <mark className="select">«Скачать преобразованный TGS»</mark>.
-        </p>
-        <Divider>Конвертируем JSON в TGS</Divider>
-        <JsonToTgsConverter />
-        <p>
-          После конвертации перейдите в{" "}
-          <a href="https://t.me/Stickers">бот для создания стикеров</a> и создайте
-          анимированные стикеры или эмодзи с помощью команд{" "}
-          <mark className="code">/newanimated</mark> или{" "}
-          <mark className="code">/newemojipack</mark>. Если что-то пойдёт не так, бот
-          сообщит о проблеме с вашим файлом. Чаще всего ошибки возникают из-за слишком
-          большого размера файла или неподдерживаемой анимации.
-        </p>
-        <Divider>Экспортируем видеостикер</Divider>
-        <p>
-          Видеостикер — короткий видеоролик в формате <mark className="video">WEBM</mark>{" "}
-          с кодеком <mark className="video">VP9</mark>. Требования{" "}
-          <mark className="app">Telegram</mark> к этому формату следующие:
-        </p>
-        <ul>
-          <li>
-            Для обоих типов требуется экспортировать видео в формате{" "}
-            <mark className="video">WEBM</mark> с кодеком{" "}
-            <mark className="video">VP9</mark>. На этой странице уже обсуждался{" "}
-            <a href="#export-web">экспорт в VP9</a> из{" "}
-            <mark className="app">Adobe After Effects</mark> с помощью конвертации
-            полученного видео.
-          </li>
-          <li>Для видеостикеров максимальное разрешение — не более 512×512 пикселей.</li>
-          <li>
-            Для видеосмайликов или видеоэмодзи разрешение должно быть строго 100×100
-            пикселей.
-          </li>
-          <li>
-            Длительность видео не должна превышать 3 секунд, а размер файла — 256
-            килобайт.
-          </li>
-          <li>
-            Частота кадров не должна превышать 30 в секунду.{" "}
-            <em className="article-note-muted">Странно, что не 60...</em>
-          </li>
-        </ul>
-        <p>
-          После конвертации перейдите в{" "}
-          <a href="https://t.me/Stickers">бот для создания стикеров</a> и создайте
-          видеостикеры с помощью команд <mark className="code">/newvideo</mark> или{" "}
-          <mark className="code">/newemojipack</mark>. Если что-то пойдёт не так, бот
-          сообщит о проблеме с вашим файлом.
-        </p>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-mogrt"
-        tag="анимационный шаблон для premiere pro"
-        title="Как сохранить проект в формате MOGRT?"
-      >
-        <p>
-          В <mark className="app">Adobe After Effects</mark> можно создать анимированный
-          шаблон формата <mark className="file">MOGRT</mark> из вашей композиции для
-          последующего использования в <mark className="app">Adobe Premiere</mark>.
-        </p>
-        <p>
-          Для этого в окне <mark className="select">«Essential Graphics»</mark> нужно
-          нажать на кнопку{" "}
-          <mark className="select">«Export Motion Graphics Template»</mark>.
-        </p>
-        <Addition type="warning">
-          Экспортировать шаблон не получится, если вы не добавили в панель{" "}
-          <mark className="select">«Essential Graphics»</mark> хотя бы одно свойство или
-          контроллер.
-        </Addition>
-        <ArticleMedia
-          caption="Essential Graphics"
-          src="legacy/aftereffects/export_motion_graphics_template.png"
-          type="image"
-        />
-        <Addition type="info">
-          <p>
-            Файл <mark className="file">MOGRT</mark> — архив, в котором хранятся несколько
-            файлов, формирующих шаблон.
-          </p>
-          <ul>
-            <li>
-              <mark className="file">DEFINITION.JSON</mark> — файл с технической
-              информацией о контроллерах и свойствах шаблона.
-            </li>
-            <li>
-              <mark className="file">PROJECT.AEGRAPHICS</mark> — файл проекта After
-              Effects со всей анимацией.
-            </li>
-            <li>
-              <mark className="file">THUMB.JPG</mark> — обложка для предпросмотра шаблона
-              в <mark className="app">Adobe Premiere</mark>.
-            </li>
-          </ul>
-        </Addition>
-        <p>
-          После нажатия на кнопку экспорта измените{" "}
-          <mark className="select">«Destination»</mark> на{" "}
-          <mark className="select">«Local Drive»</mark> и с помощью кнопки{" "}
-          <mark className="select">«Browse»</mark> укажите путь для сохранения. В разделе{" "}
-          <mark className="select">«Compatibility»</mark> можно указать, потребуется ли
-          для работы шаблона в <mark className="app">Adobe Premiere</mark> установленный{" "}
-          <mark className="app">Adobe After Effects</mark>.
-        </p>
-        <ArticleMedia
-          caption="Export as Motion Graphics Template"
-          src="legacy/aftereffects/export_as_motion_graphics_template.png"
-          type="image"
-        />
-        <Addition type="danger">
-          <p>
-            Не все эффекты будут поддерживаться в{" "}
-            <mark className="app">Adobe Premiere</mark>, если на компьютере не установлен{" "}
-            <mark className="app">Adobe After Effects</mark>. Для корректной работы
-            шаблона без <mark className="app">Adobe After Effects</mark> должны быть
-            соблюдены следующие условия.
-          </p>
-          <ul>
-            <li>
-              Поддерживаются все стандартные эффекты, кроме{" "}
-              <mark className="plugin">Camera-Shake Deblur</mark>,{" "}
-              <mark className="plugin">Maxon Cineware</mark>,{" "}
-              <mark className="plugin">Warp Stabilizer</mark> и{" "}
-              <mark className="plugin">Puppet</mark>.
-            </li>
-            <li>Сторонние плагины, очевидно, не поддерживаются.</li>
-            <li>
-              При использовании 3D-слоёв поддерживается только рендер{" "}
-              <mark className="plugin">Classic 3D</mark>.
-            </li>
-            <li>
-              Некоторые видеоформаты и футажи, связанные через{" "}
-              <mark className="plugin">Dynamic Link</mark>, могут не работать.
-            </li>
-          </ul>
-        </Addition>
-        <p>
-          После экспорта вы можете импортировать <mark className="file">MOGRT</mark> в
-          окно <mark className="select">«Graphic Templates»</mark> в{" "}
-          <mark className="app">Adobe Premiere</mark> и перетащить его на таймлайн.
-        </p>
-        <ArticleMedia
-          src="tHDnFgW9NpQ"
-          type="youtube"
-        />
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="proxy-comp"
-        tag="proxy, ускорение рендера, уменьшение перепросчёта, пререндер, быстрый повторный экспорт"
-        title="Как создать прокси для композиции?"
-      >
-        <p>
-          В <mark className="app">Adobe After Effects</mark> можно создавать прокси-файлы
-          для композиций, чтобы не пересчитывать «тяжёлые» сцены при каждом изменении. Эта
-          функция может оказаться полезной, если вы не планируете больше редактировать
-          содержимое этой композиции или если сталкиваетесь с проблемами при финальном
-          экспорте.
-        </p>
-        <Divider>Создаём прокси</Divider>
-        <p>
-          Чтобы создать прокси, в окне <mark className="select">«Project»</mark> найдите
-          нужную композицию, нажмите на неё <mark className="key">ПКМ</mark> и выберите{" "}
-          <mark className="select">«Create Proxy» → «Movie»</mark>. Программа отправит
-          композицию в очередь рендеринга.
-        </p>
-        <Addition type="info">
-          Таким же способом можно создать прокси и для видеофайлов, импортированных в
-          проект.
-        </Addition>
-        <p>
-          В очереди рендеринга для параметра{" "}
-          <mark className="select">«Render Settings»</mark> установите значение{" "}
-          <mark className="select">«Best Settings»</mark>, чтобы прокси рендерился в
-          полном разрешении. В <mark className="select">«Output Module»</mark> выберите
-          монтажный кодек, например <mark className="video">Apple ProRes 422</mark>. Если
-          композиция содержит альфа-канал, используйте{" "}
-          <mark className="video">Apple ProRes 4444</mark>.
-        </p>
-        <ArticleMedia
-          caption="Создание прокси для композиции"
-          src="legacy/aftereffects/create_comp_proxy.mp4"
-          type="video"
-        />
-        <Addition type="info">
-          <ul>
-            <li>
-              Если прокси после рендеринга не применился автоматически, назначьте его
-              вручную: <mark className="key">ПКМ</mark> по композиции в окне{" "}
-              <mark className="select">«Project»</mark> →{" "}
-              <mark className="select">«Set Proxy» → «File»</mark> и укажите путь к
-              отрендеренному файлу.
-            </li>
-            <li>
-              Чтобы каждый раз не выбирать <mark className="select">«Best Settings»</mark>
-              , можно назначить этот шаблон по умолчанию в{" "}
-              <mark className="select">«Edit» → «Templates» → «Render Settings»</mark>, в
-              параметре <mark className="select">«Movie Proxy Default»</mark>. Аналогично
-              можно настроить и шаблон для <mark className="select">«Output Module»</mark>
-              .
-            </li>
-          </ul>
-        </Addition>
-        <Divider>Используем прокси при финальном экспорте</Divider>
-        <p>
-          Если вы хотите, чтобы при финальном рендеринге использовался созданный
-          прокси-файл вместо повторного просчёта исходной композиции, установите значение{" "}
-          <mark className="select">«Use All Proxies»</mark> для параметра{" "}
-          <mark className="select">«Proxy Use»</mark> в окне{" "}
-          <mark className="select">«Render Settings»</mark>.
-        </p>
-        <Addition type="info">
-          Эту настройку также можно сохранить в шаблон, отредактировав пресет{" "}
-          <mark className="select">«Best Settings»</mark> или создав свой собственный.
-        </Addition>
-        <ArticleMedia
-          caption="Настройка использования прокси в финальном рендеринге"
-          src="legacy/aftereffects/use_all_proxies.mp4"
-          type="video"
-        />
-        <Divider>Отключаем прокси</Divider>
-        <p>
-          Чтобы временно отключить прокси, нажмите на иконку квадрата слева от названия
-          композиции в окне <mark className="select">«Project»</mark>. Чтобы полностью
-          отвязать прокси-файл от объекта, нажмите <mark className="key">ПКМ</mark> по
-          композиции и выберите <mark className="select">«Set Proxy» → «None»</mark>.
-        </p>
-        <ArticleMedia
-          caption="Переключение состояния прокси"
-          src="legacy/aftereffects/toggle_disable_proxy.mp4"
-          type="video"
-        />
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-still"
-        tag="кадр, изображение, скриншот, jpg, png, psd, превью, still"
-        title="Как экспортировать текущий кадр как изображение?"
-      >
-        <p>
-          Иногда нужно сохранить один кадр из композиции как файл изображения, например
-          для создания превью. Это можно сделать двумя способами.
-        </p>
-        <Divider>
-          Экспортируем через <mark className="select">«Render Queue»</mark>
-        </Divider>
-        <p>
-          Чтобы быстро отправить текущий кадр в очередь рендеринга, нажмите{" "}
-          <mark className="key">Ctrl + Alt + S</mark> или перейдите в меню{" "}
-          <mark className="select">«Composition» → «Save Frame As» → «File»</mark>.
-        </p>
-        <p>
-          После этого откроется <mark className="select">«Render Queue»</mark>, где по
-          умолчанию будет предложен экспорт в формат <mark className="image">PSD</mark>.
-          Формат изображения можно изменить в настройках{" "}
-          <mark className="select">«Output Module»</mark>. Чтобы запустить экспорт,
-          нажмите кнопку <mark className="select">«Render»</mark> в правом верхнем углу
-          или клавишу <mark className="key">Enter</mark>.
-        </p>
-        <ArticleMedia
-          caption="Render Queue"
-          src="legacy/aftereffects/export_one_frame_render_queue.png"
-          type="image"
-        />
-        <Addition type="info">
-          <ul>
-            <li>
-              Вы можете создать собственный шаблон для экспорта кадров, чтобы не менять
-              формат файла каждый раз вручную.
-            </li>
-            <li>
-              Некоторые пользователи ошибочно считают, что кнопка{" "}
-              <mark className="select">«Take Snapshot»</mark> (иконка фотоаппарата в окне
-              предпросмотра) сохраняет кадр в файл. На самом деле она сохраняет его только
-              во временную память программы для сравнения с другими кадрами.
-            </li>
-          </ul>
-        </Addition>
-        <Divider>
-          Экспортируем с помощью <mark className="plugin">FX Console</mark>
-        </Divider>
-        <p>
-          Если стандартный способ сохранения кадра через{" "}
-          <mark className="select">«Save Frame As»</mark> кажется вам неудобным, есть
-          альтернатива — плагин <mark className="plugin">FX Console</mark>, который можно
-          загрузить по{" "}
-          <a href="https://www.videocopilot.net/blog/?s=fx%20console">этой</a> ссылке.
-        </p>
-        <p>
-          После установки плагин нужно настроить для сохранения изображений в высоком
-          качестве. Для этого вызовите его панель сочетанием клавиш{" "}
-          <mark className="key">Ctrl + Space</mark>, нажмите на иконку шестерёнки и в
-          открывшихся настройках активируйте опцию{" "}
-          <mark className="select">«Full Resolution Screenshots»</mark>. Она позволяет
-          делать снимки в полном разрешении независимо от выбранного качества
-          предпросмотра.
-        </p>
-        <ArticleMedia
-          caption="FX Console"
-          src="legacy/aftereffects/fx_console_full_resolution_screenshots.png"
+          caption="Предупреждение об изменении разрешения и частоты кадров композиции для соответствия требованиям формата"
+          src="media/after-effects/export/output-file-will-be-resized-frame-rate-will-be-adjusted.png"
           type="image"
         />
         <p>
-          Теперь, чтобы быстро сохранить кадр, достаточно вызвать окно плагина с помощью{" "}
-          <mark className="key">Ctrl + Space</mark> и нажать на иконку фотоаппарата.{" "}
-          <mark className="plugin">FX Console</mark> предложит три варианта: сохранить
-          изображение в формате <mark className="image">JPG</mark>,{" "}
-          <mark className="image">PNG</mark> или скопировать его в буфер обмена.
+          При использовании некоторых сторонних экспортёров, например{" "}
+          <mark className="plugin">AfterCodecs</mark>, экспорт может завершиться ошибкой,
+          если параметры композиции не соответствуют требованиям выбранного кодека,
+          например при использовании нечётного разрешения.
         </p>
+        <Addition type="info">
+          Если вам всё же необходимо получить видео <mark className="video">H.264</mark>,{" "}
+          <mark className="video">H.265</mark> или их производных с нечётным разрешением,
+          попробуйте воспользоваться <mark className="plugin">Voukoder</mark>. Он может
+          автоматически привести размер кадра к требованиям кодека за счёт добавления
+          пикселей или обрезки изображения с сохранением исходного разрешения в метаданных
+          файла. Благодаря этому многие плееры и видеоредакторы смогут корректно
+          определить исходный размер видео.
+        </Addition>
         <ArticleMedia
-          caption="FX Console"
-          src="legacy/aftereffects/fx_console_save_frame_as.png"
+          caption="Ошибка в AfterCodecs при экспорте с нечётным разрешением"
+          src="media/after-effects/errors/aftercodecs-odd-resolution-error.png"
           type="image"
         />
         <p>
-          При нажатии на <mark className="select">«Save to JPG»</mark> или{" "}
-          <mark className="select">«Save to PNG»</mark> появится системное окно для выбора
-          пути сохранения файла. После этого текущий кадр композиции будет сохранён как
-          отдельное изображение.
-        </p>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-sequence"
-        tag="вывести секвенцию фото, jpg, png, psd"
-        title="Как экспортировать все кадры композиции как отдельные изображения?"
-      >
-        <ul>
-          <li>
-            Добавьте композицию в очередь рендеринга с помощью комбинации клавиш{" "}
-            <mark className="key">Ctrl + M</mark> или через меню{" "}
-            <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-          </li>
-          <li>
-            <p>
-              В очереди рендеринга нажмите на название пресета рядом с{" "}
-              <mark className="select">«Output Module»</mark>, чтобы открыть его
-              настройки.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/render_queue.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              В параметре <mark className="select">«Format»</mark> выберите формат с
-              припиской <mark className="select">«Sequence»</mark> в названии, например{" "}
-              <mark className="select">«PNG Sequence»</mark> или{" "}
-              <mark className="select">«JPG Sequence»</mark>. В разделе{" "}
-              <mark className="select">«Format Options»</mark> можно настроить параметры
-              изображения, например качество или сжатие.
-            </p>
-            <Addition type="info">
-              Если вы хотите экспортировать кадры с прозрачностью, не забудьте установить
-              для параметра <mark className="select">«Channels»</mark> значение{" "}
-              <mark className="select">«RGB + Alpha»</mark>.
-            </Addition>
-            <ArticleMedia
-              caption="Output Module Settings"
-              src="legacy/aftereffects/selecting_png_sequence.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              Укажите путь и имя файла в <mark className="select">«Output To»</mark>, а
-              затем запустите экспорт кнопкой <mark className="select">«Render»</mark> или
-              клавишей <mark className="key">Enter</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/start_render_button.png"
-              type="image"
-            />
-            <Addition type="info">
-              При экспорте секвенции <mark className="app">Adobe After Effects</mark> по
-              умолчанию создаёт отдельную подпапку для изображений. Это поведение можно
-              отключить, убрав флажок <mark className="select">«Save in subfolder»</mark>{" "}
-              при выборе пути сохранения.
-            </Addition>
-          </li>
-        </ul>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-only-work-area"
-        tag="рабочая область, настройки рендера, длина композиции, таймлайн"
-        title="Как экспортировать всю длину композиции или только её часть?"
-      >
-        <p>
-          По умолчанию <mark className="app">Adobe After Effects</mark> рендерит только
-          выделенную рабочую область. Её начало и конец задаются клавишами{" "}
-          <mark className="key">B</mark> и <mark className="key">N</mark> или
-          перетаскиванием соответствующих маркеров на таймлайне.
-        </p>
-        <Divider>Экспортируем всю композицию целиком</Divider>
-        <p>
-          Если вы хотите, чтобы композиция всегда экспортировалась целиком, независимо от
-          заданной рабочей области, нужно изменить один параметр в{" "}
-          <mark className="select">«Render Settings»</mark>. Удобнее всего создать для
-          этого отдельный шаблон.
-        </p>
-        <ul>
-          <li>
-            Добавьте композицию в очередь рендеринга с помощью комбинации клавиш{" "}
-            <mark className="key">Ctrl + M</mark> или через меню{" "}
-            <mark className="select">«File» → «Export» → «Add to Render Queue»</mark>.
-          </li>
-          <li>
-            <p>
-              Нажмите на стрелку рядом с <mark className="select">«Render Settings»</mark>{" "}
-              и выберите <mark className="select">«Make Template»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Queue"
-              src="legacy/aftereffects/make_template_render_settings.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              В открывшемся окне появится пресет{" "}
-              <mark className="select">«Untitled»</mark>, который можно переименовать.
-              Чтобы сделать его шаблоном по умолчанию, выберите его в разделе{" "}
-              <mark className="select">«Defaults»</mark>. Для редактирования шаблона
-              нажмите <mark className="select">«Edit»</mark>.
-            </p>
-            <ArticleMedia
-              caption="Render Settings Templates"
-              src="legacy/aftereffects/render_settings_templates.png"
-              type="image"
-            />
-            <Addition type="info">
-              Окно управления шаблонами также открывается через{" "}
-              <mark className="select">«Edit» → «Templates» → «Render Settings»</mark>.
-            </Addition>
-          </li>
-          <li>
-            <p>
-              В открывшемся окне <mark className="select">«Render Settings»</mark> для
-              параметра <mark className="select">«Time Span»</mark> установите значение{" "}
-              <mark className="select">«Length of Comp»</mark> (длина всей композиции)
-              вместо <mark className="select">«Work Area Only»</mark> (только рабочая
-              область).
-            </p>
-            <ArticleMedia
-              caption="Render Settings"
-              src="legacy/aftereffects/change_render_time_span.png"
-              type="image"
-            />
-          </li>
-          <li>Закройте все окна и проверьте работу нового шаблона.</li>
-        </ul>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-with-layer-controls"
-        tag="границы слоёв, пути движения, направляющие, демонстрация анимации"
-        title="Как экспортировать видео с отображением границ слоёв и путей движения?"
-      >
-        <p>
-          Для экспорта композиции с наложенными направляющими, границами слоёв и путями
-          анимации можно воспользоваться сторонним плагином{" "}
-          <mark className="plugin">Cyclops</mark>. Он позволяет отрендерить видео со всеми
-          этими визуальными элементами, что упрощает демонстрацию и анализ вашей работы.
-        </p>
-        <ArticleMedia
-          src="vNH3d9YqLo4"
-          type="youtube"
-        />
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="collect-files"
-        tag="сбор проекта, collect files"
-        title="Как передать проект со всеми исходниками другому человеку?"
-      >
-        <p>
-          В <mark className="app">Adobe After Effects</mark> есть функция сбора проекта,
-          которая сохраняет в отдельную папку сам файл проекта{" "}
-          <mark className="file">AEP</mark> и все используемые в нём исходники (видео,
-          аудио, изображения). Это гарантирует, что при переносе проекта на другой
-          компьютер или передаче другому человеку ничего не потеряется.
+          Чтобы решить эти проблемы, откройте настройки композиции с помощью комбинации
+          клавиш <mark className="key">Ctrl + K</mark> или через меню{" "}
+          <mark className="select">«Composition» → «Composition Settings»</mark> и укажите
+          требуемые для формата параметры разрешения и частоты кадров. После этого экспорт
+          должен пройти без предупреждений.
         </p>
         <Addition type="warning">
-          Эта функция не собирает файлы плагинов, пресетов и шрифтов. Предупредите
-          человека, которому передаёте проект, о необходимости установить их отдельно.
-          Информация об используемых шрифтах, эффектах и исходниках будет сохранена в
-          текстовый файл отчёта рядом с файлом проекта.
+          При радикальном изменении разрешения или частоты кадров композиции, возможно,
+          вам придётся адаптировать вашу композицию под требования формата.
         </Addition>
-        <ul>
-          <li>
-            <p>
-              Чтобы запустить сбор, перейдите в{" "}
-              <mark className="select">«File» → «Dependencies» → «Collect Files»</mark>.
-              Если проект не сохранён, программа предложит это сделать.
-            </p>
-            <ArticleMedia
-              caption="Открываем окно сборщика проекта"
-              src="legacy/aftereffects/select_collect_files.png"
-              type="image"
-            />
-          </li>
-          <li>
-            <p>
-              Появится окно, где в параметре{" "}
-              <mark className="select">«Collect Source Files»</mark> можно выбрать, что
-              именно собирать: <mark className="select">«All»</mark> — все файлы из
-              проекта или <mark className="select">«For All Comps»</mark> — только те, что
-              используются в композициях. Второй вариант поможет уменьшить размер архива.
-            </p>
-            <ArticleMedia
-              caption="Окно «Collect Files»"
-              src="legacy/aftereffects/collect_files_settings.png"
-              type="image"
-            />
-          </li>
-          <li>
-            После нажатия на кнопку <mark className="select">«Collect»</mark> программа
-            предложит указать, куда сохранить папку с проектом.
-          </li>
-          <li>
-            <ContentFilter
-              macContent={
-                <div>
-                  <p>
-                    После завершения сбора перейдите в папку с проектом и создайте архив с
-                    помощью утилиты вроде <a href="https://www.keka.io/ru/">Keka</a>. Если
-                    нужно отправить большой проект, а площадка для обмена файлами имеет
-                    ограничения на размер, вы можете разделить архив на части. После
-                    создания архива отправьте его любым удобным способом.
-                  </p>
-                  <div className="article-media-gallery-grid">
-                    <ArticleMedia
-                      caption="Выбор формата архива"
-                      src="https://github.com/aonez/Keka/raw/master/Wiki/Images/Animated/main-window-format.gif"
-                      type="image"
-                    />
-                    <ArticleMedia
-                      caption="Разделение архива на части"
-                      src="https://github.com/aonez/Keka/raw/master/Wiki/Images/Animated/main-window-split.gif"
-                      type="image"
-                    />
-                  </div>
-                  <Addition type="info">
-                    Подробнее о создании архивов через{" "}
-                    <a href="https://www.keka.io/ru/">Keka</a> можно прочитать на{" "}
-                    <a href="https://github.com/aonez/Keka/wiki/Compressing-with-Keka">
-                      этой странице
-                    </a>
-                    .
-                  </Addition>
-                </div>
-              }
-              windowsContent={
-                <div>
-                  <p>
-                    После завершения сбора перейдите в папку с проектом и создайте архив с
-                    помощью архиватора, например{" "}
-                    <a href="https://www.rarlab.com/download.htm">WinRAR</a> или{" "}
-                    <a href="https://www.7-zip.org/">7-Zip</a>. Если площадка для обмена
-                    файлами имеет ограничения на размер, вы можете разделить архив на
-                    части и отправить его по кускам. После создания архива отправьте его
-                    любым удобным способом.
-                  </p>
-                  <ArticleMedia
-                    src="6KumGS0EyUQ"
-                    type="youtube"
-                  />
-                </div>
-              }
-            />
-          </li>
-        </ul>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="save-ffx"
-        tag="presets, ffx"
-        title="Как создать свой пресет с эффектами и передать его другому человеку?"
-      >
-        <p>
-          <mark className="word">Пресеты</mark> — это готовые наборы эффектов формата{" "}
-          <mark className="file">FFX</mark> с заданными настройками. Их можно сохранять,
-          применять к другим слоям и передавать другим пользователям.
-        </p>
-        <p>
-          Чтобы создать пресет, примените и настройте нужные эффекты на любом слое,
-          выделите их в окне <mark className="select">«Effect Controls»</mark>, перейдите
-          на панель <mark className="select">«Effects & Presets»</mark>, нажмите на иконку
-          меню и выберите <mark className="select">«Save Animation Preset»</mark>. В
-          открывшемся окне останется указать название и путь для сохранения файла.
-        </p>
-        <ArticleMedia
-          caption="Создание пресета анимации"
-          src="legacy/aftereffects/save_animation_preset.mp4"
-          type="video"
-        />
-        <p>
-          Теперь вы можете поделиться сохранённым файлом <mark className="file">FFX</mark>{" "}
-          с другими пользователями. Получателю нужно будет импортировать его, следуя{" "}
-          <a href="#how-to-install">инструкции по установке</a>. После этого пресет
-          появится в папке <mark className="path">Animation Presets</mark> на панели{" "}
-          <mark className="select">«Effects & Presets»</mark> и будет готов к применению.
-        </p>
-        <Addition type="warning">
-          Прежде чем делиться пресетами, сообщите получателю, для какой версии{" "}
-          <mark className="app">Adobe After Effects</mark> и для какого разрешения
-          композиции они предназначены. Если используются сторонние эффекты, обязательно
-          укажите их названия и точные версии для корректной работы.
-        </Addition>
-      </DetailsSummary>
-      <DetailsSummary
-        anchor="export-with-command-line"
-        tag="командная строка, aerender, автоматизация, пакетный рендер, скриптинг, экспорт, очередь рендера"
-        title="Как экспортировать композицию с помощью командной строки?"
-      ></DetailsSummary>
-      <DetailsSummary
-        anchor="lottie-supported-effects"
-        tag="лотти"
-        title="Какие эффекты можно использовать при использовании Lottie?"
-      >
-        <p>
-          <mark className="file">LOTTIE</mark> не поддерживает все функции{" "}
-          <mark className="app">Adobe After Effects</mark>, особенно сторонние плагины и
-          сложные эффекты. На сайте <mark className="web">LottieFiles</mark> есть
-          подробная{" "}
-          <a href="https://lottiefiles.com/supported-features">таблица совместимости</a>,
-          где показано, какие свойства и эффекты поддерживаются на разных платформах.
-          Чтобы проверить свою анимацию, вы можете загрузить экспортированный файл{" "}
-          <mark className="file">JSON</mark> в{" "}
-          <a href="https://app.lottiefiles.com/preview">
-            инструмент предпросмотра от Lottie
-          </a>{" "}
-          или <a href="https://www.svgsprite.com/tools/lottie-player/">Lottie Player</a>.
-        </p>
       </DetailsSummary>
     </div>
   );
