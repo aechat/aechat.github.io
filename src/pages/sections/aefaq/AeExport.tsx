@@ -2794,6 +2794,21 @@ const AeExport: React.FC = () => {
           </li>
         </ul>
       </DetailsSummary>
+      <DetailsSummary
+        anchor="fix-rendering-error-while-writing-to-file"
+        tag="ошибка экспорта, файл занят, видео используется другим процессом"
+        title="«Rendering error while writing to file (...). Unable to delete existing file» или «An unexpected error occurred while exporting a composition. Error code: 9988»"
+      >
+        <p>
+          Скорее всего, вы пытаетесь перезаписать файл, который сейчас используется другой
+          программой, например открыт в видеоплеере или отправляется в мессенджере.
+        </p>
+        <p>
+          Для решения проблемы закройте программу, которая использует файл, и повторите
+          экспорт. Если ошибка не исчезнет — измените путь сохранения, выберите другой
+          формат экспорта или перезагрузите устройство.
+        </p>
+      </DetailsSummary>
     </div>
   );
 };
