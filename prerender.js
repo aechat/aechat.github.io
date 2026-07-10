@@ -12,7 +12,7 @@ const template = fs.readFileSync(toAbsolute("dist/client/index.html"), "utf8");
 
 const {render} = await import("./dist/server/EntryServer.js");
 
-const routesToPrerender = ["/", "/aefaq", "/prfaq", "/psfaq", "/rules", "/404"];
+const routesToPrerender = ["/", "/aefaq", "/prfaq", "/psfaq", "/rules", "/links", "/404"];
 
 (async () => {
   for (const url of routesToPrerender) {

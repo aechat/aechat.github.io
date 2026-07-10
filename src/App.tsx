@@ -613,6 +613,15 @@ const AppContent = () => {
                     path="/"
                   />
                   <Route
+                    element={
+                      <Navigate
+                        replace
+                        to="/"
+                      />
+                    }
+                    path="/links"
+                  />
+                  <Route
                     element={<AeFaqPage />}
                     path="/aefaq"
                   />
