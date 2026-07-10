@@ -235,7 +235,7 @@ const Footer: React.FC<FooterProperties> = ({initialYear, title}) => {
         <a
           aria-label="перейти на GitHub"
           className={styles["footer-github-link"]}
-          href="https://github.com/aechat/links"
+          href="https://github.com/aechat/aechat.github.io"
           rel="noreferrer"
           target="_blank"
         >

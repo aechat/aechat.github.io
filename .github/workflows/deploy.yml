@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       YARN_IGNORE_PATH: 1
-    if: github.repository == 'aechat/links' && github.ref == 'refs/heads/main'
+    if: github.repository == 'aechat/aechat.github.io' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -54,7 +54,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.repository == 'aechat/links' && github.ref == 'refs/heads/main'
+    if: github.repository == 'aechat/aechat.github.io' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

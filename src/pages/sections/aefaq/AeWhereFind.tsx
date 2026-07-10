@@ -5635,49 +5635,49 @@ const AeWhereFind: React.FC = () => {
               <div className="flexible-links">
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202014%20(13.2)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202014%20(13.2)%20Presets.zip"
                 >
                   Adobe After Effects 2014 (13.2)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202015%20(13.8)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202015%20(13.8)%20Presets.zip"
                 >
                   Adobe After Effects 2015 (13.8)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202017%20(14.2)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202017%20(14.2)%20Presets.zip"
                 >
                   Adobe After Effects 2017 (14.2)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202018%20(15.1)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202018%20(15.1)%20Presets.zip"
                 >
                   Adobe After Effects 2018 (15.1)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202019-2022%20(16.1-22.6)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202019-2022%20(16.1-22.6)%20Presets.zip"
                 >
                   Adobe After Effects 2019-2022 (16.1-22.6)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202023%20(23.6)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202023%20(23.6)%20Presets.zip"
                 >
                   Adobe After Effects 2023 (23.6)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202024%20(24.6)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202024%20(24.6)%20Presets.zip"
                 >
                   Adobe After Effects 2024 (24.6)
                 </a>
                 <a
                   download
-                  href="https://github.com/aechat/links/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202025-2026%20(25.6-26.0)%20Presets.zip"
+                  href="https://github.com/aechat/aechat.github.io/raw/refs/heads/main/public/files/default_presets/Adobe%20After%20Effects%202025-2026%20(25.6-26.0)%20Presets.zip"
                 >
                   Adobe After Effects 2025-2026 (25.6-26.0)
                 </a>

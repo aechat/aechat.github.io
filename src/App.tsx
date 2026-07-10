@@ -109,7 +109,9 @@ const updateStoredWarningState = (
 const FilesRedirect = () => {
   useEffect(() => {
     document.title = "files@aechat";
-    globalThis.location.href = "https://github.com/aechat/links/tree/main/public/files";
+
+    globalThis.location.href =
+      "https://github.com/aechat/aechat.github.io/tree/main/public/files";
   }, []);
 
   return <></>;

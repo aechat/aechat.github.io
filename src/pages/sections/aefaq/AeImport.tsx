@@ -543,7 +543,7 @@ const AeImport: React.FC = () => {
           <mark className="key">Ctrl + S</mark> и в открывшемся окне сохранения введите
           название шаблона. Также вы можете воспользоваться готовыми шаблонами конвертации
           в популярные форматы из{" "}
-          <a href="https://github.com/aechat/links/tree/main/public/files/shutterencoder_templates">
+          <a href="https://github.com/aechat/aechat.github.io/tree/main/public/files/shutterencoder_templates">
             репозитория этого сайта на GitHub
           </a>{" "}
           и импортировать их в программу простым перетаскиванием{" "}
