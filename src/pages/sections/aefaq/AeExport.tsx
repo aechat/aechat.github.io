@@ -2542,6 +2542,66 @@ const AeExport: React.FC = () => {
           src="after-effects/export/output-to.png"
           type="image"
         />
+        <Divider>Разбираемся с шаблонами для экспорта</Divider>
+        <p>
+          Помимо выбора шаблонов для <mark className="select">«Output Module»</mark>,{" "}
+          <mark className="select">«Render Settings»</mark> и{" "}
+          <mark className="select">«Output To»</mark>, вы можете изменять существующие или
+          создавать собственные. Это может быть полезно, если вас чем-то не устраивают
+          стандартные шаблоны или вы хотите ускорить настройку параметров экспорта и
+          рендера.
+        </p>
+        <NestedDetailsSummary
+          anchor="template-output-module"
+          title="Как создавать и редактировать шаблоны для «Output Module»?"
+        >
+          <ul>
+            <li>
+              <p>
+                Для открытия окна редактирования шаблонов модуля вывода, перейдите в меню{" "}
+                <mark className="select">«Edit» → «Templates» → «Output Module»</mark> или
+                нажмите на <mark className="select">«Make Template»</mark> в контекстном
+                меню выбора шаблона в очереди рендера.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки шаблонов для модуля вывода"
+                src="media/after-effects/export/edit-templates-output-module.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После открытия окна вы увидите два раздела:{" "}
+                <mark className="select">«Defaults»</mark> и{" "}
+                <mark className="select">«Settings»</mark>. В разделе{" "}
+                <mark className="select">«Defaults»</mark> можно указать шаблоны настроек,
+                которые будут использоваться по умолчанию при экспорте видео, изображений,
+                создании пререндера и прокси.
+              </p>
+              <p>
+                Раздел <mark className="select">«Settings»</mark> предназначен для работы
+                с шаблонами. Здесь можно создать новый с помощью кнопки{" "}
+                <mark className="select">«New»</mark> или выбрать существующий через
+                выпадающий список <mark className="select">«Settings Name»</mark>, а затем
+                отредактировать, продублировать или удалить его с помощью кнопок{" "}
+                <mark className="select">«Edit»</mark>,{" "}
+                <mark className="select">«Duplicate»</mark> и{" "}
+                <mark className="select">«Delete»</mark>.
+              </p>
+              <p>
+                Настройка шаблона не отличается от обычной настройки модуля вывода. Для
+                экспорта и импорта шаблонов настроек используйте кнопки{" "}
+                <mark className="select">«Save All»</mark> и{" "}
+                <mark className="select">«Load»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Окно «Output Module Templates»"
+                src="media/after-effects/export/output-module-templates.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
       <DetailsSummary
         anchor="media-encoder-issues"
