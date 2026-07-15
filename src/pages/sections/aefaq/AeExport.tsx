@@ -2654,6 +2654,65 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="template-output-to"
+          title="Как создавать и редактировать шаблоны для «Output To»?"
+        >
+          <ul>
+            <li>
+              <p>
+                Для открытия окна редактирования шаблонов расположения сохранения, нажмите
+                на <mark className="select">«Custom»</mark> в контекстном меню выбора
+                шаблона в очереди рендера.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки шаблонов для расположения сохранения"
+                src="media/after-effects/export/output-to-custom.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После этого откроется окно, где можно изменить существующий шаблон имени
+                файла, создать собственный и при необходимости установить его в качестве
+                стандартного.
+              </p>
+              <p>
+                В поле <mark className="select">«Template»</mark> задаётся выражение для
+                формирования имени и расположения файла. Поддерживаются относительные
+                пути, что позволяет гибко управлять структурой экспортируемых файлов.
+                Кнопка <mark className="select">«Add Property»</mark> добавляет в шаблон
+                дополнительные параметры.
+              </p>
+              <ArticleMedia
+                caption="Окно «File Name and Location Template»"
+                src="media/after-effects/export/file-name-and-location-template.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чтобы сохранить композицию на уровень выше папки с проектом,
+                    используйте конструкцию{" "}
+                    <mark className="code">
+                      [projectFolder]\..\[compName].[fileExtension]
+                    </mark>
+                    .
+                  </li>
+                  <li>
+                    Чтобы сохранить файл в подпапку внутри папки проекта, используйте
+                    конструкцию{" "}
+                    <mark className="code">
+                      [projectFolder]\renders\[compName].[fileExtension]
+                    </mark>
+                    , где вместо <mark className="path">renders</mark> можно указать любое
+                    другое название.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
       <DetailsSummary
         anchor="media-encoder-issues"
