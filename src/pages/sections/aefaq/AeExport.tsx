@@ -2539,6 +2539,177 @@ const AeExport: React.FC = () => {
           src="after-effects/export/output-to.png"
           type="image"
         />
+        <Divider>Разбираемся с шаблонами для экспорта</Divider>
+        <p>
+          Помимо выбора шаблонов для <mark className="select">«Output Module»</mark>,{" "}
+          <mark className="select">«Render Settings»</mark> и{" "}
+          <mark className="select">«Output To»</mark>, вы можете изменять существующие или
+          создавать собственные. Это может быть полезно, если вас чем-то не устраивают
+          стандартные шаблоны или вы хотите ускорить настройку параметров экспорта и
+          рендера.
+        </p>
+        <NestedDetailsSummary
+          anchor="template-output-module"
+          title="Как создавать и редактировать шаблоны для «Output Module»?"
+        >
+          <ul>
+            <li>
+              <p>
+                Для открытия окна редактирования шаблонов модуля вывода, перейдите в меню{" "}
+                <mark className="select">«Edit» → «Templates» → «Output Module»</mark> или
+                нажмите на <mark className="select">«Make Template»</mark> в контекстном
+                меню выбора шаблона в очереди рендера.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки шаблонов для модуля вывода"
+                src="media/after-effects/export/edit-templates-output-module.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После открытия окна вы увидите два раздела:{" "}
+                <mark className="select">«Defaults»</mark> и{" "}
+                <mark className="select">«Settings»</mark>. В разделе{" "}
+                <mark className="select">«Defaults»</mark> можно указать шаблоны настроек,
+                которые будут использоваться по умолчанию при экспорте видео, изображений,
+                создании пререндера и прокси.
+              </p>
+              <p>
+                Раздел <mark className="select">«Settings»</mark> предназначен для работы
+                с шаблонами. Здесь можно создать новый с помощью кнопки{" "}
+                <mark className="select">«New»</mark> или выбрать существующий через
+                выпадающий список <mark className="select">«Settings Name»</mark>, а затем
+                отредактировать, продублировать или удалить его с помощью кнопок{" "}
+                <mark className="select">«Edit»</mark>,{" "}
+                <mark className="select">«Duplicate»</mark> и{" "}
+                <mark className="select">«Delete»</mark>.
+              </p>
+              <p>
+                Настройка шаблона не отличается от обычной настройки модуля вывода. Для
+                экспорта и импорта шаблонов настроек используйте кнопки{" "}
+                <mark className="select">«Save All»</mark> и{" "}
+                <mark className="select">«Load»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Окно «Output Module Templates»"
+                src="media/after-effects/export/output-module-templates.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="template-render-settings"
+          title="Как создавать и редактировать шаблоны для «Render Settings»?"
+        >
+          <ul>
+            <li>
+              <p>
+                Для открытия окна редактирования шаблонов настроек рендера, перейдите в
+                меню{" "}
+                <mark className="select">«Edit» → «Templates» → «Render Settings»</mark>{" "}
+                или нажмите на <mark className="select">«Make Template»</mark> в
+                контекстном меню выбора шаблона в очереди рендера.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки шаблонов для настроек рендера"
+                src="media/after-effects/export/edit-templates-render-settings.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После открытия окна вы увидите два раздела:{" "}
+                <mark className="select">«Defaults»</mark> и{" "}
+                <mark className="select">«Settings»</mark>. В разделе{" "}
+                <mark className="select">«Defaults»</mark> можно указать шаблоны настроек,
+                которые будут использоваться по умолчанию при экспорте видео, изображений,
+                создании пререндера и прокси.
+              </p>
+              <p>
+                Раздел <mark className="select">«Settings»</mark> предназначен для работы
+                с шаблонами. Здесь можно создать новый с помощью кнопки{" "}
+                <mark className="select">«New»</mark> или выбрать существующий через
+                выпадающий список <mark className="select">«Settings Name»</mark>, а затем
+                отредактировать, продублировать или удалить его с помощью кнопок{" "}
+                <mark className="select">«Edit»</mark>,{" "}
+                <mark className="select">«Duplicate»</mark> и{" "}
+                <mark className="select">«Delete»</mark>.
+              </p>
+              <p>
+                Настройка шаблона не отличается от обычной настройки модуля вывода. Для
+                экспорта и импорта шаблонов настроек используйте кнопки{" "}
+                <mark className="select">«Save All»</mark> и{" "}
+                <mark className="select">«Load»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Окно «Render Settings Templates»"
+                src="media/after-effects/export/render-settings-templates.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
+        <NestedDetailsSummary
+          anchor="template-output-to"
+          title="Как создавать и редактировать шаблоны для «Output To»?"
+        >
+          <ul>
+            <li>
+              <p>
+                Для открытия окна редактирования шаблонов расположения сохранения, нажмите
+                на <mark className="select">«Custom»</mark> в контекстном меню выбора
+                шаблона в очереди рендера.
+              </p>
+              <ArticleMedia
+                caption="Открываем настройки шаблонов для расположения сохранения"
+                src="media/after-effects/export/output-to-custom.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                После этого откроется окно, где можно изменить существующий шаблон имени
+                файла, создать собственный и при необходимости установить его в качестве
+                стандартного.
+              </p>
+              <p>
+                В поле <mark className="select">«Template»</mark> задаётся выражение для
+                формирования имени и расположения файла. Поддерживаются относительные
+                пути, что позволяет гибко управлять структурой экспортируемых файлов.
+                Кнопка <mark className="select">«Add Property»</mark> добавляет в шаблон
+                дополнительные параметры.
+              </p>
+              <ArticleMedia
+                caption="Окно «File Name and Location Template»"
+                src="media/after-effects/export/file-name-and-location-template.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Чтобы сохранить композицию на уровень выше папки с проектом,
+                    используйте конструкцию{" "}
+                    <mark className="code">
+                      [projectFolder]\..\[compName].[fileExtension]
+                    </mark>
+                    .
+                  </li>
+                  <li>
+                    Чтобы сохранить файл в подпапку внутри папки проекта, используйте
+                    конструкцию{" "}
+                    <mark className="code">
+                      [projectFolder]\renders\[compName].[fileExtension]
+                    </mark>
+                    , где вместо <mark className="path">renders</mark> можно указать любое
+                    другое название.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
       <DetailsSummary
         anchor="media-encoder-issues"
