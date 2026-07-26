@@ -173,15 +173,15 @@ const RegFilePage = () => {
                   контексте <mark className="app">Adobe After Effects</mark> и{" "}
                   <mark className="app">Adobe Premiere Pro</mark> под ним обычно
                   подразумевается файл для включения debug-режима, необходимого для
-                  корректной работоспобности вручную установленных расширений формата{" "}
-                  <mark className="file">ZXP</mark>. На macOS это работает аналогичным
-                  образом, однако вместо импорта значений в реестр используются команды в
-                  терминале.
+                  запуска сторонних расширений формата <mark className="file">ZXP</mark>.
+                  На macOS аналогичная настройка выполняется через терминал.
                 </p>
                 <p>
-                  Без включённого debug-режима установленные расширения могут отображаться
-                  в <mark className="select">«Window» → «Extensions»</mark>, но не
-                  открываться при запуске.
+                  Для корректной работы сторонних расширений формата{" "}
+                  <mark className="file">ZXP</mark> необходимо не только поместить их в
+                  папку <mark className="path">../CEP/extensions</mark>, но и включить
+                  debug-режим. Без него установленные расширения могут не запускаться из
+                  меню <mark className="select">«Window» → «Extensions»</mark>.
                 </p>
               </section>
             </div>
