@@ -974,7 +974,7 @@ const AeExport: React.FC = () => {
         </NestedDetailsSummary>
         <NestedDetailsSummary
           anchor="mov"
-          title="MOV (Apple ProRes, DNxHR, DNxHD, DV, DVCPRO, GoPro Cineform)"
+          title="MOV (Apple ProRes, DNxHR, DNxHD, DV, DVCPRO, GoPro CineForm)"
         >
           <ul>
             <li>
@@ -982,7 +982,7 @@ const AeExport: React.FC = () => {
                 Для экспорта видео в кодеке <mark className="video">Apple ProRes</mark>,{" "}
                 <mark className="video">DNxHR</mark>, <mark className="video">DNxHD</mark>
                 , <mark className="video">DV</mark>, <mark className="video">DVCPRO</mark>{" "}
-                или <mark className="video">GoPro Cineform</mark> нужно выбрать значение{" "}
+                или <mark className="video">GoPro CineForm</mark> нужно выбрать значение{" "}
                 <mark className="select">«QuickTime»</mark> в списке{" "}
                 <mark className="select">«Format»</mark> в настройках модуля вывода.
               </p>

@@ -636,7 +636,7 @@ const AePerformance: React.FC = () => {
           минимизируем расхождения в результатах из-за разницы в «железе», драйверах и
           поддержке тех или иных функций аппаратного ускорения. Экспорт будем выполнять
           через <mark className="plugin">QuickTime</mark> в кодек{" "}
-          <mark className="video">GoPro Cineform</mark>.
+          <mark className="video">GoPro CineForm</mark>.
         </p>
         <ul>
           <li>

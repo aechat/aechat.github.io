@@ -3505,7 +3505,7 @@ h = content(shapeName).content(pathName).size[1];
                 <mark className="video">Apple ProRes</mark>.
               </li>
               <li>
-                <mark className="video">GoPro Cineform</mark> — ещё один популярный
+                <mark className="video">GoPro CineForm</mark> — ещё один популярный
                 монтажный кодек, поддерживает альфа-канал.
               </li>
             </ul>
