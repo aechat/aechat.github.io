@@ -2710,6 +2710,145 @@ const AeExport: React.FC = () => {
             </li>
           </ul>
         </NestedDetailsSummary>
+        <Divider>Дополнительные материалы</Divider>
+        <NestedDetailsSummary
+          anchor="proxy"
+          title="Как создать прокси для композиции и использовать их для финального рендера?"
+        >
+          <p>
+            В <mark className="app">Adobe After Effects</mark> можно создавать и
+            использовать прокси-файлы для композиций, чтобы не пересчитывать «тяжёлые»
+            сцены каждый раз, когда они используются в других композициях. Эта функция
+            может оказаться полезной, если вы больше не планируете изменять содержимое
+            такой композиции в дальнейшем или сталкиваетесь с проблемами при финальном
+            экспорте.
+          </p>
+          <Divider>Создаём прокси</Divider>
+          <ul>
+            <li>
+              <p>
+                Выделите в окне <mark className="select">«Project»</mark> нужную
+                композицию или видео, нажмите на него <mark className="key">ПКМ</mark> и
+                выберите в контекстном меню{" "}
+                <mark className="select">«Create Proxy» → «Movie»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Создание прокси для композиции"
+                src="media/after-effects/export/file-create-proxy-movie.png"
+                type="image"
+              />
+            </li>
+            <li>
+              Выберите путь для сохранения файла и его название в открывшемся окне
+              системного файлового менеджера. После этого выбранная композиция отправится
+              в очередь рендеринга.
+            </li>
+            <li>
+              <p>
+                При необходимости в очереди рендеринга для параметра{" "}
+                <mark className="select">«Render Settings»</mark> выберите шаблон{" "}
+                <mark className="select">«Best Settings»</mark>, чтобы прокси создавался в
+                полном разрешении. По умолчанию{" "}
+                <mark className="app">Adobe After Effects</mark> рендерит прокси с
+                пониженным разрешением, а также принудительно отключает размытие в
+                движении и интерполяцию кадров, даже если они были включены в композиции.
+              </p>
+              <ArticleMedia
+                caption="Выбор шаблона настроек рендера для прокси"
+                src="media/after-effects/export/select-render-settings-best-settings-proxy.png"
+                type="image"
+              />
+              <Addition type="info">
+                Чтобы каждый раз не выбирать{" "}
+                <mark className="select">«Best Settings»</mark>, можно назначить этот
+                шаблон по умолчанию в{" "}
+                <mark className="select">«Edit» → «Templates» → «Render Settings»</mark>,
+                в параметре <mark className="select">«Movie Proxy Default»</mark>.
+              </Addition>
+            </li>
+            <li>
+              <p>
+                При необходимости укажите удобный вам формат в{" "}
+                <mark className="select">«Output Module»</mark>, например{" "}
+                <mark className="video">Apple ProRes 422</mark>.
+              </p>
+              <ArticleMedia
+                caption="Выбор шаблона модуля вывода для создания прокси"
+                src="media/after-effects/export/select-output-module-high-quality-proxy.png"
+                type="image"
+              />
+              <Addition type="info">
+                <ul>
+                  <li>
+                    Если после экспорта прокси не назначился автоматически или в параметре{" "}
+                    <mark className="select">«Post-Render Action»</mark> окна{" "}
+                    <mark className="select">«Output Module»</mark> было выбрано значение,
+                    отличное от <mark className="select">«Set Proxy»</mark> — назначьте
+                    прокси вручную. Для этого нажмите <mark className="key">ПКМ</mark> по
+                    композиции в окне <mark className="select">«Project»</mark> и выберите{" "}
+                    <mark className="select">«Set Proxy» → «File»</mark>, после чего
+                    укажите путь к отрендеренному файлу.
+                  </li>
+                  <li>
+                    Если композиция имеет прозрачные участки — используйте форматы,
+                    которые поддерживают альфа-канал, например{" "}
+                    <mark className="video">Apple ProRes 4444</mark> или{" "}
+                    <mark className="video">GoPro CineForm</mark>.
+                  </li>
+                </ul>
+              </Addition>
+            </li>
+            <li>
+              <p>
+                После настройки параметров закройте лишние окна и запустите экспорт в{" "}
+                <mark className="select">«Render Queue»</mark>.
+              </p>
+            </li>
+          </ul>
+          <Divider>Используем прокси при финальном экспорте</Divider>
+          <p>
+            Если вы хотите, чтобы при финальном рендеринге использовался созданный
+            прокси-файл вместо повторного просчёта исходной композиции — откройте окно
+            настройки <mark className="select">«Render Settings»</mark> и установите
+            значение <mark className="select">«Use All Proxies»</mark> для параметра{" "}
+            <mark className="select">«Proxy Use»</mark>.
+          </p>
+          <ArticleMedia
+            caption="Настройка использования прокси в финальном рендеринге"
+            src="media/after-effects/export/render-settings-use-all-proxies.png"
+            type="image"
+          />
+          <Addition type="info">
+            Эту настройку также можно сохранить в шаблон, отредактировав пресет{" "}
+            <mark className="select">«Best Settings»</mark> или создав свой собственный.
+          </Addition>
+          <Divider>Отключаем прокси</Divider>
+          <ul>
+            <li>
+              <p>
+                Для временного отключения прокси, нажмите на иконку квадрата слева от
+                названия композиции в окне <mark className="select">«Project»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Переключение состояния прокси для композиции"
+                src="media/after-effects/interface/toggle-proxy-comp.png"
+                type="image"
+              />
+            </li>
+            <li>
+              <p>
+                Чтобы полностью отвязать прокси-файл от объекта, нажмите{" "}
+                <mark className="key">ПКМ</mark> по композиции и выберите{" "}
+                <mark className="select">«Set Proxy» → «None»</mark>.
+              </p>
+              <ArticleMedia
+                caption="Удаление ссылки на прокси для композиции"
+                src="media/after-effects/interface/file-set-proxy-none.png"
+                type="image"
+              />
+            </li>
+          </ul>
+        </NestedDetailsSummary>
       </DetailsSummary>
       <DetailsSummary
         anchor="media-encoder-issues"
