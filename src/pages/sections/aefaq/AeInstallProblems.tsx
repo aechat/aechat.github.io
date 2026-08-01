@@ -2939,26 +2939,34 @@ const AeInstallProblems: React.FC = () => {
         tag="trapcode, mbl, magic bullet, vfx suite, universe, red giant, packages directory, ошибка установки, распаковать архив"
         title="«This installer application has been moved. It must be run from its original folder containing a packages directory. The installer will now exit.» при установке любого пакета от Red Giant"
       >
-        <p>
-          Скорее всего, вы пытаетесь установить плагины от{" "}
-          <mark className="plugin">Red Giant</mark>, не распаковав архив полностью. При
-          использовании стандартного просмотрщика архивов в Windows 10 или 11 и при
-          запуске из него файла <mark className="file">EXE</mark> остальные
-          файлы-зависимости остаются внутри архива. В результате установщик не может найти
-          нужные данные и выдаёт ошибку.
-        </p>
-        <p>
-          Чтобы установка прошла корректно, распакуйте весь архив заранее или используйте{" "}
-          <a
-            href="https://www.rarlab.com/download.htm"
-            title="Официальный сайт WinRAR"
-          >
-            WinRAR
-          </a>
-          . <mark className="app">WinRAR</mark> умеет временно извлекать весь архив при
-          открытии установочных файлов вроде <mark className="file">EXE</mark> или{" "}
-          <mark className="file">MSI</mark>, даже если вы открыли их напрямую из архива.
-        </p>
+        <ContentFilter
+          windowsContent={
+            <>
+              <p>
+                Скорее всего, вы пытаетесь установить плагины от{" "}
+                <mark className="plugin">Red Giant</mark>, не распаковав архив полностью.
+                При использовании стандартного просмотрщика архивов в Windows 10 или 11 и
+                при запуске из него файла <mark className="file">EXE</mark> остальные
+                файлы-зависимости остаются внутри архива. В результате установщик не может
+                найти нужные данные и выдаёт ошибку.
+              </p>
+              <p>
+                Чтобы установка прошла корректно, распакуйте весь архив заранее или
+                используйте{" "}
+                <a
+                  href="https://www.rarlab.com/download.htm"
+                  title="Официальный сайт WinRAR"
+                >
+                  WinRAR
+                </a>
+                . <mark className="app">WinRAR</mark> умеет временно извлекать весь архив
+                при открытии установочных файлов вроде <mark className="file">EXE</mark>{" "}
+                или <mark className="file">MSI</mark>, даже если вы открыли их напрямую из
+                архива.
+              </p>
+            </>
+          }
+        />
       </DetailsSummary>
       <DetailsSummary
         anchor="unlicensed-red-giant"
@@ -3040,26 +3048,32 @@ const AeInstallProblems: React.FC = () => {
         tag="red giant, team v.r., активатор, ошибка 5, отказано в доступе, access denied, deletefile, red giant service, select action - an error occurred while trying to replace the existing file: deletefile failed; code 5. access denied"
         title="«Виберiть дiю — виникла помилка при спробi замiни iснуючого файлу: DeleteFile збiй; код 5. Отказано в доступi» при применении активатора от Team V.R. для пакетов Red Giant"
       >
-        <p>
-          Эта ошибка означает, что активатор не может перезаписать какой-то файл, потому
-          что он у вас открыт в фоновом режиме. В вашем окне ошибки должен отобразиться
-          полный путь до «виновника торжества» — скорее всего, это будет висящий в фоне{" "}
-          <mark className="app">Red Giant Service.exe</mark>.
-        </p>
-        <p>
-          Чтобы корректно применить активатор, закройте проблемный сервис с помощью{" "}
-          <mark className="app">Диспетчера задач</mark>, завершив процесс{" "}
-          <mark className="app">Red Giant Service.exe</mark> во вкладке{" "}
-          <mark className="select">«Подробности»</mark> (Windows 10 или 11 21H2) или{" "}
-          <mark className="select">«Сведения»</mark> (Windows 11 22H2 и выше). После
-          завершения проблемного процесса, повторите попытку активации, нажав на{" "}
-          <mark className="select">«Спробувати знову»</mark> — она должна пройти
-          нормально.
-        </p>
-        <ArticleMedia
-          caption="Диспетчер задач"
-          src="legacy/kill_redgiantservice.png"
-          type="image"
+        <ContentFilter
+          windowsContent={
+            <>
+              <p>
+                Эта ошибка означает, что активатор не может перезаписать какой-то файл,
+                потому что он у вас открыт в фоновом режиме. В вашем окне ошибки должен
+                отобразиться полный путь до «виновника торжества» — скорее всего, это
+                будет висящий в фоне <mark className="app">Red Giant Service.exe</mark>.
+              </p>
+              <p>
+                Чтобы корректно применить активатор, закройте проблемный сервис с помощью{" "}
+                <mark className="app">Диспетчера задач</mark>, завершив процесс{" "}
+                <mark className="app">Red Giant Service.exe</mark> во вкладке{" "}
+                <mark className="select">«Подробности»</mark> (Windows 10 или 11 21H2) или{" "}
+                <mark className="select">«Сведения»</mark> (Windows 11 22H2 и выше). После
+                завершения проблемного процесса, повторите попытку активации, нажав на{" "}
+                <mark className="select">«Спробувати знову»</mark> — она должна пройти
+                нормально.
+              </p>
+              <ArticleMedia
+                caption="Диспетчер задач"
+                src="legacy/kill_redgiantservice.png"
+                type="image"
+              />
+            </>
+          }
         />
       </DetailsSummary>
       <DetailsSummary
