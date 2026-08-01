@@ -2935,6 +2935,33 @@ const AeInstallProblems: React.FC = () => {
         />
       </DetailsSummary>
       <DetailsSummary
+        anchor="fix-red-giant-missing-hosts"
+        tag="trapcode, mbl, magic bullet, vfx suite, universe, red giant, ошибка установки"
+        title="«Some products require host applications which are not installed on this computer. Selection of these products for install will be disabled» при установке любого пакета от Red Giant"
+      >
+        <ContentFilter
+          windowsContent={
+            <>
+              <p>
+                Скорее всего, вы пытаетесь установить плагины от{" "}
+                <mark className="plugin">Red Giant</mark> к программам{" "}
+                <mark className="company">Adobe</mark>, которые установлены не на
+                стандартном разделе либо случайно затёрлась запись об его установке.
+              </p>
+              <p>
+                Для решения проблемы просто переустановите{" "}
+                <mark className="app">Adobe After Effects</mark> на стандартное
+                расположение, не меняя его при установке. Если{" "}
+                <mark className="app">Adobe After Effects</mark> уже установлен на
+                стандартном расположении — откройте установщик программы и выполните
+                установку так, как будто вы обновляете программу. При таком «обновлении»
+                текущие настройки и дополнения никуда не пропадут.
+              </p>
+            </>
+          }
+        />
+      </DetailsSummary>
+      <DetailsSummary
         anchor="fix-red-giant-installer-moved"
         tag="trapcode, mbl, magic bullet, vfx suite, universe, red giant, packages directory, ошибка установки, распаковать архив"
         title="«This installer application has been moved. It must be run from its original folder containing a packages directory. The installer will now exit.» при установке любого пакета от Red Giant"
