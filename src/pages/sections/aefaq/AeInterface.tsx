@@ -914,6 +914,40 @@ const AeInterface: React.FC = () => {
         />
       </DetailsSummary>
       <DetailsSummary
+        anchor="roto-brush-update"
+        tag="roto brush, ротобраш"
+        title="Что случилось с инструментами для ротоскопирования в Adobe After Effects 26.2 (2026) и выше?"
+      >
+        <p>
+          В <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">26.2 (2026)</mark> и выше обновили функционал{" "}
+          <mark className="plugin">Roto Brush</mark>. В него добавили новые инструменты{" "}
+          <mark className="select">«Quick Matte Tool»</mark> для быстрого создания масок и{" "}
+          <mark className="select">«Quick Selection Tool»</mark>, как это было реализовано
+          в <mark className="app">Adobe Premiere</mark>{" "}
+          <mark className="version">26.0 (2026)</mark>.
+        </p>
+        <p>
+          Привычные инструменты <mark className="plugin">Roto Brush</mark>, которые
+          некоторые пользователи «потеряли» в интерфейсе программы, переименовали в{" "}
+          <mark className="select">«Selection Brush Tool»</mark> и{" "}
+          <mark className="select">«Refine Edge Tool»</mark>, а основному инструменту
+          изменили иконку.
+        </p>
+        <ArticleMedia
+          caption="Обновлённые инструменты для ротоскопирования"
+          src="media/after-effects/interfact/rotobrush-tools-26.2.png"
+          type="image"
+        />
+        <Addition type="info">
+          Дополнительную информацию об этом обновлении можно прочитать на{" "}
+          <a href="https://helpx.adobe.com/after-effects/desktop/roto-brush-and-refine-matte/roto-brush/object-matte.html">
+            сайте Adobe
+          </a>
+          .
+        </Addition>
+      </DetailsSummary>
+      <DetailsSummary
         anchor="track-matte-update"
         tag="trkmat, track matte, alpha matte, luma matte, обтравочные маски, matte options, compositing, маска по альфе, маска по яркости, подложка, обновление интерфейса"
         title="Что случилось с «Alpha Matte» и «Luma Matte» в новых версиях программы?"
