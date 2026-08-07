@@ -936,7 +936,7 @@ const AeInterface: React.FC = () => {
         </p>
         <ArticleMedia
           caption="Обновлённые инструменты для ротоскопирования"
-          src="media/after-effects/interfact/rotobrush-tools-26.2.png"
+          src="media/after-effects/interface/rotobrush-tools-26.2.png"
           type="image"
         />
         <Addition type="info">
