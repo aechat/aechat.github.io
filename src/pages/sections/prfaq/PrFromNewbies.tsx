@@ -2535,7 +2535,7 @@ const PrFromNewbies: React.FC = () => {
       <DetailsSummary
         anchor="mask-update"
         tag="redesigned mask, куда делись маски"
-        title="Что произошло с масками в новых версиях программы?"
+        title="Что произошло с масками в Adobe Premiere 26.0 (2026) и выше?"
       >
         <p>
           Начиная с <mark className="app">Adobe Premiere</mark>{" "}
@@ -2571,7 +2571,7 @@ const PrFromNewbies: React.FC = () => {
       <DetailsSummary
         anchor="missing-obsolete-effects"
         tag="вернуть устаревшие эффекты, восстановить встроенные пресеты"
-        title="Куда пропали эффекты из папки Obsolete в новых версиях программы?"
+        title="Куда пропали эффекты из папки «Obsolete» в Adobe Premiere Pro 24.6 (2024) и выше?"
       >
         <p>
           <mark className="company">Adobe</mark> признала встроенные эффекты, пресеты и
