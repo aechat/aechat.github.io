@@ -1030,11 +1030,12 @@ const AeInterface: React.FC = () => {
         title="Как включить всплывающую панель для применения эффектов по Ctrl + Space?"
       >
         <Addition type="info">
-          В последней публичной бета-версии{" "}
-          <mark className="app">Adobe After Effects</mark> часть функционала{" "}
-          <mark className="plugin">FX Console</mark> теперь заменена новым окном{" "}
-          <mark className="select">«Quick Apply»</mark>.{" "}
-          <a href="https://helpx.adobe.com/after-effects/using/quick-apply.html">
+          Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">26.2 (2026)</mark> и выше, часть функционала{" "}
+          <mark className="plugin">FX Console</mark> теперь может быть заменена новым
+          окном <mark className="select">«Quick Apply»</mark>, вызываемая с помощью
+          комбинации клавиш <mark className="key">Ctrl + Enter</mark>.{" "}
+          <a href="https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/animation-keyframes/quick-apply.html">
             Подробнее...
           </a>
         </Addition>
