@@ -950,7 +950,7 @@ const AeInterface: React.FC = () => {
       <DetailsSummary
         anchor="track-matte-update"
         tag="trkmat, track matte, alpha matte, luma matte, обтравочные маски, matte options, compositing, маска по альфе, маска по яркости, подложка, обновление интерфейса"
-        title="Что случилось с «Alpha Matte» и «Luma Matte» в новых версиях программы?"
+        title="Что случилось с «Alpha Matte» и «Luma Matte» в Adobe After Effects 23.0 (2023) и выше?"
       >
         <p>
           В <mark className="app">Adobe After Effects</mark>{" "}
