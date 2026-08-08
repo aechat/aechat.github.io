@@ -137,24 +137,26 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
             <HomeRounded />
           </Link>
         )}
-        <div className={styles.logo}>
-          {tooltipMessage ? (
-            <>
-              <Tooltip title={tooltipMessage}>{title}</Tooltip>
-              <sub>@aechat</sub>
-            </>
-          ) : (
-            <>
-              {title}
-              <sub>@aechat</sub>
-            </>
-          )}
-          {WIP_PATHS.some((path) => currentPath.includes(path)) && (
-            <Tooltip title="Некоторые статьи на этой странице могут отсутствовать или иметь множество ошибок">
-              <mark>[WIP]</mark>
-            </Tooltip>
-          )}
-        </div>
+        {currentPath !== "/" && (
+          <div className={styles.logo}>
+            {tooltipMessage ? (
+              <>
+                <Tooltip title={tooltipMessage}>{title}</Tooltip>
+                <sub>@aechat</sub>
+              </>
+            ) : (
+              <>
+                {title}
+                <sub>@aechat</sub>
+              </>
+            )}
+            {WIP_PATHS.some((path) => currentPath.includes(path)) && (
+              <Tooltip title="Некоторые статьи на этой странице могут отсутствовать или иметь множество ошибок">
+                <mark>[WIP]</mark>
+              </Tooltip>
+            )}
+          </div>
+        )}
         <div>{isWide ? <SupportDonut wide /> : <SupportDonut />}</div>
       </div>
       <div className={styles["header-right"]}>
