@@ -46,12 +46,18 @@
     margin: 0 auto !important;
     max-width: calc(100% - clamp(16px, 5vw, 64px)) !important;
 
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+
     &-root .ant-modal-mask.ant-modal-mask-blur {
       backdrop-filter: blur(25px);
       background-color: var(--color-modal-backdrop);
     }
 
     .ant-modal-content {
+      outline: none;
       border: none;
       border-radius: 0;
       box-shadow: none;
