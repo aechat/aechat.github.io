@@ -357,6 +357,7 @@
 
 @mixin link-card-name-base {
   text-align: left;
+  line-height: 1.35;
   color: var(--color-panel-card-text);
   font-family: Onest, sans-serif;
   font-size: min(
@@ -374,6 +375,7 @@
   padding-inline: $space-12;
   vertical-align: middle;
   text-align: left;
+  line-height: 1.35;
   font-size: min(
     calc(0.875rem + (0.9 - 0.875) * ((100vw - 320px) / (768 - 320))),
     0.9rem
