@@ -2733,7 +2733,8 @@ const PrFromNewbies: React.FC = () => {
       </DetailsSummary>
       <DetailsSummary
         anchor="timeline-preferences-missing"
-        title="Куда пропала настройка Timeline в Preferences?"
+        tag="параметры таймлайна, вход в аккаунт"
+        title="Куда пропал раздел «Timeline« в настройках программы?"
       >
         <p>
           В настройках раздел <mark className="select">«Timeline»</mark> может
