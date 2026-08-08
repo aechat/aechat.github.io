@@ -13,6 +13,7 @@ import {withSoftHaptic} from "../../utilities/haptics";
 import modalStyles from "./Modal.module.scss";
 
 interface SupportDonutProperties {
+  className?: string;
   wide?: boolean;
 }
 
@@ -27,7 +28,7 @@ const formatGroupedNumber = (numberValue: string) => {
     .trim();
 };
 
-const SupportDonut: React.FC<SupportDonutProperties> = ({wide}) => {
+const SupportDonut: React.FC<SupportDonutProperties> = ({className, wide}) => {
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
 
   const [isSberModalOpen, setIsSberModalOpen] = useState(false);
@@ -71,7 +72,7 @@ const SupportDonut: React.FC<SupportDonutProperties> = ({wide}) => {
   return (
     <>
       <button
-        className={modalStyles["modal-support-header-button"]}
+        className={`${modalStyles["modal-support-header-button"]} ${className || ""}`}
         onClick={openDonateModal}
         onMouseDown={ripple.onMouseDown}
       >
