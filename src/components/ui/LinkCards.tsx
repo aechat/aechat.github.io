@@ -1,6 +1,10 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 
-import {message} from "antd";
+import {CloseRounded, FolderOpenRounded} from "@mui/icons-material";
+
+import {message, Modal} from "antd";
+
+import {RemoveScroll} from "react-remove-scroll";
 
 import {Link} from "react-router-dom";
 
@@ -11,6 +15,8 @@ import {useRipple} from "../../hooks/useRipple";
 import {copyText} from "../../utilities/copyUtilities";
 
 import {formatNestedQuotes} from "../../utilities/stringUtilities";
+
+import modalStyles from "../modals/Modal.module.scss";
 
 import styles from "./LinkCards.module.scss";
 
@@ -94,3 +100,191 @@ export const LinkCard: React.FC<LinkCardProperties> = ({
     </div>
   );
 };
+
+interface FolderCardProperties {
+  children?: React.ReactNode;
+  description?: string;
+  icon?: React.ReactNode;
+  modalTitle?: string;
+  name: string;
+}
+
+export const FolderCard: React.FC<FolderCardProperties> = ({
+  children,
+  description,
+  icon,
+  modalTitle,
+  name,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const modalContentReference = useRef<HTMLDivElement>(null);
+
+  const rippleProperties = useRipple<HTMLDivElement>();
+
+  const closeButtonRipple = useRipple<HTMLButtonElement>({haptic: false});
+
+  const openFolder = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const closeFolder = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const rafId = requestAnimationFrame(() => {
+      globalThis.dispatchEvent(new Event("resize"));
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+    };
+  }, [isOpen]);
+
+  const linkCards: React.ReactNode[] = [];
+
+  const otherChildren: React.ReactNode[] = [];
+
+  React.Children.forEach(children, (child) => {
+    if (
+      React.isValidElement<{icon?: React.ReactNode}>(child) &&
+      (child.type === LinkCard || (child.props && "href" in child.props))
+    ) {
+      linkCards.push(child);
+
+      return;
+    }
+
+    otherChildren.push(child);
+  });
+
+  const {miniIcons, uniqueIcons} = useMemo(() => {
+    const extracted: React.ReactNode[] = [];
+
+    const seenTypes = new Set<unknown>();
+
+    React.Children.forEach(children, (child) => {
+      if (
+        React.isValidElement<{icon?: React.ReactNode}>(child) &&
+        child.props &&
+        child.props.icon
+      ) {
+        const iconElement = child.props.icon;
+
+        if (React.isValidElement(iconElement)) {
+          const typeKey = iconElement.type;
+
+          if (!seenTypes.has(typeKey)) {
+            seenTypes.add(typeKey);
+            extracted.push(iconElement);
+          }
+        }
+      }
+    });
+
+    if (extracted.length >= 4) {
+      const shuffled = [...extracted];
+
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomValues = new Uint32Array(1);
+
+        crypto.getRandomValues(randomValues);
+
+        const randomIndex = Math.floor(
+          (randomValues[0] / (0xff_ff_ff_ff + 1)) * (index + 1)
+        );
+
+        [shuffled[index], shuffled[randomIndex]] = [
+          shuffled[randomIndex],
+          shuffled[index],
+        ];
+      }
+
+      return {miniIcons: shuffled.slice(0, 4), uniqueIcons: extracted};
+    }
+
+    return {miniIcons: [], uniqueIcons: extracted};
+  }, [children]);
+
+  const hasMiniIcons = miniIcons.length >= 4;
+
+  const displayIcon =
+    icon ??
+    (hasMiniIcons ? <FolderOpenRounded /> : (uniqueIcons[0] ?? <FolderOpenRounded />));
+
+  const hasDescription = !!description;
+
+  return (
+    <>
+      <div
+        className={`links-grid-item ${styles["links-button"]}`}
+        onClick={openFolder}
+        {...rippleProperties}
+      >
+        <div className={styles["folder-content"]}>
+          <div
+            className={`${styles["name-container"]} ${hasDescription ? "" : styles["name-container_full-height"]} ${styles["folder-name-container"]}`}
+          >
+            <span className={styles["icon"]}>{displayIcon}</span>
+            <div>
+              <p className={styles["name"]}>{name}</p>
+              {hasDescription && <p className={styles["description"]}>{description}</p>}
+            </div>
+          </div>
+          {hasMiniIcons && (
+            <div className={styles["folder-right"]}>
+              <div className={styles["mini-grid"]}>
+                {miniIcons.map((miniIcon, index) => (
+                  <div
+                    key={index}
+                    className={styles["mini-icon"]}
+                  >
+                    {miniIcon}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <RemoveScroll enabled={isOpen}>
+        <Modal
+          centered
+          className="modal"
+          closeIcon={false}
+          footer={<></>}
+          open={isOpen}
+          width={1000}
+          onCancel={closeFolder}
+        >
+          <div
+            ref={modalContentReference}
+            className={styles["modal-container"]}
+          >
+            <div className={modalStyles["modal-header"]}>
+              <div className={modalStyles["modal-header-title"]}>
+                {modalTitle ?? name}
+              </div>
+              <button
+                className={modalStyles["modal-header-button"]}
+                onClick={closeFolder}
+                onMouseDown={closeButtonRipple.onMouseDown}
+              >
+                <CloseRounded />
+              </button>
+            </div>
+            {otherChildren}
+            {linkCards.length > 0 && <div className="links-grid">{linkCards}</div>}
+          </div>
+        </Modal>
+      </RemoveScroll>
+    </>
+  );
+};
+
+export const FolderLink = FolderCard;

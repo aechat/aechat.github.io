@@ -4,6 +4,8 @@ import {ConfigProvider, message, Modal} from "antd";
 
 import {AnimatePresence} from "framer-motion";
 
+import {RemoveScroll} from "react-remove-scroll";
+
 import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 
 import Snowfall from "react-snowfall";
@@ -156,57 +158,59 @@ const SafariWarningModal = ({
   );
 
   return (
-    <Modal
-      centered
-      closable={false}
-      footer={<></>}
-      open={open}
-      title={undefined}
-      width={450}
-      zIndex={9999}
-    >
-      <div className={modalStyles["modal"]}>
-        <div className={modalStyles["modal-header"]}>
-          <div className={modalStyles["modal-header-title"]}>
-            ⚠ Предупреждение для Safari
+    <RemoveScroll enabled={open}>
+      <Modal
+        centered
+        closable={false}
+        footer={<></>}
+        open={open}
+        title={undefined}
+        width={450}
+        zIndex={9999}
+      >
+        <div className={modalStyles["modal"]}>
+          <div className={modalStyles["modal-header"]}>
+            <div className={modalStyles["modal-header-title"]}>
+              ⚠ Предупреждение для Safari
+            </div>
+          </div>
+          <div
+            className={`${modalStyles["modal-content"]} ${modalStyles["modal-content--error"]}`}
+          >
+            <div className={modalStyles["modal-text-balance"]}>
+              <p>
+                В браузере <mark className="app">Safari</mark> при чтении некоторых статей
+                данная страница может упасть в ошибку{" "}
+                <mark className="danger">«На этой странице произошла ошибка»</mark> из-за
+                переполнения памяти.
+              </p>
+              <p>
+                Во избежание проблем рекомендуется открывать данную страницу с Mac или ПК
+                через <mark className="app">Chrome</mark> или{" "}
+                <mark className="app">Firefox</mark>. Вы можете продолжить работу с
+                сайтом, закрыв данное окно.
+              </p>
+            </div>
+            <div className="flexible-links">
+              <button
+                onClick={handleClose}
+                onMouseDown={ripple.onMouseDown}
+              >
+                Продолжить
+              </button>
+            </div>
+            <label className="warning-dismiss-option">
+              <input
+                checked={dontShowAgain}
+                type="checkbox"
+                onChange={handleDontShowAgainChange}
+              />
+              Претензий не имею, больше не показывать
+            </label>
           </div>
         </div>
-        <div
-          className={`${modalStyles["modal-content"]} ${modalStyles["modal-content--error"]}`}
-        >
-          <div className={modalStyles["modal-text-balance"]}>
-            <p>
-              В браузере <mark className="app">Safari</mark> при чтении некоторых статей
-              данная страница может упасть в ошибку{" "}
-              <mark className="danger">«На этой странице произошла ошибка»</mark> из-за
-              переполнения памяти.
-            </p>
-            <p>
-              Во избежание проблем рекомендуется открывать данную страницу с Mac или ПК
-              через <mark className="app">Chrome</mark> или{" "}
-              <mark className="app">Firefox</mark>. Вы можете продолжить работу с сайтом,
-              закрыв данное окно.
-            </p>
-          </div>
-          <div className="flexible-links">
-            <button
-              onClick={handleClose}
-              onMouseDown={ripple.onMouseDown}
-            >
-              Продолжить
-            </button>
-          </div>
-          <label className="warning-dismiss-option">
-            <input
-              checked={dontShowAgain}
-              type="checkbox"
-              onChange={handleDontShowAgainChange}
-            />
-            Претензий не имею, больше не показывать
-          </label>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+    </RemoveScroll>
   );
 };
 

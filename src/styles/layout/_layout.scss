@@ -17,9 +17,6 @@ footer {
 
   margin-block: $space-32 $space-40;
   margin-inline: auto;
-  outline: $stroke-1 solid var(--color-article-border);
-  border-radius: $roundness;
-  background-color: var(--color-article-background);
   width: calc(100% - 40px);
   max-width: 700px;
   color: var(--color-page-text-muted);

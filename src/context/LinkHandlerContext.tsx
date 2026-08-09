@@ -4,6 +4,8 @@ import {CloseRounded} from "@mui/icons-material";
 
 import {Modal} from "antd";
 
+import {RemoveScroll} from "react-remove-scroll";
+
 import {useNavigate} from "react-router-dom";
 
 import modalStyles from "../components/modals/Modal.module.scss";
@@ -244,43 +246,45 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
   return (
     <LinkHandlerContext.Provider value={{handleLinkClick}}>
       {children}
-      <Modal
-        centered
-        closeIcon={false}
-        footer={<></>}
-        open={!!target}
-        zIndex={10_000}
-        onCancel={closeModal}
-      >
-        {modalProperties && (
-          <div className={modalStyles["modal"]}>
-            <div className={modalStyles["modal-header"]}>
-              <div className={modalStyles["modal-header-title"]}>
-                {modalProperties.title}
-              </div>
-              <button
-                className={modalStyles["modal-header-button"]}
-                onClick={closeModal}
-                onMouseDown={ripple.onMouseDown}
-              >
-                <CloseRounded />
-              </button>
-            </div>
-            <div className={modalStyles["modal-content"]}>
-              {modalProperties.content}
-              <div className="flexible-links">
+      <RemoveScroll enabled={Boolean(target)}>
+        <Modal
+          centered
+          closeIcon={false}
+          footer={<></>}
+          open={!!target}
+          zIndex={10_000}
+          onCancel={closeModal}
+        >
+          {modalProperties && (
+            <div className={modalStyles["modal"]}>
+              <div className={modalStyles["modal-header"]}>
+                <div className={modalStyles["modal-header-title"]}>
+                  {modalProperties.title}
+                </div>
                 <button
-                  disabled={isDownloadStarting}
-                  onClick={handleOk}
+                  className={modalStyles["modal-header-button"]}
+                  onClick={closeModal}
                   onMouseDown={ripple.onMouseDown}
                 >
-                  {modalProperties.btn}
+                  <CloseRounded />
                 </button>
               </div>
+              <div className={modalStyles["modal-content"]}>
+                {modalProperties.content}
+                <div className="flexible-links">
+                  <button
+                    disabled={isDownloadStarting}
+                    onClick={handleOk}
+                    onMouseDown={ripple.onMouseDown}
+                  >
+                    {modalProperties.btn}
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </Modal>
+          )}
+        </Modal>
+      </RemoveScroll>
     </LinkHandlerContext.Provider>
   );
 };

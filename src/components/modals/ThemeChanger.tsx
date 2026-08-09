@@ -18,6 +18,8 @@ import {
 
 import {Modal, Slider, Switch, Tooltip} from "antd";
 
+import {RemoveScroll} from "react-remove-scroll";
+
 import {useRipple} from "../../hooks/useRipple";
 
 import {isMobileDevice, isWebKitBrowser} from "../../utilities/browserDetection";
@@ -400,149 +402,151 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
   const handleSaturationAfterChange = withSelectionHaptic(setSaturateRatio);
 
   return (
-    <Modal
-      destroyOnHidden
-      closeIcon={false}
-      footer={<></>}
-      open={isModalOpen}
-      width={450}
-      onCancel={closeModal}
-    >
-      <div className={modalStyles["modal"]}>
-        <div className={modalStyles["modal-header"]}>
-          <div className={modalStyles["modal-header-title"]}>Настройки страницы</div>
-          <button
-            className={modalStyles["modal-header-button"]}
-            onClick={closeModal}
-            onMouseDown={ripple.onMouseDown}
-          >
-            <CloseRounded />
-          </button>
-        </div>
-        <div className={modalStyles["modal-content"]}>
-          <div className={modalStyles["modal-controls-element"]}>
-            <div className={modalStyles["modal-controls-title"]}>Цветовая схема</div>
-            <div className={modalStyles["modal-controls-group"]}>
-              <ThemeOptionButton
-                isSelected={theme === "light"}
-                onClick={() => setTheme("light")}
-                onMouseDown={ripple.onMouseDown}
-              >
-                <LightModeRounded />
-                Светлая
-              </ThemeOptionButton>
-              <ThemeOptionButton
-                isSelected={theme === "dark"}
-                onClick={() => setTheme("dark")}
-                onMouseDown={ripple.onMouseDown}
-              >
-                <DarkModeRounded />
-                Тёмная
-              </ThemeOptionButton>
-              <ThemeOptionButton
-                isSelected={theme === "system"}
-                onClick={() => setTheme("system")}
-                onMouseDown={ripple.onMouseDown}
-              >
-                <HideSourceRounded />
-                Системная
-              </ThemeOptionButton>
-            </div>
+    <RemoveScroll enabled={isModalOpen}>
+      <Modal
+        destroyOnHidden
+        closeIcon={false}
+        footer={<></>}
+        open={isModalOpen}
+        width={450}
+        onCancel={closeModal}
+      >
+        <div className={modalStyles["modal"]}>
+          <div className={modalStyles["modal-header"]}>
+            <div className={modalStyles["modal-header-title"]}>Настройки страницы</div>
+            <button
+              className={modalStyles["modal-header-button"]}
+              onClick={closeModal}
+              onMouseDown={ripple.onMouseDown}
+            >
+              <CloseRounded />
+            </button>
           </div>
-          {showSpoilerAnimationSelector && (
-            <>
+          <div className={modalStyles["modal-content"]}>
+            <div className={modalStyles["modal-controls-element"]}>
+              <div className={modalStyles["modal-controls-title"]}>Цветовая схема</div>
+              <div className={modalStyles["modal-controls-group"]}>
+                <ThemeOptionButton
+                  isSelected={theme === "light"}
+                  onClick={() => setTheme("light")}
+                  onMouseDown={ripple.onMouseDown}
+                >
+                  <LightModeRounded />
+                  Светлая
+                </ThemeOptionButton>
+                <ThemeOptionButton
+                  isSelected={theme === "dark"}
+                  onClick={() => setTheme("dark")}
+                  onMouseDown={ripple.onMouseDown}
+                >
+                  <DarkModeRounded />
+                  Тёмная
+                </ThemeOptionButton>
+                <ThemeOptionButton
+                  isSelected={theme === "system"}
+                  onClick={() => setTheme("system")}
+                  onMouseDown={ripple.onMouseDown}
+                >
+                  <HideSourceRounded />
+                  Системная
+                </ThemeOptionButton>
+              </div>
+            </div>
+            {showSpoilerAnimationSelector && (
+              <>
+                <div className={modalStyles["modal-controls-row"]}>
+                  <span className={modalStyles["modal-controls-title"]}>
+                    Анимация раскрытия спойлеров
+                  </span>
+                  <Switch
+                    checked={isSpoilerAnimationEnabled}
+                    onChange={handleSpoilerAnimationChange}
+                  />
+                </div>
+              </>
+            )}
+            <div className={modalStyles["modal-controls-row"]}>
+              <span className={modalStyles["modal-controls-title"]}>
+                Анимация увеличения при наведении и нажатии
+              </span>
+              <Switch
+                checked={isHoverScaleAnimationEnabled}
+                onChange={handleHoverScaleAnimationChange}
+              />
+            </div>
+            {showVibrationSelector && (
               <div className={modalStyles["modal-controls-row"]}>
                 <span className={modalStyles["modal-controls-title"]}>
-                  Анимация раскрытия спойлеров
+                  Тактильная отдача
                 </span>
                 <Switch
-                  checked={isSpoilerAnimationEnabled}
-                  onChange={handleSpoilerAnimationChange}
+                  checked={isVibrationEnabled}
+                  onChange={handleVibrationChange}
                 />
               </div>
-            </>
-          )}
-          <div className={modalStyles["modal-controls-row"]}>
-            <span className={modalStyles["modal-controls-title"]}>
-              Анимация увеличения при наведении и нажатии
-            </span>
-            <Switch
-              checked={isHoverScaleAnimationEnabled}
-              onChange={handleHoverScaleAnimationChange}
-            />
-          </div>
-          {showVibrationSelector && (
-            <div className={modalStyles["modal-controls-row"]}>
-              <span className={modalStyles["modal-controls-title"]}>
-                Тактильная отдача
-              </span>
-              <Switch
-                checked={isVibrationEnabled}
-                onChange={handleVibrationChange}
-              />
+            )}
+            {isWinter && (
+              <div className={modalStyles["modal-controls-row"]}>
+                <span className={modalStyles["modal-controls-title"]}>
+                  {isNewYearPeriod ? "Новогоднее настроение" : "Анимация снега"}
+                </span>
+                <Switch
+                  checked={isSnowfallEnabled}
+                  onChange={handleSnowfallChange}
+                />
+              </div>
+            )}
+            <div className={modalStyles["modal-controls-element"]}>
+              <div className={modalStyles["modal-controls-title"]}>
+                Оттенок акцентного цвета
+                <Tooltip title="Сбросить оттенок">
+                  <button
+                    className={modalStyles["modal-controls-reset"]}
+                    onClick={() => setAccentHue(210)}
+                    onMouseDown={ripple.onMouseDown}
+                  >
+                    <RestartAlt />
+                  </button>
+                </Tooltip>
+              </div>
+              <div className={modalStyles["modal-controls-slider"]}>
+                <Slider
+                  max={360}
+                  min={0}
+                  value={temporaryHue}
+                  onAfterChange={handleAccentHueAfterChange}
+                  onChange={setTemporaryHue}
+                />
+              </div>
             </div>
-          )}
-          {isWinter && (
-            <div className={modalStyles["modal-controls-row"]}>
-              <span className={modalStyles["modal-controls-title"]}>
-                {isNewYearPeriod ? "Новогоднее настроение" : "Анимация снега"}
-              </span>
-              <Switch
-                checked={isSnowfallEnabled}
-                onChange={handleSnowfallChange}
-              />
-            </div>
-          )}
-          <div className={modalStyles["modal-controls-element"]}>
-            <div className={modalStyles["modal-controls-title"]}>
-              Оттенок акцентного цвета
-              <Tooltip title="Сбросить оттенок">
-                <button
-                  className={modalStyles["modal-controls-reset"]}
-                  onClick={() => setAccentHue(210)}
-                  onMouseDown={ripple.onMouseDown}
-                >
-                  <RestartAlt />
-                </button>
-              </Tooltip>
-            </div>
-            <div className={modalStyles["modal-controls-slider"]}>
-              <Slider
-                max={360}
-                min={0}
-                value={temporaryHue}
-                onAfterChange={handleAccentHueAfterChange}
-                onChange={setTemporaryHue}
-              />
-            </div>
-          </div>
-          <div className={modalStyles["modal-controls-element"]}>
-            <div className={modalStyles["modal-controls-title"]}>
-              Насыщенность акцентного цвета
-              <Tooltip title="Сбросить насыщенность">
-                <button
-                  className={modalStyles["modal-controls-reset"]}
-                  onClick={() => setSaturateRatio(1)}
-                  onMouseDown={ripple.onMouseDown}
-                >
-                  <RestartAlt />
-                </button>
-              </Tooltip>
-            </div>
-            <div className={modalStyles["modal-controls-slider"]}>
-              <Slider
-                max={1}
-                min={0}
-                step={0.025}
-                value={temporarySaturate}
-                onAfterChange={handleSaturationAfterChange}
-                onChange={setTemporarySaturate}
-              />
+            <div className={modalStyles["modal-controls-element"]}>
+              <div className={modalStyles["modal-controls-title"]}>
+                Насыщенность акцентного цвета
+                <Tooltip title="Сбросить насыщенность">
+                  <button
+                    className={modalStyles["modal-controls-reset"]}
+                    onClick={() => setSaturateRatio(1)}
+                    onMouseDown={ripple.onMouseDown}
+                  >
+                    <RestartAlt />
+                  </button>
+                </Tooltip>
+              </div>
+              <div className={modalStyles["modal-controls-slider"]}>
+                <Slider
+                  max={1}
+                  min={0}
+                  step={0.025}
+                  value={temporarySaturate}
+                  onAfterChange={handleSaturationAfterChange}
+                  onChange={setTemporarySaturate}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+    </RemoveScroll>
   );
 };
 

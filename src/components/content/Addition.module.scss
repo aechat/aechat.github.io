@@ -486,6 +486,14 @@ li,
   }
 }
 
+:global([class*="modal"]) {
+  :is(.addition-info, .addition-warning, .addition-danger, .addition-tldr):not(
+    :global([class*="modal-content"]) *
+  ) {
+    border-radius: $roundness;
+  }
+}
+
 table {
   .addition-info,
   .addition-warning,
