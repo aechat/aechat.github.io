@@ -4,6 +4,8 @@ import {CloseRounded, FolderOpenRounded} from "@mui/icons-material";
 
 import {message, Modal} from "antd";
 
+import {RemoveScroll} from "react-remove-scroll";
+
 import {Link} from "react-router-dom";
 
 import {useLongPress} from "../../hooks/useLongPress";
@@ -250,33 +252,37 @@ export const FolderCard: React.FC<FolderCardProperties> = ({
           )}
         </div>
       </div>
-      <Modal
-        centered
-        className="modal"
-        closeIcon={false}
-        footer={<></>}
-        open={isOpen}
-        width={1000}
-        onCancel={closeFolder}
-      >
-        <div
-          ref={modalContentReference}
-          className={styles["modal-container"]}
+      <RemoveScroll enabled={isOpen}>
+        <Modal
+          centered
+          className="modal"
+          closeIcon={false}
+          footer={<></>}
+          open={isOpen}
+          width={1000}
+          onCancel={closeFolder}
         >
-          <div className={modalStyles["modal-header"]}>
-            <div className={modalStyles["modal-header-title"]}>{modalTitle ?? name}</div>
-            <button
-              className={modalStyles["modal-header-button"]}
-              onClick={closeFolder}
-              onMouseDown={closeButtonRipple.onMouseDown}
-            >
-              <CloseRounded />
-            </button>
+          <div
+            ref={modalContentReference}
+            className={styles["modal-container"]}
+          >
+            <div className={modalStyles["modal-header"]}>
+              <div className={modalStyles["modal-header-title"]}>
+                {modalTitle ?? name}
+              </div>
+              <button
+                className={modalStyles["modal-header-button"]}
+                onClick={closeFolder}
+                onMouseDown={closeButtonRipple.onMouseDown}
+              >
+                <CloseRounded />
+              </button>
+            </div>
+            {otherChildren}
+            {linkCards.length > 0 && <div className="links-grid">{linkCards}</div>}
           </div>
-          {otherChildren}
-          {linkCards.length > 0 && <div className="links-grid">{linkCards}</div>}
-        </div>
-      </Modal>
+        </Modal>
+      </RemoveScroll>
     </>
   );
 };
