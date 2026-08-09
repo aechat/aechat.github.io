@@ -46,8 +46,6 @@ import Addition from "../components/content/Addition";
 
 import Footer from "../components/layout/Footer";
 
-import Header from "../components/layout/Header";
-
 import PageTransition from "../components/layout/PageTransition";
 
 import modalStyles from "../components/modals/Modal.module.scss";
@@ -289,7 +287,6 @@ const Links = () => {
           name="twitter:image"
         />
       </Helmet>
-      <Header title="links" />
       <PageTransition className="main">
         <div
           className="logo-container"
