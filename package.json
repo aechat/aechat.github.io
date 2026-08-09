@@ -76,6 +76,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:https": "vite --mode https",
     "preview": "vite preview",
     "build": "vite build && vite build --ssr src/EntryServer.tsx --outDir dist/server && node prerender.js",
     "prepare": "husky",
