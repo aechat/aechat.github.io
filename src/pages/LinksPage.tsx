@@ -50,6 +50,8 @@ import PageTransition from "../components/layout/PageTransition";
 
 import modalStyles from "../components/modals/Modal.module.scss";
 
+import SupportDonut from "../components/modals/SupportDonut";
+
 import {FolderCard, LinkCard} from "../components/ui/LinkCards";
 
 import {usePageLoad} from "../hooks/usePageLoad";
@@ -186,6 +188,14 @@ const Links = () => {
       for (const grid of grids) {
         applyCornersForGrid(grid);
       }
+
+      const supportButton = document.querySelector<HTMLElement>(
+        ".support-button-links-page"
+      );
+
+      if (supportButton) {
+        applyScaleVariables(supportButton);
+      }
     };
 
     let rafId: number | undefined;
@@ -212,6 +222,14 @@ const Links = () => {
 
       for (const grid of grids) {
         resizeObserver.observe(grid);
+      }
+
+      const supportButton = document.querySelector<HTMLElement>(
+        ".support-button-links-page"
+      );
+
+      if (supportButton) {
+        resizeObserver.observe(supportButton);
       }
     }
 
@@ -320,6 +338,10 @@ const Links = () => {
               variant="internal"
             />
           </div>
+          <SupportDonut
+            wide
+            className="support-button-links-page"
+          />
           <Divider>Полезные ресурсы</Divider>
           <div className="links-grid">
             <FolderCard name="Каналы в Telegram">
