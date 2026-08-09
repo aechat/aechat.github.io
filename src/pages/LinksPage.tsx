@@ -306,12 +306,10 @@ const Links = () => {
         />
       </Helmet>
       <PageTransition className="main">
-        <div
-          className="logo-container"
-          style={{display: "none"}}
-        >
-          <h1 className="logo-title">links@aechat</h1>
-          <p className="logo-slogan">Собрали полезные ссылки для вас</p>
+        <div className="logo-container">
+          <div className="text-container">
+            <h1 className="text-logo">@aechat</h1>
+          </div>
         </div>
         <div className="links">
           <Divider>Ответы на частые вопросы</Divider>
