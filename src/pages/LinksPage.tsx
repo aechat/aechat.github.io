@@ -245,6 +245,213 @@ const Links = () => {
     };
   }, []);
 
+  const telegramDownloadAddition = (
+    <Addition type="info">
+      {(() => {
+        const {isAndroid, isIOS, isMacOS} = getPlatformInfo();
+
+        if (isIOS) {
+          return (
+            <>
+              Для скачивания файлов из каналов ниже рекомендуется использовать официальное
+              приложение <mark className="app">Telegram</mark> вместо веб-версии. Его
+              можно установить через{" "}
+              <a
+                href="https://telegram.org/dl/ios"
+                rel="noreferrer"
+                target="_blank"
+              >
+                App Store
+              </a>
+              .
+            </>
+          );
+        }
+
+        if (isAndroid) {
+          return (
+            <>
+              Для скачивания файлов из каналов ниже рекомендуется использовать официальное
+              приложение <mark className="app">Telegram</mark> вместо веб-версии. Его
+              можно установить по{" "}
+              <a
+                href="https://telegram.org/android"
+                rel="noreferrer"
+                target="_blank"
+              >
+                этой
+              </a>{" "}
+              ссылке.
+            </>
+          );
+        }
+
+        if (isMacOS) {
+          return (
+            <>
+              Для скачивания файлов из каналов ниже рекомендуется использовать десктопную
+              версию <mark className="app">Telegram</mark> вместо веб-версии. Её можно
+              скачать по{" "}
+              <a
+                href="https://macos.telegram.org/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                этой
+              </a>{" "}
+              ссылке.
+            </>
+          );
+        }
+
+        return (
+          <>
+            Для скачивания файлов из каналов ниже рекомендуется использовать десктопную
+            версию <mark className="app">Telegram</mark> вместо веб-версии. Её можно
+            скачать по{" "}
+            <a
+              href="https://desktop.telegram.org/"
+              rel="noreferrer"
+              target="_blank"
+            >
+              этой
+            </a>{" "}
+            ссылке.
+          </>
+        );
+      })()}
+    </Addition>
+  );
+
+  const chatRulesAddition = (
+    <Addition type="warning">
+      Перед вступлением в какой-либо чат — прочитайте его правила, чтобы избежать
+      недоразумений или внезапных блокировок и ограничений. Обычно правила чатов находятся
+      в закреплённом сообщении или в описании чата.
+    </Addition>
+  );
+
+  const fraudWarningModal = (
+    <RemoveScroll enabled={isModalOpen}>
+      <Modal
+        centered
+        closeIcon={false}
+        footer={<></>}
+        open={isModalOpen}
+        width={1000}
+        onCancel={closeModal}
+      >
+        <div className={modalStyles["modal"]}>
+          <div className={modalStyles["modal-header"]}>
+            <div className={modalStyles["modal-header-title"]}>
+              Остерегайтесь мошенников!
+            </div>
+            <button
+              className={modalStyles["modal-header-button"]}
+              onClick={closeModal}
+              onMouseDown={ripple.onMouseDown}
+            >
+              <CloseRounded />
+            </button>
+          </div>
+          <div className={modalStyles["modal-content"]}>
+            <p>
+              Пожалуйста, будьте внимательны при выполнении заказов на фрилансе — вы
+              можете столкнуться с недобросовестным заказчиком или попасть в ловко
+              организованную схему мошенничества.
+            </p>
+            <Addition type="danger">
+              <ul>
+                <li>
+                  Если заказчик предлагает оплатить гарантийный взнос, перевести деньги на
+                  «безопасный счёт», оформить карту или перейти по подозрительной ссылке —{" "}
+                  <b>
+                    <u>немедленно завершите диалог</u>
+                  </b>{" "}
+                  и{" "}
+                  <b>
+                    <u>никому не сообщайте коды из SMS</u>
+                  </b>
+                  . Вы не обязаны ничего платить для получения заказа или вознаграждения.
+                </li>
+                <li>
+                  Будьте осторожны с сайтами, которые представляются площадками с
+                  «безопасным счётом» и заявляют, будто получили сертификат от{" "}
+                  <mark>Webmoney</mark> или других старых платёжных сервисов —{" "}
+                  <b>
+                    <u>сразу покиньте сайт</u>
+                  </b>
+                  . Обычно там просят ввести данные карты или внести «взнос для получения
+                  средств», которые вы, конечно, не получите.
+                </li>
+                <li>
+                  <b>
+                    <u>
+                      Никогда не переходите по ссылкам для «получения оплаты» через
+                      универсальные формы.
+                    </u>
+                  </b>{" "}
+                  Это почти всегда мошенничество: злоумышленники попросят указать номер,
+                  срок действия и CVC карты, чтобы похитить деньги.
+                </li>
+                <li>
+                  Если вы работаете на бирже вроде{" "}
+                  <a
+                    href="https://kwork.ru/"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Kwork
+                  </a>
+                  ,{" "}
+                  <a
+                    href="https://www.fiverr.com/"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Fiverr
+                  </a>
+                  ,{" "}
+                  <a
+                    href="https://www.fl.ru/"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    FL
+                  </a>{" "}
+                  и других —{" "}
+                  <b>
+                    <u>не переходите в мессенджеры</u>
+                  </b>
+                  . Площадки блокируют участников, уходящих в{" "}
+                  <mark className="app">Telegram</mark>,{" "}
+                  <mark className="app">Whatsapp</mark> и прочие соцсети, а при общении
+                  вне биржи никто не гарантирует защиту от обмана.
+                </li>
+                <li>
+                  <b>
+                    <u>Проверяйте профиль</u>
+                  </b>{" "}
+                  заказчика или исполнителя, особенно если вы общаетесь вне биржи.
+                  Насторожитесь, если в аккаунте <mark className="app">Telegram</mark> или
+                  другом мессенджере несколько одинаковых фото, загруженных в один день —
+                  это частый признак нового или взломанного профиля, созданного для
+                  выманивания денег.
+                </li>
+              </ul>
+            </Addition>
+            <Addition type="warning">
+              Если вы передали данные карты или перевели деньги мошеннику — срочно
+              обратитесь в банк и сообщите о факте мошенничества. Немедленно заблокируйте
+              карту и перевыпустите её в банковском приложении. Чем быстрее вы свяжетесь с
+              банком — тем выше шанс вернуть средства.
+            </Addition>
+          </div>
+        </div>
+      </Modal>
+    </RemoveScroll>
+  );
+
   return (
     <div className="page page-links">
       <Helmet>
@@ -345,81 +552,7 @@ const Links = () => {
           <Divider>Полезные ресурсы</Divider>
           <div className="links-grid">
             <FolderCard name="Каналы в Telegram">
-              <Addition type="info">
-                {(() => {
-                  const {isAndroid, isIOS, isMacOS} = getPlatformInfo();
-
-                  if (isIOS) {
-                    return (
-                      <>
-                        Для скачивания файлов из каналов ниже рекомендуется использовать
-                        официальное приложение <mark className="app">Telegram</mark>{" "}
-                        вместо веб-версии. Его можно установить через{" "}
-                        <a
-                          href="https://telegram.org/dl/ios"
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          App Store
-                        </a>
-                        .
-                      </>
-                    );
-                  }
-
-                  if (isAndroid) {
-                    return (
-                      <>
-                        Для скачивания файлов из каналов ниже рекомендуется использовать
-                        официальное приложение <mark className="app">Telegram</mark>{" "}
-                        вместо веб-версии. Его можно установить по{" "}
-                        <a
-                          href="https://telegram.org/android"
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          этой
-                        </a>{" "}
-                        ссылке.
-                      </>
-                    );
-                  }
-
-                  if (isMacOS) {
-                    return (
-                      <>
-                        Для скачивания файлов из каналов ниже рекомендуется использовать
-                        десктопную версию <mark className="app">Telegram</mark> вместо
-                        веб-версии. Её можно скачать по{" "}
-                        <a
-                          href="https://macos.telegram.org/"
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          этой
-                        </a>{" "}
-                        ссылке.
-                      </>
-                    );
-                  }
-
-                  return (
-                    <>
-                      Для скачивания файлов из каналов ниже рекомендуется использовать
-                      десктопную версию <mark className="app">Telegram</mark> вместо
-                      веб-версии. Её можно скачать по{" "}
-                      <a
-                        href="https://desktop.telegram.org/"
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        этой
-                      </a>{" "}
-                      ссылке.
-                    </>
-                  );
-                })()}
-              </Addition>
+              {telegramDownloadAddition}
               <LinkCard
                 description="Шаблоны и плагины для Adobe After Effects со всего интернета"
                 href="https://t.me/s/aetemp"
@@ -526,11 +659,7 @@ const Links = () => {
               />
             </FolderCard>
             <FolderCard name="Чаты в Telegram">
-              <Addition type="warning">
-                Перед вступлением в какой-либо чат — прочитайте его правила, чтобы
-                избежать недоразумений или внезапных блокировок и ограничений. Обычно
-                правила чатов находятся в закреплённом сообщении или в описании чата.
-              </Addition>
+              {chatRulesAddition}
               <LinkCard
                 description="Сообщество для обсуждения работы в Adobe After Effects и Adobe Premiere"
                 href="https://t.me/joinchat/F1DdXtG9LephYWUy"
@@ -704,129 +833,7 @@ const Links = () => {
                   Подробнее...
                 </button>
               </Addition>
-              <RemoveScroll enabled={isModalOpen}>
-                <Modal
-                  centered
-                  closeIcon={false}
-                  footer={<></>}
-                  open={isModalOpen}
-                  width={1000}
-                  onCancel={closeModal}
-                >
-                  <div className={modalStyles["modal"]}>
-                    <div className={modalStyles["modal-header"]}>
-                      <div className={modalStyles["modal-header-title"]}>
-                        Остерегайтесь мошенников!
-                      </div>
-                      <button
-                        className={modalStyles["modal-header-button"]}
-                        onClick={closeModal}
-                        onMouseDown={ripple.onMouseDown}
-                      >
-                        <CloseRounded />
-                      </button>
-                    </div>
-                    <div className={modalStyles["modal-content"]}>
-                      <p>
-                        Пожалуйста, будьте внимательны при выполнении заказов на фрилансе
-                        — вы можете столкнуться с недобросовестным заказчиком или попасть
-                        в ловко организованную схему мошенничества.
-                      </p>
-                      <Addition type="danger">
-                        <ul>
-                          <li>
-                            Если заказчик предлагает оплатить гарантийный взнос, перевести
-                            деньги на «безопасный счёт», оформить карту или перейти по
-                            подозрительной ссылке —{" "}
-                            <b>
-                              <u>немедленно завершите диалог</u>
-                            </b>{" "}
-                            и{" "}
-                            <b>
-                              <u>никому не сообщайте коды из SMS</u>
-                            </b>
-                            . Вы не обязаны ничего платить для получения заказа или
-                            вознаграждения.
-                          </li>
-                          <li>
-                            Будьте осторожны с сайтами, которые представляются площадками
-                            с «безопасным счётом» и заявляют, будто получили сертификат от{" "}
-                            <mark>Webmoney</mark> или других старых платёжных сервисов —{" "}
-                            <b>
-                              <u>сразу покиньте сайт</u>
-                            </b>
-                            . Обычно там просят ввести данные карты или внести «взнос для
-                            получения средств», которые вы, конечно, не получите.
-                          </li>
-                          <li>
-                            <b>
-                              <u>
-                                Никогда не переходите по ссылкам для «получения оплаты»
-                                через универсальные формы.
-                              </u>
-                            </b>{" "}
-                            Это почти всегда мошенничество: злоумышленники попросят
-                            указать номер, срок действия и CVC карты, чтобы похитить
-                            деньги.
-                          </li>
-                          <li>
-                            Если вы работаете на бирже вроде{" "}
-                            <a
-                              href="https://kwork.ru/"
-                              rel="noreferrer"
-                              target="_blank"
-                            >
-                              Kwork
-                            </a>
-                            ,{" "}
-                            <a
-                              href="https://www.fiverr.com/"
-                              rel="noreferrer"
-                              target="_blank"
-                            >
-                              Fiverr
-                            </a>
-                            ,{" "}
-                            <a
-                              href="https://www.fl.ru/"
-                              rel="noreferrer"
-                              target="_blank"
-                            >
-                              FL
-                            </a>{" "}
-                            и других —{" "}
-                            <b>
-                              <u>не переходите в мессенджеры</u>
-                            </b>
-                            . Площадки блокируют участников, уходящих в{" "}
-                            <mark className="app">Telegram</mark>,{" "}
-                            <mark className="app">Whatsapp</mark> и прочие соцсети, а при
-                            общении вне биржи никто не гарантирует защиту от обмана.
-                          </li>
-                          <li>
-                            <b>
-                              <u>Проверяйте профиль</u>
-                            </b>{" "}
-                            заказчика или исполнителя, особенно если вы общаетесь вне
-                            биржи. Насторожитесь, если в аккаунте{" "}
-                            <mark className="app">Telegram</mark> или другом мессенджере
-                            несколько одинаковых фото, загруженных в один день — это
-                            частый признак нового или взломанного профиля, созданного для
-                            выманивания денег.
-                          </li>
-                        </ul>
-                      </Addition>
-                      <Addition type="warning">
-                        Если вы передали данные карты или перевели деньги мошеннику —
-                        срочно обратитесь в банк и сообщите о факте мошенничества.
-                        Немедленно заблокируйте карту и перевыпустите её в банковском
-                        приложении. Чем быстрее вы свяжетесь с банком — тем выше шанс
-                        вернуть средства.
-                      </Addition>
-                    </div>
-                  </div>
-                </Modal>
-              </RemoveScroll>
+              {fraudWarningModal}
               <LinkCard
                 href="https://t.me/ru_montage_pins"
                 icon={<WorkRounded />}
