@@ -152,25 +152,19 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   const updateDynamicStyles = useCallback(() => {
     const details = detailsReference.current;
 
-    if (details?.open) {
-      const contentWrapper = details.querySelector<HTMLElement>(
-        `.${styles["details-nested-content-wrapper"]}`
-      );
+    const contentWrapper = contentWrapperReference.current;
 
-      const innerContent = contentWrapper?.querySelector<HTMLElement>(
-        `.${styles["details-nested-section"]}`
-      );
+    const innerContent = innerContentReference.current;
 
-      if (contentWrapper && innerContent) {
-        const measuredHeight = innerContent.scrollHeight;
+    if (details?.open && contentWrapper && innerContent) {
+      const measuredHeight = innerContent.scrollHeight;
 
-        if (contentWrapper.style.maxHeight !== "none") {
-          contentWrapper.style.maxHeight = `${measuredHeight}px`;
-        }
-
-        lastExpandedHeightReference.current = measuredHeight;
-        details.style.marginBottom = `${details.offsetHeight * 0.01 + 10}px`;
+      if (contentWrapper.style.maxHeight !== "none") {
+        contentWrapper.style.maxHeight = `${measuredHeight}px`;
       }
+
+      lastExpandedHeightReference.current = measuredHeight;
+      details.style.marginBottom = `${details.offsetHeight * 0.005 + 16}px`;
     }
   }, []);
 
