@@ -515,16 +515,31 @@ const PrInstallProblems: React.FC = () => {
                       установки.
                     </p>
                     <Addition type="danger">
-                      Пожалуйста, не используйте{" "}
-                      <a href="https://zxpinstaller.com/">ZXP Installer</a> от{" "}
-                      <mark className="company">ELEMENTS Storage Media</mark>, если вы
-                      используете версии программ от
-                      <mark className="company">Adobe</mark>, которые отвязаны от
-                      приложения <mark className="app">Adobe Creative Cloud</mark>. Этот{" "}
-                      <a href="https://zxpinstaller.com/">ZXP Installer</a> будет выдавать
-                      вам ошибку <mark className="danger">-193</mark> до тех пор, пока вы
-                      не установите <mark className="app">Adobe Creative Cloud</mark>, а
-                      он, в свою очередь, может повредить уже установленные программы.
+                      <ul>
+                        <li>
+                          Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+                          <mark className="version">26.0 (2026)</mark> и выше,{" "}
+                          <mark className="app">ZXP Installer</mark> от{" "}
+                          <mark className="web">aescripts</mark> может запросить
+                          установленный <mark className="app">Adobe Creative Cloud</mark>.
+                          Если вы используете «народные» версии программ от{" "}
+                          <mark className="company">Adobe</mark> — лучше перейдите на
+                          ручной способ установки расширений.
+                        </li>
+                        <li>
+                          Пожалуйста, не используйте{" "}
+                          <a href="https://zxpinstaller.com/">ZXP Installer</a> от{" "}
+                          <mark className="company">ELEMENTS Storage Media</mark>, если вы
+                          используете версии программ от
+                          <mark className="company">Adobe</mark>, которые отвязаны от
+                          приложения <mark className="app">Adobe Creative Cloud</mark>.
+                          Этот <a href="https://zxpinstaller.com/">ZXP Installer</a> будет
+                          выдавать вам ошибку <mark className="danger">-193</mark> до тех
+                          пор, пока вы не установите{" "}
+                          <mark className="app">Adobe Creative Cloud</mark>, а он, в свою
+                          очередь, может повредить уже установленные программы.
+                        </li>
+                      </ul>
                     </Addition>
                   </li>
                   <li>
@@ -1218,16 +1233,31 @@ const PrInstallProblems: React.FC = () => {
                       окончания установки.
                     </p>
                     <Addition type="danger">
-                      Пожалуйста, не используйте{" "}
-                      <a href="https://zxpinstaller.com/">ZXP Installer</a> от{" "}
-                      <mark className="company">ELEMENTS Storage Media</mark>, если вы
-                      используете версии программ от
-                      <mark className="company">Adobe</mark>, которые отвязаны от
-                      приложения <mark className="app">Adobe Creative Cloud</mark>. Этот{" "}
-                      <a href="https://zxpinstaller.com/">ZXP Installer</a> будет выдавать
-                      вам ошибку <mark className="danger">-193</mark> до тех пор, пока вы
-                      не установите <mark className="app">Adobe Creative Cloud</mark>, а
-                      он, в свою очередь, может повредить уже установленные программы.
+                      <ul>
+                        <li>
+                          Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+                          <mark className="version">26.0 (2026)</mark> и выше,{" "}
+                          <mark className="app">ZXP Installer</mark> от{" "}
+                          <mark className="web">aescripts</mark> может запросить
+                          установленный <mark className="app">Adobe Creative Cloud</mark>.
+                          Если вы используете «народные» версии программ от{" "}
+                          <mark className="company">Adobe</mark> — лучше перейдите на
+                          ручной способ установки расширений.
+                        </li>
+                        <li>
+                          Пожалуйста, не используйте{" "}
+                          <a href="https://zxpinstaller.com/">ZXP Installer</a> от{" "}
+                          <mark className="company">ELEMENTS Storage Media</mark>, если вы
+                          используете версии программ от
+                          <mark className="company">Adobe</mark>, которые отвязаны от
+                          приложения <mark className="app">Adobe Creative Cloud</mark>.
+                          Этот <a href="https://zxpinstaller.com/">ZXP Installer</a> будет
+                          выдавать вам ошибку <mark className="danger">-193</mark> до тех
+                          пор, пока вы не установите{" "}
+                          <mark className="app">Adobe Creative Cloud</mark>, а он, в свою
+                          очередь, может повредить уже установленные программы.
+                        </li>
+                      </ul>
                     </Addition>
                   </li>
                   <li>
