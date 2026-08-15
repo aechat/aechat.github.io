@@ -3,11 +3,9 @@ import React, {type ReactNode} from "react";
 import {normalizeWord} from "./searchContentUtilities";
 
 import {
-  getConsonantSignature,
-  getWordStem,
-  MIN_CONSONANT_SIGNATURE_LENGTH,
+  hasTokenConsonantMatch,
+  hasTokenStemMatch,
   MIN_PREFIX_LENGTH,
-  MIN_STEM_LENGTH,
   normalizeLatinPhonetics,
   WORD_MATCH_PRIORITY,
   type WordFeatures,
@@ -37,38 +35,6 @@ type TokenHighlightAccumulator = {
 };
 
 const HIGHLIGHT_TOKEN_REGEX = /[a-zа-яё0-9]+/gi;
-
-const hasTokenVariantMatch = (token: string, variants: string[]): boolean => {
-  return variants.some(
-    (variant) =>
-      token === variant ||
-      (variant.length >= MIN_PREFIX_LENGTH && token.startsWith(variant))
-  );
-};
-
-const hasTokenStemMatch = (token: string, stemVariants: string[]): boolean => {
-  const tokenStem = getWordStem(token);
-
-  return tokenStem.length >= MIN_STEM_LENGTH && stemVariants.includes(tokenStem);
-};
-
-const hasTokenConsonantMatch = (
-  token: string,
-  consonantSignatures: string[]
-): boolean => {
-  const tokenConsonantSignature = getConsonantSignature(token);
-
-  if (tokenConsonantSignature.length < MIN_CONSONANT_SIGNATURE_LENGTH) {
-    return false;
-  }
-
-  return consonantSignatures.some(
-    (signature) =>
-      tokenConsonantSignature === signature ||
-      tokenConsonantSignature.startsWith(signature) ||
-      signature.startsWith(tokenConsonantSignature)
-  );
-};
 
 const getLongestPrefixVariantLength = (token: string, variants: string[]): number => {
   let longestLength = 0;
@@ -485,26 +451,6 @@ export const renderHighlightedText = (
   return nodes;
 };
 
-export const isTokenMatchingWordFeatures = (
-  token: string,
-  foldedToken: string,
-  wordFeatures: WordFeatures
-): boolean => {
-  if (hasTokenVariantMatch(token, wordFeatures.variants)) {
-    return true;
-  }
-
-  if (hasTokenVariantMatch(foldedToken, wordFeatures.foldedVariants)) {
-    return true;
-  }
-
-  if (hasTokenStemMatch(token, wordFeatures.stemVariants)) {
-    return true;
-  }
-
-  return hasTokenConsonantMatch(token, wordFeatures.consonantSignatures);
-};
-
 export const extractMatchingLine = (content: string, query: string): string => {
   if (!content || !query.trim()) {
     return content;
@@ -561,3 +507,5 @@ export const extractMatchingLine = (content: string, query: string): string => {
 
   return firstElement?.outerHTML || content;
 };
+
+export {isTokenMatchingWordFeatures} from "./searchPhoneticUtilities";

@@ -464,73 +464,41 @@ const getTruncatedTable = (table: HTMLTableElement, maxRows = 8): string => {
 
   const tbody = table.querySelector("tbody");
 
-  if (tbody) {
-    const newTbody = document.createElement("tbody");
-
-    const allRows = [...tbody.querySelectorAll("tr")];
-
-    const rows = allRows.slice(0, maxRows);
-
-    for (const row of rows) {
-      newTbody.append(row.cloneNode(true));
-    }
-
-    const truncatedCount = allRows.length - maxRows;
-
-    if (truncatedCount > 0) {
-      const tr = document.createElement("tr");
-
-      tr.className = "table-truncated-row";
-
-      const td = document.createElement("td");
-
-      const maxCols = Math.max(
-        ...allRows.map((row) => row.querySelectorAll("td, th").length),
-        1
+  const allRows = tbody
+    ? [...tbody.querySelectorAll("tr")]
+    : [...table.querySelectorAll("tr")].filter(
+        (row) => !row.parentElement || row.parentElement.tagName.toLowerCase() !== "thead"
       );
 
-      td.setAttribute("colspan", maxCols.toString());
-      td.textContent = `...и ещё ${truncatedCount} строк`;
-      tr.append(td);
-      newTbody.append(tr);
-    }
+  const newTbody = document.createElement("tbody");
 
-    newTable.append(newTbody);
-  } else {
-    const newTbody = document.createElement("tbody");
+  const rows = allRows.slice(0, maxRows);
 
-    const allRows = [...table.querySelectorAll("tr")].filter(
-      (row) => !row.parentElement || row.parentElement.tagName.toLowerCase() !== "thead"
+  for (const row of rows) {
+    newTbody.append(row.cloneNode(true));
+  }
+
+  const truncatedCount = allRows.length - maxRows;
+
+  if (truncatedCount > 0) {
+    const tr = document.createElement("tr");
+
+    tr.className = "table-truncated-row";
+
+    const td = document.createElement("td");
+
+    const maxCols = Math.max(
+      ...allRows.map((row) => row.querySelectorAll("td, th").length),
+      1
     );
 
-    const rows = allRows.slice(0, maxRows);
-
-    for (const row of rows) {
-      newTbody.append(row.cloneNode(true));
-    }
-
-    const truncatedCount = allRows.length - maxRows;
-
-    if (truncatedCount > 0) {
-      const tr = document.createElement("tr");
-
-      tr.className = "table-truncated-row";
-
-      const td = document.createElement("td");
-
-      const maxCols = Math.max(
-        ...allRows.map((row) => row.querySelectorAll("td, th").length),
-        1
-      );
-
-      td.setAttribute("colspan", maxCols.toString());
-      td.textContent = `...и ещё ${truncatedCount} строк`;
-      tr.append(td);
-      newTbody.append(tr);
-    }
-
-    newTable.append(newTbody);
+    td.setAttribute("colspan", maxCols.toString());
+    td.textContent = `...и ещё ${truncatedCount} строк`;
+    tr.append(td);
+    newTbody.append(tr);
   }
+
+  newTable.append(newTbody);
 
   return newTable.outerHTML;
 };

@@ -10,6 +10,7 @@ import {
   getConsonantSignature,
   getWordFeatures,
   getWordStem,
+  isTokenMatchingWordFeatures,
   MIN_CONSONANT_SIGNATURE_LENGTH,
   MIN_PREFIX_LENGTH,
   MIN_STEM_LENGTH,
@@ -381,62 +382,7 @@ export const hasCompiledQueryMatchInFields = (
   return hasCompiledQueryMatchInIndexes(fieldIndexes, compiledQuery, mode);
 };
 
-const hasTokenVariantMatch = (token: string, variants: string[]): boolean => {
-  return variants.some(
-    (variant) =>
-      token === variant ||
-      (variant.length >= MIN_PREFIX_LENGTH && token.startsWith(variant))
-  );
-};
-
-const hasTokenStemMatch = (token: string, stemVariants: string[]): boolean => {
-  const tokenStem = getWordStem(token);
-
-  return tokenStem.length >= MIN_STEM_LENGTH && stemVariants.includes(tokenStem);
-};
-
-const hasTokenConsonantMatch = (
-  token: string,
-  consonantSignatures: string[]
-): boolean => {
-  const tokenConsonantSignature = getConsonantSignature(token);
-
-  if (tokenConsonantSignature.length < MIN_CONSONANT_SIGNATURE_LENGTH) {
-    return false;
-  }
-
-  return consonantSignatures.some(
-    (signature) =>
-      tokenConsonantSignature === signature ||
-      tokenConsonantSignature.startsWith(signature) ||
-      signature.startsWith(tokenConsonantSignature)
-  );
-};
-
-const isTokenMatchingWordFeatures = (
-  token: string,
-  foldedToken: string,
-  wordFeatures: WordFeatures
-): boolean => {
-  if (hasTokenVariantMatch(token, wordFeatures.variants)) {
-    return true;
-  }
-
-  if (hasTokenVariantMatch(foldedToken, wordFeatures.foldedVariants)) {
-    return true;
-  }
-
-  if (hasTokenStemMatch(token, wordFeatures.stemVariants)) {
-    return true;
-  }
-
-  return hasTokenConsonantMatch(token, wordFeatures.consonantSignatures);
-};
-
-const toNormalizedWords = (text: string): string[] =>
-  normalizeText(text).split(" ").filter(Boolean);
-
-const TAG_SCORING_TOKEN_CAP = 48;
+export const TAG_SCORING_TOKEN_CAP = 48;
 
 const TAG_SCORING_DAMPING_START = 16;
 
@@ -456,7 +402,7 @@ const getTagLengthDampingFactor = (tagTokenCount: number): number => {
   return 1 - dampingRatio * TAG_SCORING_MAX_REDUCTION;
 };
 
-const getTokenPositionsForWord = (
+export const getTokenPositionsForWord = (
   normalizedTokens: string[],
   foldedTokens: string[],
   wordFeatures: WordFeatures
@@ -474,7 +420,10 @@ const getTokenPositionsForWord = (
   return positions;
 };
 
-const searchScoringDependencies: SearchScoringDependencies<WordFeatures> = {
+const toNormalizedWords = (text: string): string[] =>
+  normalizeText(text).split(" ").filter(Boolean);
+
+export const searchScoringDependencies: SearchScoringDependencies<WordFeatures> = {
   getTokenPositionsForWord,
   normalizeLatinPhonetics,
   toNormalizedWords,

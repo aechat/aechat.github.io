@@ -396,3 +396,55 @@ export const normalizeLatinPhonetics = (text: string): string => {
     .replaceAll("ou", "u")
     .replaceAll("sch", "shch");
 };
+
+export const hasTokenVariantMatch = (token: string, variants: string[]): boolean => {
+  return variants.some(
+    (variant) =>
+      token === variant ||
+      (variant.length >= MIN_PREFIX_LENGTH && token.startsWith(variant))
+  );
+};
+
+export const hasTokenStemMatch = (token: string, stemVariants: string[]): boolean => {
+  const tokenStem = getWordStem(token);
+
+  return tokenStem.length >= MIN_STEM_LENGTH && stemVariants.includes(tokenStem);
+};
+
+export const hasTokenConsonantMatch = (
+  token: string,
+  consonantSignatures: string[]
+): boolean => {
+  const tokenConsonantSignature = getConsonantSignature(token);
+
+  if (tokenConsonantSignature.length < MIN_CONSONANT_SIGNATURE_LENGTH) {
+    return false;
+  }
+
+  return consonantSignatures.some(
+    (signature) =>
+      tokenConsonantSignature === signature ||
+      tokenConsonantSignature.startsWith(signature) ||
+      signature.startsWith(tokenConsonantSignature)
+  );
+};
+
+export const isTokenMatchingWordFeatures = (
+  token: string,
+  foldedToken: string,
+  wordFeatures: WordFeatures
+): boolean => {
+  if (hasTokenVariantMatch(token, wordFeatures.variants)) {
+    return true;
+  }
+
+  if (hasTokenVariantMatch(foldedToken, wordFeatures.foldedVariants)) {
+    return true;
+  }
+
+  if (hasTokenStemMatch(token, wordFeatures.stemVariants)) {
+    return true;
+  }
+
+  return hasTokenConsonantMatch(token, wordFeatures.consonantSignatures);
+};

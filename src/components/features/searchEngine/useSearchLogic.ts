@@ -24,12 +24,7 @@ import {
   wrapSnippetWithClosestAddition,
 } from "./searchContentUtilities";
 
-import {
-  extractMatchingLine,
-  isTokenMatchingWordFeatures,
-} from "./searchHighlightUtilities";
-
-import {normalizeLatinPhonetics, type WordFeatures} from "./searchPhoneticUtilities";
+import {extractMatchingLine} from "./searchHighlightUtilities";
 
 import {
   buildSearchIndex,
@@ -37,16 +32,14 @@ import {
   getFieldMatchInfo,
   hasCompiledQueryMatchInIndexes,
   searchDetails,
+  searchScoringDependencies,
   type SearchWorkerDetail,
+  TAG_SCORING_TOKEN_CAP,
   type TextSearchIndex,
   type WorkerRankedResult,
 } from "./searchQueryCore";
 
-import {
-  getFieldMatchTypeScore,
-  getProximityBonus,
-  type SearchScoringDependencies,
-} from "./searchScoringUtilities";
+import {getFieldMatchTypeScore, getProximityBonus} from "./searchScoringUtilities";
 
 import {getSuggestions} from "./searchSuggestionsUtilities";
 
@@ -98,39 +91,10 @@ const MAX_COMPACT_SNIPPET_TEXT_LENGTH = 780;
 
 const ADDITION_CONTAINER_SELECTOR = getAdditionContainerSelector(additionStyles);
 
-const TAG_SCORING_TOKEN_CAP = 48;
-
-const toNormalizedWords = (text: string): string[] =>
-  normalizeText(text).split(" ").filter(Boolean);
-
 const getTagScoringText = (normalizedTag: string): string => {
   const tagWords = normalizedTag.split(" ").filter(Boolean);
 
   return tagWords.slice(0, TAG_SCORING_TOKEN_CAP).join(" ");
-};
-
-const getTokenPositionsForWord = (
-  normalizedTokens: string[],
-  foldedTokens: string[],
-  wordFeatures: WordFeatures
-): number[] => {
-  const positions: number[] = [];
-
-  for (const [tokenIndex, token] of normalizedTokens.entries()) {
-    const foldedToken = foldedTokens[tokenIndex] || normalizeLatinPhonetics(token);
-
-    if (isTokenMatchingWordFeatures(token, foldedToken, wordFeatures)) {
-      positions.push(tokenIndex);
-    }
-  }
-
-  return positions;
-};
-
-const searchScoringDependencies: SearchScoringDependencies<WordFeatures> = {
-  getTokenPositionsForWord,
-  normalizeLatinPhonetics,
-  toNormalizedWords,
 };
 
 const getCompactSnippetScore = (
