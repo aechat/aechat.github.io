@@ -402,15 +402,15 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
   const handleSaturationAfterChange = withSelectionHaptic(setSaturateRatio);
 
   return (
-    <RemoveScroll enabled={isModalOpen}>
-      <Modal
-        destroyOnHidden
-        closeIcon={false}
-        footer={<></>}
-        open={isModalOpen}
-        width={450}
-        onCancel={closeModal}
-      >
+    <Modal
+      destroyOnHidden
+      closeIcon={false}
+      footer={<></>}
+      open={isModalOpen}
+      width={450}
+      onCancel={closeModal}
+    >
+      <RemoveScroll enabled={isModalOpen}>
         <div className={modalStyles["modal"]}>
           <div className={modalStyles["modal-header"]}>
             <div className={modalStyles["modal-header-title"]}>Настройки страницы</div>
@@ -545,8 +545,8 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
             </div>
           </div>
         </div>
-      </Modal>
-    </RemoveScroll>
+      </RemoveScroll>
+    </Modal>
   );
 };
 
