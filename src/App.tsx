@@ -569,10 +569,7 @@ const AppContent = () => {
   }
 
   return (
-    <div
-      className="app-root"
-      onClickCapture={handleLinkClick}
-    >
+    <div onClickCapture={handleLinkClick}>
       <GroupedCornersManager pathKey={location.pathname} />
       <SnowfallManager />
       <ErrorBoundary onError={setBoundaryError}>
