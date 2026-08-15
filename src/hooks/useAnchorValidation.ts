@@ -18,14 +18,30 @@ const ANCHOR_VALIDATION_DELAY = 1000;
 
 const ANCHOR_ALIGN_FALLBACK_DELAY = 450;
 
+const MAX_ATTEMPTS = 15;
+
+const ATTEMPT_INTERVAL = 200;
+
 const isSectionAnchor = (sections: Section[], anchorId: string): boolean => {
   return sections.some((section) => section.id === anchorId);
+};
+
+const decodeAnchor = (anchor: string): string => {
+  try {
+    return decodeURIComponent(anchor);
+  } catch {
+    return anchor;
+  }
 };
 
 export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) => {
   const {hash} = useLocation();
 
   const lastValidatedHashReference = useRef<string>("");
+
+  const sectionsReference = useRef<Section[]>(sections);
+
+  sectionsReference.current = sections;
 
   useEffect(() => {
     if (!isPageLoaded) return;
@@ -42,13 +58,13 @@ export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) 
       return;
     }
 
-    lastValidatedHashReference.current = hash;
-
     let firstAlignFrameId: number | undefined;
 
     let secondAlignFrameId: number | undefined;
 
     let alignFallbackTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    let validationTimeout: ReturnType<typeof setTimeout> | undefined;
 
     let pendingAnchorId = "";
 
@@ -76,25 +92,30 @@ export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) 
 
     let attempts = 0;
 
-    const MAX_ATTEMPTS = 15;
-
-    const ATTEMPT_INTERVAL = 200;
-
-    let validationTimeout: ReturnType<typeof setTimeout> | undefined;
-
     const validateAnchors = () => {
-      const currentAnchor = hash.slice(1);
+      const currentRawAnchor = hash.slice(1);
 
-      if (!currentAnchor) return;
+      if (!currentRawAnchor) return;
 
-      if (resolveDetailsByAnchor(currentAnchor)) {
-        alignAnchorAfterLayoutStabilization(currentAnchor);
+      const decodedAnchor = decodeAnchor(currentRawAnchor);
+
+      const matchedDetails =
+        resolveDetailsByAnchor(decodedAnchor) || resolveDetailsByAnchor(currentRawAnchor);
+
+      if (matchedDetails) {
+        lastValidatedHashReference.current = hash;
+        alignAnchorAfterLayoutStabilization(decodedAnchor);
 
         return;
       }
 
-      if (isSectionAnchor(sections, currentAnchor)) {
-        scrollToAnchorById(currentAnchor);
+      const isMatchingSection =
+        isSectionAnchor(sectionsReference.current, decodedAnchor) ||
+        isSectionAnchor(sectionsReference.current, currentRawAnchor);
+
+      if (isMatchingSection) {
+        lastValidatedHashReference.current = hash;
+        scrollToAnchorById(decodedAnchor);
 
         return;
       }
@@ -106,11 +127,13 @@ export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) 
         return;
       }
 
+      lastValidatedHashReference.current = hash;
+
       const faqContainer = document.querySelector(".article-content");
 
       if (faqContainer) {
         message.error(
-          "Не удалось найти статью по ссылке, возможно, она была перемещена или удалена."
+          "Не удалось найти статью по ссылке. Возможно, она была перемещена или удалена."
         );
 
         replaceCurrentUrlHash("");
@@ -136,5 +159,5 @@ export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) 
         clearTimeout(alignFallbackTimeout);
       }
     };
-  }, [hash, sections, isPageLoaded]);
+  }, [hash, isPageLoaded]);
 };

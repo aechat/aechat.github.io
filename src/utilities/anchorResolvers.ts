@@ -1,12 +1,27 @@
 export const resolveDetailsByAnchor = (
   anchorValue: string
 ): HTMLDetailsElement | undefined => {
-  const detailsByTextualAnchor = document.querySelector<HTMLDetailsElement>(
-    `details[data-anchor="${anchorValue}"]`
-  );
+  if (!anchorValue) {
+    return undefined;
+  }
 
-  if (detailsByTextualAnchor) {
-    return detailsByTextualAnchor;
+  try {
+    const detailsByTextualAnchor = document.querySelector<HTMLDetailsElement>(
+      `details[data-anchor="${CSS.escape(anchorValue)}"]`
+    );
+
+    if (detailsByTextualAnchor) {
+      return detailsByTextualAnchor;
+    }
+  } catch {
+    const allDetails =
+      document.querySelectorAll<HTMLDetailsElement>("details[data-anchor]");
+
+    for (const details of allDetails) {
+      if (details.dataset.anchor === anchorValue) {
+        return details;
+      }
+    }
   }
 
   const elementById = document.getElementById(anchorValue);

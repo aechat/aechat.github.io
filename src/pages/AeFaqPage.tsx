@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 
 import {
   ErrorOutlineRounded,
@@ -59,71 +59,74 @@ const AeFaqPage = () => {
   useCopyToClipboard();
   useSmartCopy(isPageLoaded);
 
-  const sections = [
-    {
-      component: AeWhereFind,
-      icon: <TravelExploreRounded />,
-      id: "where-find",
-      key: "1",
-      title: "Ищем полезности",
-    },
-    {
-      component: AeInstallProblems,
-      icon: <InstallDesktopRounded />,
-      id: "install-problems",
-      key: "2",
-      title: "Проблемы с установкой",
-    },
-    {
-      component: AeFromNewbies,
-      icon: <HelpCenterOutlined />,
-      id: "from-newbies",
-      key: "3",
-      title: "Вопросы от новичков",
-    },
-    {
-      component: AeImport,
-      icon: <InputRounded />,
-      id: "import",
-      key: "4",
-      title: "Импорт",
-    },
-    {
-      component: AeInterface,
-      icon: <TouchAppOutlined />,
-      id: "interface",
-      key: "5",
-      title: "Интерфейс",
-    },
-    {
-      component: AePerformance,
-      icon: <SpeedRounded />,
-      id: "performance",
-      key: "6",
-      title: "Производительность",
-    },
-    {
-      component: AeActions,
-      icon: <PsychologyAltOutlined />,
-      id: "actions",
-      key: "7",
-      title: "Как и чем?",
-    },
-    {
-      component: AeErrors,
-      icon: <ErrorOutlineRounded />,
-      id: "errors",
-      key: "8",
-      title: "Ошибки и предупреждения",
-    },
-    {
-      component: AeExport,
-      icon: <VideoSettingsRounded />,
-      id: "export",
-      key: "9",
-      title: "Рендер и экспорт",
-    },
-  ];
+  const sections = useMemo(
+    () => [
+      {
+        component: AeWhereFind,
+        icon: <TravelExploreRounded />,
+        id: "where-find",
+        key: "1",
+        title: "Ищем полезности",
+      },
+      {
+        component: AeInstallProblems,
+        icon: <InstallDesktopRounded />,
+        id: "install-problems",
+        key: "2",
+        title: "Проблемы с установкой",
+      },
+      {
+        component: AeFromNewbies,
+        icon: <HelpCenterOutlined />,
+        id: "from-newbies",
+        key: "3",
+        title: "Вопросы от новичков",
+      },
+      {
+        component: AeImport,
+        icon: <InputRounded />,
+        id: "import",
+        key: "4",
+        title: "Импорт",
+      },
+      {
+        component: AeInterface,
+        icon: <TouchAppOutlined />,
+        id: "interface",
+        key: "5",
+        title: "Интерфейс",
+      },
+      {
+        component: AePerformance,
+        icon: <SpeedRounded />,
+        id: "performance",
+        key: "6",
+        title: "Производительность",
+      },
+      {
+        component: AeActions,
+        icon: <PsychologyAltOutlined />,
+        id: "actions",
+        key: "7",
+        title: "Как и чем?",
+      },
+      {
+        component: AeErrors,
+        icon: <ErrorOutlineRounded />,
+        id: "errors",
+        key: "8",
+        title: "Ошибки и предупреждения",
+      },
+      {
+        component: AeExport,
+        icon: <VideoSettingsRounded />,
+        id: "export",
+        key: "9",
+        title: "Рендер и экспорт",
+      },
+    ],
+    []
+  );
 
   useAnchorValidation(sections, isPageLoaded);
 

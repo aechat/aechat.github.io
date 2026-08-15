@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 
 import {
   BrokenImageOutlined,
@@ -62,78 +62,81 @@ const PrFaqPage = () => {
   useCopyToClipboard();
   useSmartCopy(isPageLoaded);
 
-  const sections = [
-    {
-      component: PrWhereFind,
-      icon: <TravelExploreRounded />,
-      id: "where-find",
-      key: "1",
-      title: "Ищем полезности",
-    },
-    {
-      component: PrInstallProblems,
-      icon: <InstallDesktopRounded />,
-      id: "install-problems",
-      key: "2",
-      title: "Проблемы с установкой",
-    },
-    {
-      component: PrFromNewbies,
-      icon: <HelpCenterOutlined />,
-      id: "from-newbies",
-      key: "3",
-      title: "Вопросы от новичков",
-    },
-    {
-      component: PrImport,
-      icon: <InputRounded />,
-      id: "import",
-      key: "4",
-      title: "Импорт",
-    },
-    {
-      component: PrInterface,
-      icon: <TouchAppOutlined />,
-      id: "interface",
-      key: "5",
-      title: "Интерфейс",
-    },
-    {
-      component: PrPerformance,
-      icon: <SpeedRounded />,
-      id: "performance",
-      key: "6",
-      title: "Производительность",
-    },
-    {
-      component: PrActions,
-      icon: <PsychologyAltOutlined />,
-      id: "actions",
-      key: "7",
-      title: "Как и чем?",
-    },
-    {
-      component: PrErrors,
-      icon: <ErrorOutlineRounded />,
-      id: "errors",
-      key: "8",
-      title: "Ошибки и предупреждения",
-    },
-    {
-      component: PrExport,
-      icon: <VideoSettingsRounded />,
-      id: "export",
-      key: "9",
-      title: "Рендер и экспорт",
-    },
-    {
-      component: PrExportProblems,
-      icon: <BrokenImageOutlined />,
-      id: "export-problems",
-      key: "10",
-      title: "Проблемы при экспорте",
-    },
-  ];
+  const sections = useMemo(
+    () => [
+      {
+        component: PrWhereFind,
+        icon: <TravelExploreRounded />,
+        id: "where-find",
+        key: "1",
+        title: "Ищем полезности",
+      },
+      {
+        component: PrInstallProblems,
+        icon: <InstallDesktopRounded />,
+        id: "install-problems",
+        key: "2",
+        title: "Проблемы с установкой",
+      },
+      {
+        component: PrFromNewbies,
+        icon: <HelpCenterOutlined />,
+        id: "from-newbies",
+        key: "3",
+        title: "Вопросы от новичков",
+      },
+      {
+        component: PrImport,
+        icon: <InputRounded />,
+        id: "import",
+        key: "4",
+        title: "Импорт",
+      },
+      {
+        component: PrInterface,
+        icon: <TouchAppOutlined />,
+        id: "interface",
+        key: "5",
+        title: "Интерфейс",
+      },
+      {
+        component: PrPerformance,
+        icon: <SpeedRounded />,
+        id: "performance",
+        key: "6",
+        title: "Производительность",
+      },
+      {
+        component: PrActions,
+        icon: <PsychologyAltOutlined />,
+        id: "actions",
+        key: "7",
+        title: "Как и чем?",
+      },
+      {
+        component: PrErrors,
+        icon: <ErrorOutlineRounded />,
+        id: "errors",
+        key: "8",
+        title: "Ошибки и предупреждения",
+      },
+      {
+        component: PrExport,
+        icon: <VideoSettingsRounded />,
+        id: "export",
+        key: "9",
+        title: "Рендер и экспорт",
+      },
+      {
+        component: PrExportProblems,
+        icon: <BrokenImageOutlined />,
+        id: "export-problems",
+        key: "10",
+        title: "Проблемы при экспорте",
+      },
+    ],
+    []
+  );
 
   useAnchorValidation(sections, isPageLoaded);
 
