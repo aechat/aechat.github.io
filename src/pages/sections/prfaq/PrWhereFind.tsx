@@ -6,9 +6,9 @@ import Addition from "../../../components/content/Addition";
 
 import {ArticleMedia} from "../../../components/content/ArticleMedia";
 
-import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
+import TelegramRecommendation from "../../../components/content/TelegramRecommendation";
 
-import {getPlatformInfo} from "../../../utilities/browserDetection";
+import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
 
 const PrWhereFind: React.FC = () => {
   return (
@@ -30,51 +30,7 @@ const PrWhereFind: React.FC = () => {
           <mark className="app">Telegram</mark>.
         </p>
         <Addition type="info">
-          {(() => {
-            const {isAndroid, isIOS, isMacOS} = getPlatformInfo();
-
-            if (isIOS) {
-              return (
-                <>
-                  Чтобы без проблем скачивать файлы из каналов, описанных ниже,
-                  рекомендуется использовать официальное приложение{" "}
-                  <mark className="app">Telegram</mark> вместо веб-версии. Его можно
-                  установить из <a href="https://telegram.org/dl/ios">App Store</a>.
-                </>
-              );
-            }
-
-            if (isAndroid) {
-              return (
-                <>
-                  Чтобы без проблем скачивать файлы из каналов, описанных ниже,
-                  рекомендуется использовать официальное приложение{" "}
-                  <mark className="app">Telegram</mark> вместо веб-версии. Его можно
-                  установить по <a href="https://telegram.org/android">этой</a> ссылке.
-                </>
-              );
-            }
-
-            if (isMacOS) {
-              return (
-                <>
-                  Чтобы без проблем скачивать файлы из каналов, описанных ниже,
-                  рекомендуется использовать десктопную версию{" "}
-                  <mark className="app">Telegram</mark> вместо веб-версии. Её можно
-                  скачать по <a href="https://macos.telegram.org/">этой</a> ссылке.
-                </>
-              );
-            }
-
-            return (
-              <>
-                Чтобы без проблем скачивать файлы из каналов, описанных ниже,
-                рекомендуется использовать десктопную версию{" "}
-                <mark className="app">Telegram</mark> вместо веб-версии. Её можно скачать
-                по <a href="https://desktop.telegram.org/">этой</a> ссылке.
-              </>
-            );
-          })()}
+          <TelegramRecommendation />
         </Addition>
         <Divider>Скачать шаблоны и различные материалы</Divider>
         <ul>
