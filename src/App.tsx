@@ -368,9 +368,10 @@ const SnowfallManager = () => {
       radius={[0.5, 1.5]}
       speed={[0.25, 1]}
       style={{
-        height: "100vh",
+        height: "100%",
+        inset: 0,
         position: "fixed",
-        width: "100vw",
+        width: "100%",
       }}
       wind={[0, 1]}
     />
