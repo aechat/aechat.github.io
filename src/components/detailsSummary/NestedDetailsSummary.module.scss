@@ -125,7 +125,7 @@
     border-radius: 0;
     background-color: var(--color-panel-background);
     cursor: pointer;
-    padding: $space-12 $space-16;
+    padding: $space-10 $space-14;
     text-transform: uppercase;
     line-height: 1.2;
     color: var(--color-panel-text);
@@ -395,11 +395,11 @@ li > .details-nested {
   margin-inline: 0;
 
   &:first-child:not([open]) {
-    margin-top: $space-4;
+    margin-top: $space-6;
   }
 
   &:last-child:not([open]) {
-    margin-bottom: $space-4;
+    margin-bottom: $space-6;
   }
 }
 
@@ -421,7 +421,7 @@ li > .details-nested {
   .details-nested:not(.is-open, [open]) .details-nested-summary {
     &:hover,
     &:active {
-      margin-block: $space-4;
+      margin-block: $space-6;
       border-radius: $roundness;
       border-bottom-color: var(--nested-border);
     }
