@@ -177,26 +177,7 @@
     var(--color-panel-background-hover),
     var(--color-panel-background-active)
   );
-
-  appearance: none;
-  box-sizing: border-box;
-  display: flex;
-  position: relative;
-  gap: $space-4;
-  align-items: center;
-  justify-content: center;
-  transition: background-color $duration-500 cubic-bezier(0.075, 0.82, 0.165, 1);
-  outline: $stroke-1 solid var(--color-widget-border);
-  border: none;
-  border-radius: $roundness * 0.75;
-  background: var(--color-widget-background);
-  padding: $space-4;
-  height: var(--header-control-height, 30px);
-  min-height: var(--header-control-height, 30px);
-  line-height: 1;
-  color: var(--color-widget-text);
-  font-size: $font-size-text-sm;
-  font-weight: 400;
+  @include header-widget-control-base();
 
   &:focus:not(:active),
   &:focus-visible:not(:active) {
