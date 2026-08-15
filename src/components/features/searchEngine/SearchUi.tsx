@@ -533,18 +533,10 @@ type NoResultsProperties = {
   suggestions?: string[];
 };
 
-export const NoResults: React.FC<NoResultsProperties> = ({
-  onSelectSuggestion,
-  query,
-  suggestions = [],
-}) => {
+const useScrollFade = () => {
   const [showLeftFade, setShowLeftFade] = useState(false);
 
   const [showRightFade, setShowRightFade] = useState(false);
-
-  const [visibleSuggestions, setVisibleSuggestions] = useState<string[]>(suggestions);
-
-  const [animationPhase, setAnimationPhase] = useState<"enter" | "exit" | "idle">("idle");
 
   const containerReference = useRef<HTMLDivElement | null>(null);
 
@@ -569,6 +561,26 @@ export const NoResults: React.FC<NoResultsProperties> = ({
 
     setShowRightFade(isScrollable && !isAtEnd);
   }, []);
+
+  return {
+    checkScrollLimits,
+    containerReference,
+    showLeftFade,
+    showRightFade,
+  };
+};
+
+export const NoResults: React.FC<NoResultsProperties> = ({
+  onSelectSuggestion,
+  query,
+  suggestions = [],
+}) => {
+  const {checkScrollLimits, containerReference, showLeftFade, showRightFade} =
+    useScrollFade();
+
+  const [visibleSuggestions, setVisibleSuggestions] = useState<string[]>(suggestions);
+
+  const [animationPhase, setAnimationPhase] = useState<"enter" | "exit" | "idle">("idle");
 
   useEffect(() => {
     checkScrollLimits();
@@ -1309,33 +1321,8 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
   onClear,
   onSelect,
 }) => {
-  const [showLeftFade, setShowLeftFade] = useState(false);
-
-  const [showRightFade, setShowRightFade] = useState(false);
-
-  const containerReference = useRef<HTMLDivElement | null>(null);
-
-  const checkScrollLimits = useCallback(() => {
-    const target = containerReference.current;
-
-    if (!target) {
-      return;
-    }
-
-    const scrollLeft = target.scrollLeft;
-
-    const clientWidth = target.clientWidth;
-
-    const scrollWidth = target.scrollWidth;
-
-    setShowLeftFade(scrollLeft > 0);
-
-    const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-
-    const isScrollable = scrollWidth > clientWidth;
-
-    setShowRightFade(isScrollable && !isAtEnd);
-  }, []);
+  const {checkScrollLimits, containerReference, showLeftFade, showRightFade} =
+    useScrollFade();
 
   useEffect(() => {
     checkScrollLimits();

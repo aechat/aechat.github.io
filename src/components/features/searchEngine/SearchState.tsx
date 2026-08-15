@@ -249,6 +249,28 @@ const getPositionedResultsRuntime = (
     );
 };
 
+const getResultCenter = (item: {rect: DOMRect}): {centerX: number; centerY: number} => ({
+  centerX: item.rect.left + item.rect.width / 2,
+  centerY: item.rect.top + item.rect.height / 2,
+});
+
+const resolveCurrentResult = (
+  positionedResults: PositionedResult[],
+  currentIndex: number
+): {currentResult: PositionedResult; isExactMatch: boolean} | undefined => {
+  if (positionedResults.length === 0) {
+    return undefined;
+  }
+
+  const match = positionedResults.find((item) => item.index === currentIndex);
+
+  if (match) {
+    return {currentResult: match, isExactMatch: true};
+  }
+
+  return {currentResult: positionedResults[0], isExactMatch: false};
+};
+
 const getColumnCenters = (
   positionedResults: Array<{index: number; rect: DOMRect}>,
   columnTolerance: number
@@ -256,7 +278,7 @@ const getColumnCenters = (
   const centers: number[] = [];
 
   for (const item of positionedResults) {
-    const centerX = item.rect.left + item.rect.width / 2;
+    const {centerX} = getResultCenter(item);
 
     const matchingCenterIndex = centers.findIndex(
       (value) => Math.abs(value - centerX) <= columnTolerance
@@ -285,19 +307,19 @@ const getVisualNeighborIndexRuntime = ({
   positionedResults: PositionedResult[];
   resultsLength: number;
 }): number => {
-  if (positionedResults.length === 0) {
+  const resolved = resolveCurrentResult(positionedResults, currentIndex);
+
+  if (!resolved) {
     return currentIndex;
   }
 
-  const currentResult = positionedResults.find((item) => item.index === currentIndex);
-
-  if (!currentResult) {
-    return positionedResults[0].index;
+  if (!resolved.isExactMatch) {
+    return resolved.currentResult.index;
   }
 
-  const currentCenterX = currentResult.rect.left + currentResult.rect.width / 2;
-
-  const currentCenterY = currentResult.rect.top + currentResult.rect.height / 2;
+  const {centerX: currentCenterX, centerY: currentCenterY} = getResultCenter(
+    resolved.currentResult
+  );
 
   const columnCenters = getColumnCenters(positionedResults, columnTolerance);
 
@@ -316,8 +338,7 @@ const getVisualNeighborIndexRuntime = ({
 
   const directionalCandidates = positionedResults
     .map((candidate) => ({
-      centerX: candidate.rect.left + candidate.rect.width / 2,
-      centerY: candidate.rect.top + candidate.rect.height / 2,
+      ...getResultCenter(candidate),
       index: candidate.index,
     }))
     .filter((candidate) => candidate.index !== currentIndex)
@@ -354,19 +375,19 @@ const getHorizontalNeighborIndexRuntime = ({
   direction: "left" | "right";
   positionedResults: PositionedResult[];
 }): number => {
-  if (positionedResults.length === 0) {
+  const resolved = resolveCurrentResult(positionedResults, currentIndex);
+
+  if (!resolved) {
     return currentIndex;
   }
 
-  const currentResult = positionedResults.find((item) => item.index === currentIndex);
-
-  if (!currentResult) {
-    return positionedResults[0].index;
+  if (!resolved.isExactMatch) {
+    return resolved.currentResult.index;
   }
 
-  const currentCenterX = currentResult.rect.left + currentResult.rect.width / 2;
-
-  const currentCenterY = currentResult.rect.top + currentResult.rect.height / 2;
+  const {centerX: currentCenterX, centerY: currentCenterY} = getResultCenter(
+    resolved.currentResult
+  );
 
   const candidateColumns = positionedResults
     .map((item) => ({
