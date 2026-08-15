@@ -1,9 +1,5 @@
 @use "../abstracts/mixins" as *;
 
-:root {
-  --header-height: 55px;
-}
-
 html,
 body {
   transition: background-color $duration-750 cubic-bezier(0.25, 0, 0, 1);
@@ -12,7 +8,6 @@ body {
   padding: 0;
   overflow-x: hidden;
   color: var(--color-page-text);
-  scroll-padding-top: var(--header-height);
   scrollbar-color: var(--color-panel-border) transparent;
   scrollbar-width: thin;
   user-select: none;
