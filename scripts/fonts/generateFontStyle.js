@@ -50,6 +50,26 @@ const printUsage = () => {
   );
 };
 
+const readOptionValue = (argv, index, flagName) => {
+  const arg = argv[index];
+
+  if (arg === flagName) {
+    const nextArg = argv[index + 1];
+
+    if (!nextArg) {
+      throw new Error(`Для ${flagName} нужно указать значение`);
+    }
+
+    return {consumedNext: true, value: nextArg};
+  }
+
+  if (arg.startsWith(`${flagName}=`)) {
+    return {consumedNext: false, value: arg.slice(flagName.length + 1)};
+  }
+
+  return null;
+};
+
 const parseArgs = (argv) => {
   const options = {
     dryRun: false,
@@ -70,37 +90,27 @@ const parseArgs = (argv) => {
       continue;
     }
 
-    if (arg === "--fonts-root") {
-      const nextArg = argv[index + 1];
+    const fontsRootOption = readOptionValue(argv, index, "--fonts-root");
 
-      if (!nextArg) {
-        throw new Error("Для --fonts-root нужно указать значение");
+    if (fontsRootOption) {
+      options.fontsRoot = fontsRootOption.value;
+
+      if (fontsRootOption.consumedNext) {
+        index += 1;
       }
 
-      options.fontsRoot = nextArg;
-      index += 1;
       continue;
     }
 
-    if (arg.startsWith("--fonts-root=")) {
-      options.fontsRoot = arg.slice("--fonts-root=".length);
-      continue;
-    }
+    const outputOption = readOptionValue(argv, index, "--output");
 
-    if (arg === "--output") {
-      const nextArg = argv[index + 1];
+    if (outputOption) {
+      options.output = outputOption.value;
 
-      if (!nextArg) {
-        throw new Error("Для --output нужно указать значение");
+      if (outputOption.consumedNext) {
+        index += 1;
       }
 
-      options.output = nextArg;
-      index += 1;
-      continue;
-    }
-
-    if (arg.startsWith("--output=")) {
-      options.output = arg.slice("--output=".length);
       continue;
     }
 

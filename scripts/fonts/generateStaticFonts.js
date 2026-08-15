@@ -88,6 +88,26 @@ const parseStringList = (value) => {
   return parsed.length === 0 ? null : parsed;
 };
 
+const readOptionValue = (argv, index, flagName) => {
+  const arg = argv[index];
+
+  if (arg === flagName) {
+    const nextArg = argv[index + 1];
+
+    if (!nextArg) {
+      throw new Error(`Для ${flagName} нужно указать значение`);
+    }
+
+    return {consumedNext: true, value: nextArg};
+  }
+
+  if (arg.startsWith(`${flagName}=`)) {
+    return {consumedNext: false, value: arg.slice(flagName.length + 1)};
+  }
+
+  return null;
+};
+
 const parseArgs = (argv) => {
   const options = {
     dryRun: false,
@@ -122,71 +142,51 @@ const parseArgs = (argv) => {
       continue;
     }
 
-    if (arg === "--weights") {
-      const nextArg = argv[index + 1];
+    const weightsOption = readOptionValue(argv, index, "--weights");
 
-      if (!nextArg) {
-        throw new Error("Для --weights нужно указать значение");
+    if (weightsOption) {
+      options.weights = parseNumberList(weightsOption.value, "--weights");
+
+      if (weightsOption.consumedNext) {
+        index += 1;
       }
 
-      options.weights = parseNumberList(nextArg, "--weights");
-      index += 1;
       continue;
     }
 
-    if (arg.startsWith("--weights=")) {
-      options.weights = parseNumberList(arg.slice("--weights=".length), "--weights");
-      continue;
-    }
+    const fontsRootOption = readOptionValue(argv, index, "--fonts-root");
 
-    if (arg === "--fonts-root") {
-      const nextArg = argv[index + 1];
+    if (fontsRootOption) {
+      options.fontsRoot = fontsRootOption.value;
 
-      if (!nextArg) {
-        throw new Error("Для --fonts-root нужно указать значение");
+      if (fontsRootOption.consumedNext) {
+        index += 1;
       }
 
-      options.fontsRoot = nextArg;
-      index += 1;
       continue;
     }
 
-    if (arg.startsWith("--fonts-root=")) {
-      options.fontsRoot = arg.slice("--fonts-root=".length);
-      continue;
-    }
+    const scanRootOption = readOptionValue(argv, index, "--scan-root");
 
-    if (arg === "--scan-root") {
-      const nextArg = argv[index + 1];
+    if (scanRootOption) {
+      options.scanRoot = scanRootOption.value;
 
-      if (!nextArg) {
-        throw new Error("Для --scan-root нужно указать значение");
+      if (scanRootOption.consumedNext) {
+        index += 1;
       }
 
-      options.scanRoot = nextArg;
-      index += 1;
       continue;
     }
 
-    if (arg.startsWith("--scan-root=")) {
-      options.scanRoot = arg.slice("--scan-root=".length);
-      continue;
-    }
+    const familyOption = readOptionValue(argv, index, "--family");
 
-    if (arg === "--family") {
-      const nextArg = argv[index + 1];
+    if (familyOption) {
+      options.families = parseStringList(familyOption.value);
 
-      if (!nextArg) {
-        throw new Error("Для --family нужно указать значение");
+      if (familyOption.consumedNext) {
+        index += 1;
       }
 
-      options.families = parseStringList(nextArg);
-      index += 1;
-      continue;
-    }
-
-    if (arg.startsWith("--family=")) {
-      options.families = parseStringList(arg.slice("--family=".length));
       continue;
     }
 
