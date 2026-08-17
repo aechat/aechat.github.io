@@ -454,7 +454,7 @@ const PrInstallProblems: React.FC = () => {
               </NestedDetailsSummary>
               <NestedDetailsSummary
                 anchor="zxp"
-                title="Расширения (ZXP)"
+                title="Расширения CEP (ZXP)"
               >
                 <p>
                   Расширения формата <mark className="file">ZXP</mark> можно установить
@@ -1280,7 +1280,7 @@ const PrInstallProblems: React.FC = () => {
               </NestedDetailsSummary>
               <NestedDetailsSummary
                 anchor="zxp"
-                title="Расширения (ZXP)"
+                title="Расширения CEP (ZXP)"
               >
                 <p>
                   Расширения формата <mark className="file">ZXP</mark> можно установить

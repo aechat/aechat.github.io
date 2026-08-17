@@ -300,7 +300,7 @@ const PsInstallProblems: React.FC = () => {
               </NestedDetailsSummary>
               <NestedDetailsSummary
                 anchor="zxp"
-                title="Расширения (ZXP)"
+                title="Расширения CEP (ZXP)"
               >
                 <p>
                   Если в архиве находится файл <mark className="file">ZXP</mark>, то такие
@@ -588,7 +588,7 @@ const PsInstallProblems: React.FC = () => {
               </NestedDetailsSummary>
               <NestedDetailsSummary
                 anchor="zxp"
-                title="Расширения (ZXP)"
+                title="Расширения CEP (ZXP)"
               >
                 <p>
                   Расширения формата <mark className="file">ZXP</mark> можно установить
