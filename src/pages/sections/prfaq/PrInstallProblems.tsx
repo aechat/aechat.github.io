@@ -647,6 +647,112 @@ const PrInstallProblems: React.FC = () => {
                 </ul>
               </NestedDetailsSummary>
               <NestedDetailsSummary
+                anchor="uxp"
+                title="Расширения UXP (CCX)"
+              >
+                <p>
+                  Расширения формата <mark className="file">UXP</mark> можно установить с
+                  помощью ручной распаковкой расширения в нужную директорию. После
+                  корректной установки установленные расширения появятся в{" "}
+                  <mark className="select">«Window» → «UXP Plugins»</mark> и будут
+                  работать в своём новом окне, который вы можете прикрепить в своё рабочее
+                  пространство.
+                </p>
+                <p>
+                  Несмотря на то, что большинство авторов расширений рекомендуют
+                  устанавливать расширение через{" "}
+                  <mark className="app">ZXP Installer</mark> от{" "}
+                  <mark className="web">aescripts</mark>, он требует установленного{" "}
+                  <mark className="app">Adobe Creative Cloud</mark>. Если вы используете
+                  «народную» версию <mark className="app">Adobe Premiere</mark> без него,
+                  то скорее всего при его использовании вы столкнётесь с ошибкой
+                  установки, например{" "}
+                  <mark className="warning">«Unknown UPIA error»</mark>.
+                </p>
+                <Addition type="info">
+                  <ul>
+                    <li>
+                      Расширения такого формата обычно являются кросс-платформенными: они
+                      работают как в Windows, так и в macOS.
+                    </li>
+                    <li>
+                      Прежде чем устанавливать расширение такого формата — убедитесь в
+                      том, что используемая вами версия{" "}
+                      <mark className="app">Adobe Premiere</mark> его поддерживает, иначе
+                      он может не появиться в списке расширений.
+                    </li>
+                    <li>
+                      Иногда в архиве может быть уже распакованный{" "}
+                      <mark className="file">UXP</mark>. Это можно понять по наличию{" "}
+                      <mark className="file">index.html</mark> и{" "}
+                      <mark className="file">manifest.json</mark> внутри папки с названием
+                      расширения.
+                    </li>
+                  </ul>
+                </Addition>
+                <p>
+                  Для ручной установки расширений формата{" "}
+                  <mark className="file">UXP</mark>, выполните следующие шаги.
+                </p>
+                <ul>
+                  <li>
+                    <p>
+                      Переименуйте файл <mark className="file">CCX</mark> в{" "}
+                      <mark className="file">ZIP</mark> и распакуйте его как обычный
+                      архив.
+                    </p>
+                    <Addition type="info">
+                      Прежде чем менять расширение файла, убедитесь, что в{" "}
+                      <mark className="app">Проводнике</mark> включено{" "}
+                      <a href="https://remontka.pro/show-file-extensions-windows-11/">
+                        отображение расширений файлов
+                      </a>
+                      .
+                    </Addition>
+                  </li>
+                  <li>
+                    <p>
+                      Переместите содержимое распакованного архива в папку{" "}
+                      <mark className="path">
+                        ~/Library/Application Support/Adobe/UXP/Plugins
+                      </mark>
+                      .
+                    </p>
+                    <Addition type="warning">
+                      Не допускайте лишних вложенностей папок и не распаковывайте
+                      содержимое архива без отдельной папки для расширения. Путь до{" "}
+                      <mark className="file">manifest.json</mark> должно распологаться
+                      примерно так —{" "}
+                      <mark className="path">
+                        ~/Library/Application Support/Adobe/UXP/Plugins/ru.aechat.prfaq
+                      </mark>
+                      , где вместо <mark className="path">ru.aechat.prfaq</mark> может
+                      быть любое название папки с расширением на латинице.
+                    </Addition>
+                  </li>
+                  <li>
+                    <p>
+                      Запустите <mark className="app">Adobe Premiere</mark> и проверьте
+                      работоспособность расширения.
+                    </p>
+                    <p>
+                      Если расширение не появилось в списке и вы уверены, что распаковали
+                      архив верно — попробуйте включить режим разработчика в настройках
+                      программы. Для этого перейдите в{" "}
+                      <mark className="select">«Edit» → «Preferences» → «Plugins»</mark>,
+                      включите чекбокс у{" "}
+                      <mark className="select">«Enable developer mode»</mark> и
+                      перезапустите <mark className="app">Adobe Premiere</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Включение режима разработчика для установки сторонних расширений"
+                      src="premiere/preferences-plugins-enable-developer-mode.png"
+                      type="image"
+                    />
+                  </li>
+                </ul>
+              </NestedDetailsSummary>
+              <NestedDetailsSummary
                 anchor="vst"
                 title="Аудиоплагины (VST, VST3)"
               >
@@ -1326,6 +1432,122 @@ const PrInstallProblems: React.FC = () => {
                         </Addition>
                       </li>
                     </ul>
+                  </li>
+                </ul>
+              </NestedDetailsSummary>
+              <NestedDetailsSummary
+                anchor="uxp"
+                title="Расширения UXP (CCX)"
+              >
+                <p>
+                  Расширения формата <mark className="file">UXP</mark> можно установить с
+                  помощью ручной распаковкой расширения в нужную директорию. После
+                  корректной установки установленные расширения появятся в{" "}
+                  <mark className="select">«Window» → «UXP Plugins»</mark> и будут
+                  работать в своём новом окне, который вы можете прикрепить в своё рабочее
+                  пространство.
+                </p>
+                <p>
+                  Несмотря на то, что большинство авторов расширений рекомендуют
+                  устанавливать расширение через{" "}
+                  <mark className="app">ZXP Installer</mark> от{" "}
+                  <mark className="web">aescripts</mark>, он требует установленного{" "}
+                  <mark className="app">Adobe Creative Cloud</mark>. Если вы используете
+                  «народную» версию <mark className="app">Adobe Premiere</mark> без него,
+                  то скорее всего при его использовании вы столкнётесь с ошибкой
+                  установки, например{" "}
+                  <mark className="warning">«Unknown UPIA error»</mark>.
+                </p>
+                <Addition type="info">
+                  <ul>
+                    <li>
+                      Расширения такого формата обычно являются кросс-платформенными: они
+                      работают как в Windows, так и в macOS.
+                    </li>
+                    <li>
+                      Прежде чем устанавливать расширение такого формата — убедитесь в
+                      том, что используемая вами версия{" "}
+                      <mark className="app">Adobe Premiere</mark> его поддерживает, иначе
+                      он может не появиться в списке расширений.
+                    </li>
+                    <li>
+                      Иногда в архиве может быть уже распакованный{" "}
+                      <mark className="file">UXP</mark>. Это можно понять по наличию{" "}
+                      <mark className="file">index.html</mark> и{" "}
+                      <mark className="file">manifest.json</mark> внутри папки с названием
+                      расширения.
+                    </li>
+                  </ul>
+                </Addition>
+                <p>
+                  Для ручной установки расширений формата{" "}
+                  <mark className="file">UXP</mark>, выполните следующие шаги.
+                </p>
+                <ul>
+                  <li>
+                    <p>
+                      Переименуйте файл <mark className="file">CCX</mark> в{" "}
+                      <mark className="file">ZIP</mark> и распакуйте его как обычный
+                      архив.
+                    </p>
+                    <Addition type="info">
+                      Прежде чем менять расширение файла, убедитесь, что в{" "}
+                      <mark className="app">Проводнике</mark> включено{" "}
+                      <a href="https://remontka.pro/show-file-extensions-windows-11/">
+                        отображение расширений файлов
+                      </a>
+                      .
+                    </Addition>
+                  </li>
+                  <li>
+                    <p>
+                      Переместите содержимое распакованного архива в папку{" "}
+                      <mark className="path">
+                        C:\Program Files\Common Files\Adobe\UXP\PlugIns\External
+                      </mark>
+                      .
+                    </p>
+                    <Addition type="info">
+                      Если папка отсутствует — создайте её вручную через контекстное меню
+                      проводника или с помощью команды{" "}
+                      <mark className="code">
+                        mkdir &quot;C:\Program Files\Common
+                        Files\Adobe\UXP\PlugIns\External&quot;
+                      </mark>{" "}
+                      от имени администратора.
+                    </Addition>
+                    <Addition type="warning">
+                      Не допускайте лишних вложенностей папок и не распаковывайте
+                      содержимое архива без отдельной папки для расширения. Путь до{" "}
+                      <mark className="file">manifest.json</mark> должно распологаться
+                      примерно так —{" "}
+                      <mark className="path">
+                        C:\Program Files\Common
+                        Files\Adobe\UXP\PlugIns\External\ru.aechat.prfaq
+                      </mark>
+                      , где вместо <mark className="path">ru.aechat.prfaq</mark> может
+                      быть любое название папки с расширением на латинице.
+                    </Addition>
+                  </li>
+                  <li>
+                    <p>
+                      Запустите <mark className="app">Adobe Premiere</mark> и проверьте
+                      работоспособность расширения.
+                    </p>
+                    <p>
+                      Если расширение не появилось в списке и вы уверены, что распаковали
+                      архив верно — попробуйте включить режим разработчика в настройках
+                      программы. Для этого перейдите в{" "}
+                      <mark className="select">«Edit» → «Preferences» → «Plugins»</mark>,
+                      включите чекбокс у{" "}
+                      <mark className="select">«Enable developer mode»</mark> и
+                      перезапустите <mark className="app">Adobe Premiere</mark>.
+                    </p>
+                    <ArticleMedia
+                      caption="Включение режима разработчика для установки сторонних расширений"
+                      src="premiere/preferences-plugins-enable-developer-mode.png"
+                      type="image"
+                    />
                   </li>
                 </ul>
               </NestedDetailsSummary>
