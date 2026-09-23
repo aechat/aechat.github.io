@@ -256,8 +256,7 @@ const PsErrors: React.FC = () => {
                   <p>
                     На второй вкладке укажите путь к исполняемому файлу программы —{" "}
                     <mark className="path">
-                      C:\Program Files\Adobe\Adobe Photoshop 20XX\Support
-                      Files\Photoshop.exe
+                      C:\Program Files\Adobe\Adobe Photoshop 20XX\Photoshop.exe
                     </mark>{" "}
                     и снова нажмите <mark className="select">«Далее»</mark>.
                   </p>
