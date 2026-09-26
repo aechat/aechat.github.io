@@ -68,12 +68,12 @@
 
     &--image {
       outline: $stroke-1 solid var(--color-article-content-border);
-      max-height: 60vh;
+      max-height: 80vh;
     }
 
     &--video {
       outline: $stroke-1 solid var(--color-article-content-border);
-      max-height: 55dvh;
+      max-height: 65vh;
     }
   }
 
@@ -84,7 +84,7 @@
     border-radius: $roundness;
     width: 100%;
     height: auto;
-    max-height: 55dvh;
+    max-height: 65vh;
     aspect-ratio: 16 / 9;
   }
 

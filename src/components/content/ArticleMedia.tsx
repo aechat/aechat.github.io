@@ -126,11 +126,11 @@ const getMediaWidth = (
   metadata: MediaMetadata | undefined
 ) => {
   if (type === "image") {
-    return getConstrainedMediaWidth(metadata, "60vh");
+    return getConstrainedMediaWidth(metadata, "80vh");
   }
 
   if (type === "video") {
-    return getConstrainedMediaWidth(metadata, "55dvh");
+    return getConstrainedMediaWidth(metadata, "65vh");
   }
 
   return metadata ? `${metadata.width}px` : "100%";
