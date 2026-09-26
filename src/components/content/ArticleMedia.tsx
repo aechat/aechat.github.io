@@ -24,6 +24,7 @@ interface BaseMediaProperties {
 
 interface ImageMediaProperties extends BaseMediaProperties {
   caption: string;
+  density?: number;
   height?: number | string;
   type: "image";
   width?: number | string;
@@ -32,6 +33,7 @@ interface ImageMediaProperties extends BaseMediaProperties {
 interface VideoMediaProperties extends BaseMediaProperties {
   autoPlay?: boolean;
   caption: string;
+  density?: number;
   height?: number | string;
   loop?: boolean;
   type: "video";
@@ -110,38 +112,66 @@ const getMetadata = (source: string) => {
   return mediaMetadataMap[key];
 };
 
+const getDensity = (source: string, density?: number): number => {
+  if (density && density > 0) {
+    return density;
+  }
+
+  if (/@2x\.[a-z0-9]+$/i.test(source)) {
+    return 2;
+  }
+
+  return 1;
+};
+
 const getConstrainedMediaWidth = (
   metadata: MediaMetadata | undefined,
-  maxHeight: string
+  maxHeight: string,
+  density = 1
 ) => {
   if (!metadata) {
     return "100%";
   }
 
-  return `min(${metadata.width}px, calc(${maxHeight} * ${metadata.width} / ${metadata.height}))`;
+  const logicalWidth = Math.round(metadata.width / density);
+
+  const logicalHeight = Math.round(metadata.height / density);
+
+  return `min(${logicalWidth}px, calc(${maxHeight} * ${logicalWidth} / ${logicalHeight}))`;
 };
 
 const getMediaWidth = (
   type: ArticleMediaProperties["type"],
-  metadata: MediaMetadata | undefined
+  metadata: MediaMetadata | undefined,
+  density = 1,
+  customWidth?: number | string
 ) => {
+  if (customWidth !== undefined) {
+    return typeof customWidth === "number" ? `${customWidth}px` : customWidth;
+  }
+
   if (type === "image") {
-    return getConstrainedMediaWidth(metadata, "80vh");
+    return getConstrainedMediaWidth(metadata, "80vh", density);
   }
 
   if (type === "video") {
-    return getConstrainedMediaWidth(metadata, "65vh");
+    return getConstrainedMediaWidth(metadata, "65vh", density);
   }
 
-  return metadata ? `${metadata.width}px` : "100%";
+  return metadata ? `${Math.round(metadata.width / density)}px` : "100%";
 };
 
-const getMediaLayout = (type: ArticleMediaProperties["type"], source: string) => {
+const getMediaLayout = (
+  type: ArticleMediaProperties["type"],
+  source: string,
+  density = 1,
+  customWidth?: number | string
+) => {
   const metadata = getMetadata(source);
 
   return {
     aspectRatio: metadata ? `${metadata.width}/${metadata.height}` : "16/9",
-    mediaWidth: getMediaWidth(type, metadata),
+    mediaWidth: getMediaWidth(type, metadata, density, customWidth),
     metadata,
   };
 };
@@ -461,7 +491,16 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
   };
 
   const renderContent = () => {
-    const {aspectRatio, mediaWidth, metadata} = getMediaLayout(type, src);
+    const density = type === "youtube" ? 1 : getDensity(src, properties.density);
+
+    const customWidth = properties.width;
+
+    const {aspectRatio, mediaWidth, metadata} = getMediaLayout(
+      type,
+      src,
+      density,
+      customWidth
+    );
 
     if (!hasBeenOpened) {
       return (
@@ -474,17 +513,21 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
 
     const resolvedSource = getMediaSource(src);
 
+    const displayWidth = metadata ? Math.round(metadata.width / density) : undefined;
+
+    const displayHeight = metadata ? Math.round(metadata.height / density) : undefined;
+
     switch (type) {
       case "image": {
         return (
           <img
             alt={caption}
             className={`${styles["media-content"]} ${styles["media-content--image"]}`}
-            height={metadata?.height}
+            height={displayHeight}
             loading="lazy"
             src={resolvedSource}
             style={{aspectRatio, cursor: "zoom-in", width: mediaWidth}}
-            width={metadata?.width}
+            width={displayWidth}
             onClick={() => {
               triggerHaptic("soft");
               setIsViewerOpen(true);
@@ -500,11 +543,11 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
             playsInline
             autoPlay={properties.autoPlay}
             className={`${styles["media-content"]} ${styles["media-content--video"]}`}
-            height={metadata?.height}
+            height={displayHeight}
             loop={properties.loop}
             src={resolvedSource}
             style={{aspectRatio, width: mediaWidth}}
-            width={metadata?.width}
+            width={displayWidth}
           />
         );
       }
