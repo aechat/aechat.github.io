@@ -962,9 +962,9 @@ const Links = () => {
                 name="Чёрный список кино индустрии"
               />
               <LinkCard
-                href="https://t.me/AEnedozakaz"
+                href="https://t.me/blk1st_bot"
                 icon={<BlockRounded />}
-                name="AEНедозаказчики"
+                name="BLKLST"
               />
               <LinkCard
                 href="https://t.me/Brickspacer_blacklist"
