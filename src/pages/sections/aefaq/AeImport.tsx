@@ -1906,7 +1906,8 @@ const AeImport: React.FC = () => {
         <Addition type="info">
           Большинство стандартных анимированных эмодзи можно найти в различных
           стикер-паках, например{" "}
-          <a href="https://t.me/addstickers/AnimatedEmojies">здесь</a>.
+          <a href="https://t.me/addstickers/AnimatedEmojies">здесь</a> или{" "}
+          <a href="https://github.com/saeedtahmtan/telemoji">здесь</a>.
         </Addition>
         <ArticleMedia
           caption="Telegram"
