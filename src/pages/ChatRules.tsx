@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect} from "react";
+import React from "react";
 
-import {Divider, message, Tooltip} from "antd";
+import {Divider, Tooltip} from "antd";
 
 import {Helmet} from "react-helmet-async";
 
@@ -20,19 +20,9 @@ import {CopyButton} from "../components/ui/CopyButton";
 
 import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useHashAnchorNavigation} from "../hooks/useHashAnchorNavigation";
 
-const constants = {
-  PADDING: {
-    MAX: 14,
-    MIN: 10,
-    SCREEN: {
-      MAX: 768,
-      MIN: 320,
-    },
-  },
-  SCROLL_DELAY: 300,
-} as const;
+import {usePageLoad} from "../hooks/usePageLoad";
 
 const ChatRules = () => {
   const {hash} = useLocation();
@@ -40,48 +30,7 @@ const ChatRules = () => {
   usePageLoad();
   useCopyToClipboard();
 
-  const handleCopyAnchor = useCallback((anchorId: string) => {
-    const anchor = `${globalThis.location.origin}${globalThis.location.pathname}#${anchorId}`;
-
-    navigator.clipboard.writeText(anchor);
-    message.success(`Ссылка на раздел скопирована в буфер обмена`);
-  }, []);
-
-  useEffect(() => {
-    if (hash) {
-      setTimeout(() => {
-        const element = document.querySelector(hash);
-
-        if (element) {
-          const headerHeight = document.querySelector("header")?.offsetHeight ?? 0;
-
-          const padding = Math.min(
-            constants.PADDING.MIN +
-              (constants.PADDING.MAX - constants.PADDING.MIN) *
-                ((window.innerWidth - constants.PADDING.SCREEN.MIN) /
-                  (constants.PADDING.SCREEN.MAX - constants.PADDING.SCREEN.MIN)),
-            constants.PADDING.MAX
-          );
-
-          const y =
-            element.getBoundingClientRect().top +
-            window.pageYOffset -
-            headerHeight -
-            padding;
-
-          window.scrollTo({behavior: "smooth", top: y});
-
-          setTimeout(() => {
-            history.replaceState(
-              undefined,
-              "",
-              globalThis.location.pathname + globalThis.location.search
-            );
-          }, 5000);
-        }
-      }, constants.SCROLL_DELAY);
-    }
-  }, [hash]);
+  const {handleCopyAnchor} = useHashAnchorNavigation(hash);
 
   return (
     <div>
