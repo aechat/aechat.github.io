@@ -111,6 +111,8 @@ const Footer: React.FC<FooterProperties> = ({initialYear, title}) => {
 
     const folderPath = PATH_MAP[path];
 
+    const abortController = new AbortController();
+
     const getLastCommit = async () => {
       setIsLoading(true);
       setError(undefined);
@@ -119,7 +121,7 @@ const Footer: React.FC<FooterProperties> = ({initialYear, title}) => {
       const url = `https://api.github.com/repos/${OWNER}/${REPO}/commits?path=${folderPath}&sha=${BRANCH}`;
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {signal: abortController.signal});
 
         if (!response.ok) {
           throw new Error(`Ошибка сети: ${response.status}`);
@@ -155,17 +157,27 @@ const Footer: React.FC<FooterProperties> = ({initialYear, title}) => {
           url: lastMeaningfulCommit.html_url,
         });
       } catch (error_) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
         const errorMessage =
           error_ instanceof Error ? error_.message : "Произошла неизвестная ошибка";
 
         setError("Индикатор свежести временно недоступен.");
         console.error(`Ошибка при получении данных с GitHub: ${errorMessage}`);
       } finally {
-        setIsLoading(false);
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     getLastCommit();
+
+    return () => {
+      abortController.abort();
+    };
   }, [path, isVisible]);
 
   const renderCommitInfo = () => {

@@ -579,14 +579,35 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   useEffect(() => {
     if (globalThis.window === undefined) return;
 
-    const globalWithFlag = globalThis as typeof globalThis & {
-      detailsSummaryScrollListenerAttached?: boolean;
+    const globalWithState = globalThis as typeof globalThis & {
+      detailsSummaryScrollListener?: () => void;
+      detailsSummaryScrollSubscriberCount?: number;
     };
 
-    if (!globalWithFlag.detailsSummaryScrollListenerAttached) {
+    const currentCount = globalWithState.detailsSummaryScrollSubscriberCount ?? 0;
+
+    globalWithState.detailsSummaryScrollSubscriberCount = currentCount + 1;
+
+    if (currentCount === 0) {
+      globalWithState.detailsSummaryScrollListener = updateDimmingEffect;
       window.addEventListener("scroll", updateDimmingEffect, {passive: true});
-      globalWithFlag.detailsSummaryScrollListenerAttached = true;
     }
+
+    return () => {
+      const remainingCount =
+        (globalWithState.detailsSummaryScrollSubscriberCount ?? 1) - 1;
+
+      globalWithState.detailsSummaryScrollSubscriberCount = Math.max(0, remainingCount);
+
+      if (remainingCount === 0 && globalWithState.detailsSummaryScrollListener) {
+        window.removeEventListener(
+          "scroll",
+          globalWithState.detailsSummaryScrollListener
+        );
+
+        globalWithState.detailsSummaryScrollListener = undefined;
+      }
+    };
   }, [updateDimmingEffect]);
 
   useEffect(() => {

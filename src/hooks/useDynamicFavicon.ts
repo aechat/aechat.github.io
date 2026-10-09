@@ -6,6 +6,8 @@ const useDynamicFavicon = (svgContent: string) => {
       return;
     }
 
+    let previousUrl: string | undefined;
+
     const getAccentColor = () => {
       const accentHue = getComputedStyle(document.documentElement).getPropertyValue(
         "--accent-hue"
@@ -22,7 +24,13 @@ const useDynamicFavicon = (svgContent: string) => {
 
         const svgBlob = new Blob([themedSvg], {type: "image/svg+xml"});
 
+        if (previousUrl) {
+          URL.revokeObjectURL(previousUrl);
+        }
+
         const url = URL.createObjectURL(svgBlob);
+
+        previousUrl = url;
 
         let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
 
@@ -49,6 +57,10 @@ const useDynamicFavicon = (svgContent: string) => {
 
     return () => {
       globalThis.removeEventListener("accentHueChanged", handleAccentHueChange);
+
+      if (previousUrl) {
+        URL.revokeObjectURL(previousUrl);
+      }
     };
   }, [svgContent]);
 };
