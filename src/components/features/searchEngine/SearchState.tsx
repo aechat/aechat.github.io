@@ -13,6 +13,8 @@ import {message} from "antd";
 
 import {useLocation} from "react-router-dom";
 
+import {useCloseAllModals} from "../../../hooks/useCloseAllModals";
+
 import {resolveDetailsByAnchor} from "../../../utilities/anchorResolvers";
 
 import {isMobileDevice} from "../../../utilities/browserDetection";
@@ -77,15 +79,7 @@ export const SearchProvider: React.FC<{
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
-  useEffect(() => {
-    const handleCloseAll = () => closeModal();
-
-    globalThis.window?.addEventListener("close-all-modals", handleCloseAll);
-
-    return () => {
-      globalThis.window?.removeEventListener("close-all-modals", handleCloseAll);
-    };
-  }, [closeModal]);
+  useCloseAllModals(closeModal);
 
   const saveHistoryToStorage = useCallback(
     (history: string[]) => {

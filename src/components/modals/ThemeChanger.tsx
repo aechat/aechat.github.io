@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -19,6 +20,8 @@ import {
 import {Modal, Slider, Switch, Tooltip} from "antd";
 
 import {RemoveScroll} from "react-remove-scroll";
+
+import {useCloseAllModals} from "../../hooks/useCloseAllModals";
 
 import {useRipple} from "../../hooks/useRipple";
 
@@ -276,17 +279,9 @@ export const ThemeToggleButton: React.FC<ThemeToggleButtonProperties> = ({classN
 
   const openModal = () => setIsModalOpen(true);
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
 
-  useEffect(() => {
-    const handleCloseAll = () => closeModal();
-
-    globalThis.window?.addEventListener("close-all-modals", handleCloseAll);
-
-    return () => {
-      globalThis.window?.removeEventListener("close-all-modals", handleCloseAll);
-    };
-  }, []);
+  useCloseAllModals(closeModal);
 
   const ripple = useRipple<HTMLButtonElement>();
 

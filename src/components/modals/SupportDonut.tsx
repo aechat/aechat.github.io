@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useState} from "react";
 
 import {CloseRounded, CoffeeRounded} from "@mui/icons-material";
 
 import {message, Modal} from "antd";
 
 import {RemoveScroll} from "react-remove-scroll";
+
+import {useCloseAllModals} from "../../hooks/useCloseAllModals";
 
 import {useRipple} from "../../hooks/useRipple";
 
@@ -45,19 +47,13 @@ const SupportDonut: React.FC<SupportDonutProperties> = ({className, wide}) => {
 
   const closeYoomoneyModal = () => setIsYoomoneyModalOpen(false);
 
-  useEffect(() => {
-    const handleCloseAll = () => {
-      setIsDonateModalOpen(false);
-      setIsSberModalOpen(false);
-      setIsYoomoneyModalOpen(false);
-    };
-
-    globalThis.window?.addEventListener("close-all-modals", handleCloseAll);
-
-    return () => {
-      globalThis.window?.removeEventListener("close-all-modals", handleCloseAll);
-    };
+  const handleCloseAll = useCallback(() => {
+    setIsDonateModalOpen(false);
+    setIsSberModalOpen(false);
+    setIsYoomoneyModalOpen(false);
   }, []);
+
+  useCloseAllModals(handleCloseAll);
 
   const ripple = useRipple<HTMLButtonElement>();
 
