@@ -463,6 +463,11 @@ const AeInstallProblems: React.FC = () => {
                       <mark className="select">«Install»</mark> и дождитесь окончания
                       установки.
                     </p>
+                    <Addition type="info">
+                      Если у вас имеется уже распакованный{" "}
+                      <mark className="file">ZXP</mark> — перейдите к альтернативному
+                      способу установки без <mark className="app">ZXP Installer</mark>.
+                    </Addition>
                     <Addition type="danger">
                       <ul>
                         <li>
@@ -498,13 +503,19 @@ const AeInstallProblems: React.FC = () => {
                     </p>
                     <ul>
                       <li>
-                        Переименуйте файл <mark className="file">ZXP</mark> в{" "}
-                        <mark className="file">ZIP</mark> и распакуйте его как обычный
-                        архив.
+                        <p>
+                          Переименуйте файл <mark className="file">ZXP</mark> в{" "}
+                          <mark className="file">ZIP</mark> и распакуйте его как обычный
+                          архив.
+                        </p>
+                        <Addition type="info">
+                          Если у вас уже имеется архив или папка с распакованным{" "}
+                          <mark className="file">ZXP</mark> — пропустите этот пункт.
+                        </Addition>
                       </li>
                       <li>
                         <p>
-                          Переместите содержимое распакованного архива в папку{" "}
+                          Переместите содержимое распакованного расширения в папку{" "}
                           <mark className="path">
                             /Library/Application Support/Adobe/CEP/extensions
                           </mark>
@@ -514,8 +525,21 @@ const AeInstallProblems: React.FC = () => {
                           </a>
                         </p>
                         <Addition type="info">
-                          Если такой папки нет — создайте её вручную через контекстное
-                          меню <mark className="app">Finder</mark>.
+                          Если данная папка отсутствует — создайте её вручную через
+                          контекстное меню файлового менеджера.
+                        </Addition>
+                        <Addition type="warning">
+                          Не допускайте лишних вложенностей папок и не распаковывайте
+                          содержимое архива без отдельной папки для расширения. Путь до
+                          папок <mark className="path">CSXS</mark> и{" "}
+                          <mark className="path">META-INF</mark> должен располагаться
+                          примерно так —{" "}
+                          <mark className="path">
+                            /Library/Application
+                            Support/Adobe/CEP/extensions/ru.aechat.aefaq
+                          </mark>
+                          , где вместо <mark className="path">ru.aechat.aefaq</mark> может
+                          быть любое название папки с расширением на латинице.
                         </Addition>
                       </li>
                       <li>
@@ -590,6 +614,12 @@ const AeInstallProblems: React.FC = () => {
                             </li>
                           </ul>
                         </Addition>
+                      </li>
+                      <li>
+                        Откройте <mark className="app">Adobe After Effects</mark>,
+                        выберите установленное вами расширение в{" "}
+                        <mark className="select">«Window» → «Extensions»</mark> и
+                        проверьте его работоспособность.
                       </li>
                     </ul>
                   </li>
@@ -1112,6 +1142,11 @@ const AeInstallProblems: React.FC = () => {
                       <mark className="select">«Install»</mark> и дождитесь окончания
                       установки.
                     </p>
+                    <Addition type="info">
+                      Если у вас имеется уже распакованный{" "}
+                      <mark className="file">ZXP</mark> — перейдите к альтернативному
+                      способу установки без <mark className="app">ZXP Installer</mark>.
+                    </Addition>
                     <Addition type="danger">
                       <ul>
                         <li>
@@ -1153,17 +1188,25 @@ const AeInstallProblems: React.FC = () => {
                           архив.
                         </p>
                         <Addition type="info">
-                          Прежде чем менять расширение файла, убедитесь, что в{" "}
-                          <mark className="app">Проводнике</mark> включено{" "}
-                          <a href="https://remontka.pro/show-file-extensions-windows-11/">
-                            отображение расширений файлов
-                          </a>
-                          .
+                          <ul>
+                            <li>
+                              Если у вас уже имеется архив или папка с распакованным{" "}
+                              <mark className="file">ZXP</mark> — пропустите этот пункт.
+                            </li>
+                            <li>
+                              Прежде чем менять расширение файла, убедитесь, что в{" "}
+                              <mark className="app">Проводнике</mark> включено{" "}
+                              <a href="https://remontka.pro/show-file-extensions-windows-11/">
+                                отображение расширений файлов
+                              </a>
+                              .
+                            </li>
+                          </ul>
                         </Addition>
                       </li>
                       <li>
                         <p>
-                          Переместите содержимое распакованного архива в папку{" "}
+                          Переместите содержимое распакованного расширения в папку{" "}
                           <mark className="path">
                             C:\Program Files (x86)\Common Files\Adobe\CEP\extensions
                           </mark>
@@ -1172,8 +1215,8 @@ const AeInstallProblems: React.FC = () => {
                         <Addition type="info">
                           <ul>
                             <li>
-                              Если папка отсутствует — создайте её вручную через
-                              контекстное меню проводника или с помощью команды{" "}
+                              Если данная папка отсутствует — создайте её вручную через
+                              контекстное меню файлового менеджера или с помощью команды{" "}
                               <mark className="code">
                                 mkdir &quot;C:\Program Files (x86)\Common
                                 Files\Adobe\CEP\extensions&quot;
@@ -1184,8 +1227,23 @@ const AeInstallProblems: React.FC = () => {
                               Если у вас нет прав администратора, вы можете распаковать
                               файлы в папку{" "}
                               <mark className="path">%APPDATA%\Adobe\CEP\extensions</mark>
+                              . В таком случае установленны в данную директорию расширения
+                              будут отображаться только для текущего пользователя.
                             </li>
                           </ul>
+                        </Addition>
+                        <Addition type="warning">
+                          Не допускайте лишних вложенностей папок и не распаковывайте
+                          содержимое архива без отдельной папки для расширения. Путь до
+                          папок <mark className="path">CSXS</mark> и{" "}
+                          <mark className="path">META-INF</mark> должен располагаться
+                          примерно так —{" "}
+                          <mark className="path">
+                            C:\Program Files (x86)\Common
+                            Files\Adobe\CEP\extensions\ru.aechat.aefaq
+                          </mark>
+                          , где вместо <mark className="path">ru.aechat.aefaq</mark> может
+                          быть любое название папки с расширением на латинице.
                         </Addition>
                       </li>
                       <li>
@@ -1214,6 +1272,12 @@ const AeInstallProblems: React.FC = () => {
                             </li>
                           </ul>
                         </Addition>
+                      </li>
+                      <li>
+                        Откройте <mark className="app">Adobe After Effects</mark>,
+                        выберите установленное вами расширение в{" "}
+                        <mark className="select">«Window» → «Extensions»</mark> и
+                        проверьте его работоспособность.
                       </li>
                     </ul>
                   </li>
