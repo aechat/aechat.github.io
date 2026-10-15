@@ -19,6 +19,8 @@ interface Subtitle {
 const NotFound = () => {
   const audioReference = useRef<HTMLAudioElement | null>(null);
 
+  const videoReference = useRef<HTMLVideoElement | null>(null);
+
   const ripple = useRipple<HTMLButtonElement>();
 
   usePageLoad();
@@ -27,7 +29,20 @@ const NotFound = () => {
 
   const [currentSubtitle, setCurrentSubtitle] = useState<string>("Пустота");
 
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+
+  const hasStartedVideoReference = useRef(false);
+
+  const hasShownVideoReference = useRef(false);
+
+  const hasFadedOutReference = useRef(false);
+
   useEffect(() => {
+    if (videoReference.current) {
+      videoReference.current.defaultMuted = true;
+      videoReference.current.muted = true;
+    }
+
     audioReference.current = new Audio("/files/404.mp3");
 
     const fetchSubtitles = async () => {
@@ -54,10 +69,18 @@ const NotFound = () => {
 
     globalThis.addEventListener("click", handlePlayAudio);
 
+    const audioElement = audioReference.current;
+
+    const videoElement = videoReference.current;
+
     return () => {
-      if (audioReference.current) {
-        audioReference.current.pause();
-        audioReference.current.currentTime = 0;
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      }
+
+      if (videoElement) {
+        videoElement.pause();
       }
 
       globalThis.removeEventListener("click", handlePlayAudio);
@@ -65,34 +88,150 @@ const NotFound = () => {
   }, []);
 
   useEffect(() => {
-    const updateSubtitle = () => {
-      if (!audioReference.current) {
+    let animationFrameId: number | undefined;
+
+    const audioElement = audioReference.current;
+
+    if (!audioElement || subtitles.length === 0) {
+      return;
+    }
+
+    const firstSubtitle = subtitles[0];
+
+    const syncVideoPlayback = (
+      currentTime: number,
+      duration: number,
+      videoElement: HTMLVideoElement
+    ) => {
+      if (currentTime < firstSubtitle.start) {
+        hasStartedVideoReference.current = false;
+        hasShownVideoReference.current = false;
+        hasFadedOutReference.current = false;
+        setIsVideoVisible(false);
+
         return;
       }
 
-      const currentTime = audioReference.current.currentTime;
+      if (!hasStartedVideoReference.current) {
+        hasStartedVideoReference.current = true;
+        videoElement.currentTime = 0;
+
+        videoElement.play().catch((error) => {
+          console.error("Ошибка воспроизведения видео:", error);
+        });
+      }
+
+      const showVideo = () => {
+        if (hasShownVideoReference.current) {
+          return;
+        }
+
+        hasShownVideoReference.current = true;
+        setIsVideoVisible(true);
+      };
+
+      if (!hasShownVideoReference.current && currentTime >= firstSubtitle.end) {
+        if (!videoElement.paused && videoElement.currentTime > 0) {
+          showVideo();
+        } else {
+          videoElement.addEventListener("playing", showVideo, {once: true});
+        }
+      }
+
+      if (!hasShownVideoReference.current) {
+        return;
+      }
+
+      const isNearEnd =
+        Number.isFinite(duration) && duration > 0 && duration - currentTime <= 4;
+
+      if (isNearEnd) {
+        if (!hasFadedOutReference.current) {
+          hasFadedOutReference.current = true;
+          setIsVideoVisible(false);
+        }
+
+        return;
+      }
+
+      if (hasFadedOutReference.current && currentTime >= firstSubtitle.end) {
+        hasFadedOutReference.current = false;
+        setIsVideoVisible(true);
+      }
+    };
+
+    const syncSubtitles = () => {
+      const currentTime = audioElement.currentTime;
 
       const current = subtitles.find(
         (sub) => currentTime >= sub.start && currentTime <= sub.end
       );
 
-      if (current && current.text !== currentSubtitle) {
-        setCurrentSubtitle(current.text);
-      } else if (!current && currentSubtitle !== "Пустота") {
-        setCurrentSubtitle("Пустота");
+      const nextText = current ? current.text : "Пустота";
+
+      setCurrentSubtitle((previous) => (previous === nextText ? previous : nextText));
+
+      const videoElement = videoReference.current;
+
+      if (firstSubtitle && videoElement) {
+        syncVideoPlayback(currentTime, audioElement.duration, videoElement);
+      }
+
+      if (!audioElement.paused && !audioElement.ended) {
+        animationFrameId = requestAnimationFrame(syncSubtitles);
       }
     };
 
-    if (audioReference.current) {
-      audioReference.current.addEventListener("timeupdate", updateSubtitle);
+    const handlePlay = () => {
+      if (animationFrameId !== undefined) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      animationFrameId = requestAnimationFrame(syncSubtitles);
+
+      const videoElement = videoReference.current;
+
+      if (hasStartedVideoReference.current && videoElement && videoElement.paused) {
+        videoElement.play().catch(() => {});
+      }
+    };
+
+    const handleStop = () => {
+      if (animationFrameId !== undefined) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = undefined;
+      }
+
+      const videoElement = videoReference.current;
+
+      if (videoElement && !videoElement.paused) {
+        videoElement.pause();
+      }
+    };
+
+    const handleEnded = () => {
+      setIsVideoVisible(false);
+      handleStop();
+    };
+
+    audioElement.addEventListener("play", handlePlay);
+    audioElement.addEventListener("pause", handleStop);
+    audioElement.addEventListener("ended", handleEnded);
+
+    if (!audioElement.paused && !audioElement.ended) {
+      animationFrameId = requestAnimationFrame(syncSubtitles);
     }
 
     return () => {
-      if (audioReference.current) {
-        audioReference.current.removeEventListener("timeupdate", updateSubtitle);
+      if (animationFrameId !== undefined) {
+        cancelAnimationFrame(animationFrameId);
       }
+
+      audioElement.removeEventListener("play", handlePlay);
+      audioElement.removeEventListener("pause", handleStop);
+      audioElement.removeEventListener("ended", handleEnded);
     };
-  }, [subtitles, currentSubtitle]);
+  }, [subtitles]);
 
   return (
     <PageTransition className="not-found error">
@@ -157,6 +296,18 @@ const NotFound = () => {
         />
       </Helmet>
       <div className="error-container">
+        <div
+          className={`video-backtitle${isVideoVisible ? " video-backtitle--visible" : ""}`}
+        >
+          <video
+            ref={videoReference}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            src="/files/404.webm"
+          />
+        </div>
         <div className="error-backtitle">{currentSubtitle}</div>
         <div className={`${modalStyles["modal"]} error-modal`}>
           <div className={modalStyles["modal-header"]}>

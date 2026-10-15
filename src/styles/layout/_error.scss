@@ -1,5 +1,31 @@
 @use "../abstracts/mixins" as *;
 
+.video {
+  &-backtitle {
+    position: absolute;
+    transition: opacity 1.5s ease-in-out;
+    opacity: 0;
+    width: 100vh;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+
+    &--visible {
+      opacity: 0.1;
+    }
+
+    video {
+      filter: invert(0%);
+    }
+  }
+}
+
+.dark {
+  .video-backtitle video {
+    filter: invert(100%);
+  }
+}
+
 .error {
   &-modal {
     margin: 15px;
