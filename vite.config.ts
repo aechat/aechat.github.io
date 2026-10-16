@@ -23,7 +23,7 @@ export default defineConfig(({mode}) => {
   return {
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
+        "@": path.resolve(import.meta.dirname, "./src"),
       },
     },
     build: {
@@ -57,7 +57,7 @@ export default defineConfig(({mode}) => {
       {
         name: "generate-404-html",
         closeBundle: async () => {
-          const distributionPath = path.join(__dirname, "dist", "client");
+          const distributionPath = path.join(import.meta.dirname, "dist", "client");
 
           const indexPath = path.join(distributionPath, "index.html");
 
