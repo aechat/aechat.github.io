@@ -3276,6 +3276,21 @@ const PrInstallProblems: React.FC = () => {
                 src="legacy/red_giant_service_start_type.png"
                 type="image"
               />
+              <Divider>
+                Проверяем путь установки <mark className="app">Adobe Premiere</mark>
+              </Divider>
+              <p>
+                В некоторых случаях даже после успешной активации, эффекты из{" "}
+                <mark className="plugin">Maxon Red Giant</mark> могут не быть активированы
+                из-за расположения <mark className="app">Adobe Premiere</mark> в пути
+                установки не по умолчанию, например на диске{" "}
+                <mark className="path">D:\</mark>. Если вы действительно меняли путь
+                установки на другое расположение — переустановите{" "}
+                <mark className="app">Adobe Premiere</mark> в путь по умолчанию, а затем,
+                при необходимости, повторно установите{" "}
+                <mark className="plugin">Maxon Red Giant</mark> и активируйте его.{" "}
+                <a href="#non-stock-installation-path-problems">Почему так происходит?</a>
+              </p>
               <Divider />
               <p>
                 Если ни один из способов не помог и предупреждение появляется снова —
