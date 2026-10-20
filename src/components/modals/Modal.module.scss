@@ -116,8 +116,8 @@
   align-items: center;
   justify-content: space-between;
   text-transform: uppercase;
-  line-height: 1.25;
   text-wrap: balance;
+  line-height: 1.25;
 
   &-title {
     overflow: hidden;
@@ -215,12 +215,11 @@
 }
 
 .modal-content {
-  filter: $shadow-filter-overlay;
   outline: $stroke-1 solid var(--color-modal-border);
   border-radius: $roundness;
+  filter: $shadow-filter-overlay;
   background-color: var(--color-modal-background);
   width: 100%;
-  backdrop-filter: blur(4px);
 
   .flexible-links {
     border-radius: $roundness * 0.75;
@@ -302,9 +301,9 @@
   opacity: 0.5;
   max-width: 400px;
   text-align: right;
+  text-wrap: balance;
   line-height: 1.25;
   font-size: $font-size-text-xs;
-  text-wrap: balance;
 }
 
 .modal-support {
