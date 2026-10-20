@@ -43,6 +43,7 @@
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-react-swc": "^4.2.2",
+    "@yarnpkg/sdks": "^3.3.1",
     "autoprefixer": "^10.4.23",
     "cspell": "^9.7.0",
     "eslint": "^9.39.2",
@@ -91,6 +92,9 @@
     "maintenance:lowercase-tags": "node scripts/maintenance/lowercaseTags.js",
     "maintenance:remove-empty-lines": "node scripts/maintenance/removeEmptyLines.js",
     "maintenance:sort-imports": "node scripts/maintenance/sortImports.js"
+  },
+  "resolutions": {
+    "@yarnpkg/core/got": "npm:11.8.2"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix",

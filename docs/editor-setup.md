@@ -38,8 +38,10 @@ yarn format
 Для настройки корректного взаимодействия среды разработки VS Code с механизмом Yarn Plug'n'Play выполняется команда интеграции SDK:
 
 ```shell
-yarn dlx @yarnpkg/sdks vscode
+yarn sdks vscode
 ```
+
+Пакет `@yarnpkg/sdks` установлен в проекте как локальная зависимость, поэтому `yarn dlx` для его запуска больше не нужен.
 
 ## Запуск в Docker
 
