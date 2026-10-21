@@ -348,14 +348,15 @@ const PrErrors: React.FC = () => {
                 неудалённых служб могла остаться{" "}
                 <mark className="app">Adobe Genuine Software Integrity Service</mark>,
                 которая проверяет легальность использования программ и может вызывать окно
-                об отсутствии лицензии. Для решения проблемы достаточно{" "}
-                <a href="https://youtu.be/HDVvWyBKizo&t=75">отключить</a> эту службу или
-                полностью очистить систему от продуктов{" "}
+                об отсутствии лицензии. Для решения проблемы{" "}
+                <a href="https://youtu.be/HDVvWyBKizo&t=75">отключите</a> эту службу или
+                полностью очистите систему от продуктов{" "}
                 <mark className="company">Adobe</mark> с помощью{" "}
                 <a href="https://helpx.adobe.com/creative-cloud/apps/troubleshoot/diagnostics-repair-tools/run-creative-cloud-cleaner-tool.html">
                   Adobe Creative Cloud Cleaner Tool
                 </a>
-                .
+                , а затем повторите процедуру установки{" "}
+                <mark className="app">Adobe Premiere</mark>.
               </p>
             </>
           }
