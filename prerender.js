@@ -14,29 +14,86 @@ const {render} = await import("./dist/server/EntryServer.js");
 
 const routesToPrerender = ["/", "/aefaq", "/prfaq", "/psfaq", "/rules", "/links", "/404"];
 
+function extractMetadata(html, helmet) {
+  if (helmet) {
+    return {
+      headTags: `${helmet.meta.toString()}${helmet.link.toString()}`,
+      pageHtml: html,
+      titleTag: helmet.title.toString(),
+    };
+  }
+
+  let pageHtml = html;
+
+  let titleTag = "";
+
+  const titleMatch = pageHtml.match(/<title>([^<]*)<\/title>/);
+
+  if (titleMatch) {
+    titleTag = titleMatch[0];
+    pageHtml = pageHtml.replace(titleTag, "");
+  }
+
+  const allMeta = pageHtml.match(/<meta\b[^>]*\/?>/gi) || [];
+
+  const metaTags = allMeta.filter(
+    (tag) => tag.includes("name=") || tag.includes("property=")
+  );
+
+  const allLinks = pageHtml.match(/<link\b[^>]*\/?>/gi) || [];
+
+  const linkTags = allLinks.filter((tag) => tag.includes('rel="icon"'));
+
+  const headTags = [...metaTags, ...linkTags].join("");
+
+  for (const tag of [...metaTags, ...linkTags]) {
+    pageHtml = pageHtml.replace(tag, "");
+  }
+
+  return {
+    headTags,
+    pageHtml,
+    titleTag,
+  };
+}
+
+function applyPageTransforms(html, url) {
+  let transformed = html;
+
+  if (url.endsWith("404")) {
+    transformed = transformed.replace(
+      '<meta name="prerender-status-code" content="200">',
+      '<meta name="prerender-status-code" content="404">'
+    );
+  }
+
+  if (["/aefaq", "/prfaq", "/psfaq"].includes(url)) {
+    transformed = transformed.replaceAll("<details", "<details open");
+  }
+
+  return transformed;
+}
+
 (async () => {
   for (const url of routesToPrerender) {
     const context = {};
 
     const {html} = await render(url, context);
 
-    const {helmet} = context;
+    const {headTags, pageHtml, titleTag} = extractMetadata(html, context.helmet);
 
-    let htmlWithMeta = template
-      .replace(/<title>.*<\/title>/, `${helmet.title.toString()}`)
-      .replace(/<\/head>/, `${helmet.meta.toString()}${helmet.link.toString()}</head>`)
-      .replace("<!--app-html-->", html);
+    let htmlWithMeta = template;
 
-    if (url.endsWith("404")) {
-      htmlWithMeta = htmlWithMeta.replace(
-        '<meta name="prerender-status-code" content="200">',
-        '<meta name="prerender-status-code" content="404">'
-      );
+    if (titleTag) {
+      htmlWithMeta = htmlWithMeta.replace(/<title>.*<\/title>/, titleTag);
     }
 
-    if (["/aefaq", "/prfaq", "/psfaq"].includes(url)) {
-      htmlWithMeta = htmlWithMeta.replaceAll("<details", "<details open");
+    if (headTags) {
+      htmlWithMeta = htmlWithMeta.replace("</head>", `${headTags}</head>`);
     }
+
+    htmlWithMeta = htmlWithMeta.replace("<!--app-html-->", pageHtml);
+    htmlWithMeta = applyPageTransforms(htmlWithMeta, url);
 
     const filePath = toAbsolute(
       url === "/" ? "dist/client/index.html" : `dist/client${url}.html`
