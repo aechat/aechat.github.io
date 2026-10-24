@@ -119,6 +119,7 @@ const AeFromNewbies: React.FC = () => {
               <a href="https://www.youtube.com/@SmertimbaGraphics/videos">
                 Smertimba Graphics
               </a>
+              <a href="https://www.youtube.com/@stephanzammit">Stephan Zammit</a>
               <a href="https://www.youtube.com/@SonduckFilm/videos">SonduckFilm</a>
               <a href="https://youtube.com/@ollyspin/videos">olly</a>
               <a href="https://youtube.com/@mapal/videos">Mapal</a>
