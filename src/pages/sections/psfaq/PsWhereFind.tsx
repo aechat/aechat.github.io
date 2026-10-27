@@ -234,7 +234,6 @@ const PsWhereFind: React.FC = () => {
           графическими материалами.
         </p>
         <div className="flexible-links">
-          {" "}
           <a
             href="https://unsplash.com/"
             title="Unsplash"
@@ -264,12 +263,6 @@ const PsWhereFind: React.FC = () => {
             title="Gratisography"
           >
             Gratisography
-          </a>
-          <a
-            href="https://www.flickr.com/"
-            title="The British Library"
-          >
-            Flickr
           </a>
           <a
             href="https://rupixel.ru/"
@@ -408,7 +401,7 @@ const PsWhereFind: React.FC = () => {
               Чем больше букв вы впишете, тем точнее будет результат распознавания шрифта.
             </Addition>
             <ArticleMedia
-              caption="Изображения к которым нужно вписать букву"
+              caption="Изображения, к которым нужно вписать букву"
               src="legacy/likefont/psfaq_likefont_recognition.png"
               type="image"
             />

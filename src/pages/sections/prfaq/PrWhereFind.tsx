@@ -205,10 +205,10 @@ const PrWhereFind: React.FC = () => {
         title="Где найти и скачать стоковые видео для своих проектов?"
       >
         <p>
-          В Интернете существует множество онлайн-видеостоков, среди которых многие
-          предоставляют материалы с лицензией{" "}
-          <mark className="term">Creative Commons Zero (CC0)</mark>. Это означает, что вы
-          можете использовать их в своих коммерческих проектах, не указывая авторство.
+          Бесплатные стоковые видеоматериалы для монтажа чаще всего распространяются по
+          лицензии <mark className="copy">Creative Commons Zero</mark> или{" "}
+          <mark className="copy">Royalty-Free</mark>, не требующей обязательного указания
+          авторства в коммерческих работах. Ниже собраны интернет-ресурсы с футажами.
         </p>
         <div className="flexible-links">
           <a
@@ -346,7 +346,6 @@ const PrWhereFind: React.FC = () => {
           , можете воспользоваться списком сайтов с различными графическими материалами.
         </p>
         <div className="flexible-links">
-          {" "}
           <a
             href="https://unsplash.com/"
             title="Unsplash"
@@ -376,12 +375,6 @@ const PrWhereFind: React.FC = () => {
             title="Gratisography"
           >
             Gratisography
-          </a>
-          <a
-            href="https://www.flickr.com/"
-            title="The British Library"
-          >
-            Flickr
           </a>
           <a
             href="https://rupixel.ru/"
@@ -438,10 +431,10 @@ const PrWhereFind: React.FC = () => {
             Poly Haven
           </a>
           <a
-            href="https://cc0textures.com/"
-            title="CC0 Textures"
+            href="https://ambientcg.com/"
+            title="ambientCG"
           >
-            CC0 Textures
+            ambientCG
           </a>
           <a
             href="https://texturebox.com/"
@@ -459,7 +452,7 @@ const PrWhereFind: React.FC = () => {
       <DetailsSummary
         anchor="sfx-resources"
         tag="sfx, звук, музыка, саунд-дизайн, аудио, sound effects, royalty free music, audio library"
-        title="Где найти и скачать звуковые эффекты для своих композиций?"
+        title="Где найти и скачать звуковые эффекты для своих проектов?"
       >
         <p>
           В канале <a href="https://t.me/s/aetemp">AETemp</a> вы можете найти звуковые
