@@ -28,7 +28,8 @@ const PrErrors: React.FC = () => {
           </li>
           <li>
             Если в этом разделе нет вашей ошибки, попробуйте найти решение в интернете,
-            например, на профильных форумах.
+            например, на <a href="https://community.adobe.com/p/premiere">форуме Adobe</a>
+            .
           </li>
         </ul>
       </Addition>

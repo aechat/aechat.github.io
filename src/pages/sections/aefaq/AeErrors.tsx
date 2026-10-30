@@ -28,7 +28,8 @@ const AeErrors: React.FC = () => {
           </li>
           <li>
             Если в этом разделе нет вашей ошибки, попробуйте найти решение в интернете,
-            например, на профильных форумах.
+            например, на{" "}
+            <a href="https://community.adobe.com/after-effects-526">форуме Adobe</a>.
           </li>
         </ul>
       </Addition>
