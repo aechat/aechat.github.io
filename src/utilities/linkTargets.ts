@@ -237,9 +237,7 @@ export const resolveLinkTarget = (
 
   if (isHttpLink(href)) return {href, type: "external"};
 
-  if (href.startsWith("/") && !href.startsWith("#")) {
-    return {href, title: pageTitles[href] || anchor.textContent?.trim(), type: "page"};
-  }
-
-  return resolveAnchorTarget(anchor, href, currentTarget);
+  return href.startsWith("/") && !href.startsWith("#")
+    ? {href, title: pageTitles[href] || anchor.textContent?.trim(), type: "page"}
+    : resolveAnchorTarget(anchor, href, currentTarget);
 };

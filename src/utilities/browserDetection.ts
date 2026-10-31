@@ -21,17 +21,15 @@ type NavigatorWithUAData = Navigator & {
 const MOBILE_VIEWPORT_MAX_WIDTH = 768;
 
 const getUserAgent = (): string => {
-  if (globalThis.window === undefined || !globalThis.navigator) {
-    return "";
-  }
-
-  return globalThis.navigator.userAgent ?? "";
+  return typeof window === "undefined" || typeof navigator === "undefined"
+    ? ""
+    : (navigator.userAgent ?? "");
 };
 
 const getUserAgentLowerCase = (): string => getUserAgent().toLowerCase();
 
 export function getBrowserInfo(): BrowserInfo {
-  if (globalThis.window === undefined || !globalThis.navigator) {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
     return {isLegacy: false, name: "Unknown", version: 0};
   }
 
@@ -45,7 +43,7 @@ export function getBrowserInfo(): BrowserInfo {
 
   if (match) {
     name = "Chrome";
-    version = Number.parseInt(match[4], 10);
+    version = Math.trunc(Number(match[4]));
   }
 
   match = /(Firefox)\/((\d+)\.?(\d+)?\.?(\d+)?\.?(\d+)?)/.exec(ua);
@@ -56,28 +54,28 @@ export function getBrowserInfo(): BrowserInfo {
 
   if (match) {
     name = "Firefox";
-    version = Number.parseInt(match[2], 10);
+    version = Math.trunc(Number(match[2]));
   }
 
   match = /Version\/((\d+)(?:\.\d+){0,2})\s(Safari)\/((\d+)(?:\.\d+){0,2})/.exec(ua);
 
   if (match && !ua.includes("Chrome") && !ua.includes("Edge") && !ua.includes("Opera")) {
     name = "Safari";
-    version = Number.parseInt(match[2], 10);
+    version = Math.trunc(Number(match[2]));
   }
 
   match = /(Edg)\/((\d+)\.?(\d+)?\.?(\d+)?\.?(\d+)?)/.exec(ua);
 
   if (match) {
     name = "Edge";
-    version = Number.parseInt(match[2], 10);
+    version = Math.trunc(Number(match[2]));
   }
 
   match = /(Opera|OPR)\/((\d+)\.?(\d+)?\.?(\d+)?\.?(\d+)?)/.exec(ua);
 
   if (match) {
     name = "Opera";
-    version = Number.parseInt(match[2], 10);
+    version = Math.trunc(Number(match[2]));
   }
 
   const legacyThresholds: {[key: string]: number} = {
@@ -97,7 +95,7 @@ export function getBrowserInfo(): BrowserInfo {
 }
 
 export const getPlatformInfo = (): PlatformInfo => {
-  if (globalThis.window === undefined || !globalThis.navigator) {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
     return {
       isAndroid: false,
       isIOS: false,
@@ -117,8 +115,7 @@ export const getPlatformInfo = (): PlatformInfo => {
 
   const isWindows = /windows/.test(ua);
 
-  const uaDataMobile = (globalThis.navigator as NavigatorWithUAData).userAgentData
-    ?.mobile;
+  const uaDataMobile = (navigator as NavigatorWithUAData).userAgentData?.mobile;
 
   const isMobile =
     typeof uaDataMobile === "boolean"
@@ -129,31 +126,29 @@ export const getPlatformInfo = (): PlatformInfo => {
 };
 
 export const isMobileDevice = (
-  options: {useViewportFallback?: boolean; maxWidth?: number} = {}
+  options: {maxWidth?: number; useViewportFallback?: boolean} = {}
 ): boolean => {
-  if (globalThis.window === undefined) {
+  if (typeof window === "undefined") {
     return false;
   }
 
   const {isMobile} = getPlatformInfo();
 
-  const useViewportFallback = options.useViewportFallback === true;
+  const isUseViewportFallback = Boolean(options.useViewportFallback);
 
   const maxWidth = options.maxWidth ?? MOBILE_VIEWPORT_MAX_WIDTH;
 
-  const viewportIsMobile = useViewportFallback && globalThis.innerWidth <= maxWidth;
+  const isViewportIsMobile = isUseViewportFallback && window.innerWidth <= maxWidth;
 
-  return isMobile || viewportIsMobile;
+  return isMobile || isViewportIsMobile;
 };
 
 export const isWebKitBrowser = (): boolean => {
   const ua = getUserAgent();
 
-  if (!ua) {
-    return false;
-  }
-
-  return (
-    /AppleWebKit|Epiphany|Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR|Brave/i.test(ua)
+  return Boolean(
+    ua &&
+    /AppleWebKit|Epiphany|Safari/i.test(ua) &&
+    !/Chrome|Chromium|Edg|OPR|Brave/i.test(ua)
   );
 };

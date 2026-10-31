@@ -1,13 +1,9 @@
 export const getPagePathWithSearch = (): string => {
-  return `${globalThis.location.pathname}${globalThis.location.search}`;
+  return `${location.pathname}${location.search}`;
 };
 
 export const getCurrentHashAnchor = (): string => {
-  if (globalThis.window === undefined) {
-    return "";
-  }
-
-  return globalThis.location.hash.slice(1);
+  return globalThis.window === undefined ? "" : location.hash.slice(1);
 };
 
 export const replaceCurrentUrlHash = (hash: string): void => {

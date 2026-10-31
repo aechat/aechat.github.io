@@ -4,7 +4,7 @@ import {message} from "antd";
 
 import {isMobileDevice} from "./browserDetection";
 
-import {getStoredBoolean, setStoredBoolean} from "./localStorageUtilities";
+import {hasStoredBoolean, setStoredBoolean} from "./localStorageUtilities";
 
 type MessageLevel = "error" | "info" | "success" | "warning";
 
@@ -19,56 +19,53 @@ const messagePatterns: Record<MessageLevel, HapticInput> = {
 
 const vibrationStorageKey = "isVibrationEnabled";
 
-let haptics: WebHaptics | undefined;
-
-let isMessagePatched = false;
-
-let isVibrationEnabled = true;
-
-let hasResolvedVibrationPreference = false;
+const vibrationState = {
+  haptics: undefined as WebHaptics | undefined,
+  hasResolvedVibrationPreference: false,
+  isMessagePatched: false,
+  isVibrationEnabled: true,
+};
 
 export const isHapticFeedbackSupported = () => {
-  if (
-    globalThis.window === undefined ||
-    globalThis.navigator === undefined ||
-    globalThis.document === undefined
-  ) {
-    return false;
-  }
-
-  return isMobileDevice() && WebHaptics.isSupported;
+  return (
+    typeof window !== "undefined" &&
+    typeof navigator !== "undefined" &&
+    typeof document !== "undefined" &&
+    isMobileDevice() &&
+    WebHaptics.isSupported
+  );
 };
 
 const resolveVibrationPreference = () => {
   if (
-    hasResolvedVibrationPreference ||
-    globalThis.window === undefined ||
+    typeof window === "undefined" ||
+    vibrationState.hasResolvedVibrationPreference ||
     !isHapticFeedbackSupported()
   ) {
     return;
   }
 
-  isVibrationEnabled = getStoredBoolean(vibrationStorageKey, true, {
+  vibrationState.isVibrationEnabled = hasStoredBoolean(vibrationStorageKey, true, {
     persistFallback: true,
   });
 
-  hasResolvedVibrationPreference = true;
+  vibrationState.hasResolvedVibrationPreference = true;
 };
 
-export const setIsVibrationEnabled = (enabled: boolean) => {
+export const setIsVibrationEnabled = (isEnabled: boolean) => {
   if (!isHapticFeedbackSupported()) {
-    isVibrationEnabled = false;
-    hasResolvedVibrationPreference = true;
+    vibrationState.isVibrationEnabled = false;
+    vibrationState.hasResolvedVibrationPreference = true;
 
     return;
   }
 
-  isVibrationEnabled = enabled;
-  hasResolvedVibrationPreference = true;
-  setStoredBoolean(vibrationStorageKey, enabled);
+  vibrationState.isVibrationEnabled = isEnabled;
+  vibrationState.hasResolvedVibrationPreference = true;
+  setStoredBoolean(vibrationStorageKey, isEnabled);
 
-  if (!enabled) {
-    haptics?.cancel();
+  if (!isEnabled) {
+    vibrationState.haptics?.cancel();
   }
 };
 
@@ -77,9 +74,9 @@ const getHapticsInstance = () => {
     return;
   }
 
-  haptics ??= new WebHaptics({showSwitch: false});
+  vibrationState.haptics ??= new WebHaptics({showSwitch: false});
 
-  return haptics;
+  return vibrationState.haptics;
 };
 
 export const triggerHaptic = (input: HapticInput = "selection") => {
@@ -89,7 +86,7 @@ export const triggerHaptic = (input: HapticInput = "selection") => {
 
   resolveVibrationPreference();
 
-  if (!isVibrationEnabled) {
+  if (!vibrationState.isVibrationEnabled) {
     return;
   }
 
@@ -153,7 +150,7 @@ const patchMessageMethod = (level: MessageLevel) => {
 };
 
 export const setupHapticMessageFeedback = () => {
-  if (isMessagePatched) {
+  if (vibrationState.isMessagePatched) {
     return;
   }
 
@@ -161,14 +158,14 @@ export const setupHapticMessageFeedback = () => {
   patchMessageMethod("error");
   patchMessageMethod("warning");
   patchMessageMethod("info");
-  isMessagePatched = true;
+  vibrationState.isMessagePatched = true;
 };
 
 export const disposeHaptics = () => {
-  if (!haptics) {
+  if (!vibrationState.haptics) {
     return;
   }
 
-  haptics.destroy();
-  haptics = undefined;
+  vibrationState.haptics.destroy();
+  vibrationState.haptics = undefined;
 };

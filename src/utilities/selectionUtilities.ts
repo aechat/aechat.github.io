@@ -8,11 +8,15 @@ export const getClosestElement = (node: Node | null): Element | undefined => {
     return undefined;
   }
 
-  return node instanceof Element ? node : node.parentElement || undefined;
+  return node instanceof Element ? node : (node.parentElement ?? undefined);
 };
 
 export const getActiveSelectionRange = (): ActiveSelectionRange | undefined => {
-  const selection = globalThis.getSelection();
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  const selection = getSelection();
 
   if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
     return undefined;

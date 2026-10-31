@@ -12,7 +12,8 @@ const constants = {
 } as const;
 
 interface ScrollToAnchorOptions {
-  updateHash?: boolean;
+  shouldUpdateHash?: boolean;
+  updateHash?: unknown;
 }
 
 interface AnchorClickEvent {
@@ -20,7 +21,7 @@ interface AnchorClickEvent {
 }
 
 const getScrollPadding = () => {
-  if (globalThis.window === undefined) {
+  if (typeof window === "undefined") {
     return 0;
   }
 
@@ -36,11 +37,11 @@ const getScrollTop = (target: Element) => {
 
   const padding = getScrollPadding();
 
-  return target.getBoundingClientRect().top + window.pageYOffset - headerHeight - padding;
+  return target.getBoundingClientRect().top + window.scrollY - headerHeight - padding;
 };
 
-export const scrollToElement = (target: Element): boolean => {
-  if (globalThis.window === undefined) {
+export const canScrollToElement = (target: Element): boolean => {
+  if (typeof window === "undefined") {
     return false;
   }
 
@@ -49,11 +50,15 @@ export const scrollToElement = (target: Element): boolean => {
   return true;
 };
 
-export const scrollToAnchorById = (
+export const scrollToElement = (target: Element): void => {
+  canScrollToElement(target);
+};
+
+export const canScrollToAnchorById = (
   anchorId: string,
-  options?: ScrollToAnchorOptions
+  options: ScrollToAnchorOptions = {}
 ): boolean => {
-  if (globalThis.window === undefined) {
+  if (typeof window === "undefined") {
     return false;
   }
 
@@ -63,19 +68,36 @@ export const scrollToAnchorById = (
     return false;
   }
 
-  if (options?.updateHash !== false) {
+  const shouldUpdate = options.shouldUpdateHash ?? options.updateHash !== false;
+
+  if (shouldUpdate) {
     replaceCurrentUrlHash(`#${anchorId}`);
   }
 
-  return scrollToElement(target);
+  return canScrollToElement(target);
+};
+
+export const scrollToAnchorById = (
+  anchorId: string,
+  options: ScrollToAnchorOptions = {}
+): void => {
+  canScrollToAnchorById(anchorId, options);
+};
+
+export const canScrollToAnchorFromClick = (
+  event: AnchorClickEvent,
+  anchorId: string,
+  options: ScrollToAnchorOptions = {}
+): boolean => {
+  event.preventDefault();
+
+  return canScrollToAnchorById(anchorId, options);
 };
 
 export const scrollToAnchorFromClick = (
   event: AnchorClickEvent,
   anchorId: string,
-  options?: ScrollToAnchorOptions
-): boolean => {
-  event.preventDefault();
-
-  return scrollToAnchorById(anchorId, options);
+  options: ScrollToAnchorOptions = {}
+): void => {
+  canScrollToAnchorFromClick(event, anchorId, options);
 };

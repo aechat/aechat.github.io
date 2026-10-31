@@ -1,10 +1,10 @@
 const getLocalStorage = (): Storage | undefined => {
-  if (globalThis.window === undefined) {
+  if (typeof window === "undefined") {
     return undefined;
   }
 
   try {
-    return globalThis.localStorage;
+    return localStorage;
   } catch {
     return undefined;
   }
@@ -22,7 +22,7 @@ export const getLocalStorageItem = (key: string): string | undefined => {
   }
 };
 
-export const setLocalStorageItem = (key: string, value: string): boolean => {
+export const canSetLocalStorageItem = (key: string, value: string): boolean => {
   try {
     getLocalStorage()?.setItem(key, value);
 
@@ -32,30 +32,38 @@ export const setLocalStorageItem = (key: string, value: string): boolean => {
   }
 };
 
+export const setLocalStorageItem = (key: string, value: string): void => {
+  canSetLocalStorageItem(key, value);
+};
+
 interface StoredBooleanOptions {
   persistFallback?: boolean;
 }
 
-export const getStoredBoolean = (
+export const hasStoredBoolean = (
   key: string,
-  fallback: boolean,
-  options?: StoredBooleanOptions
+  isFallback: boolean,
+  options: StoredBooleanOptions = {}
 ): boolean => {
   const saved = getLocalStorageItem(key);
 
   if (saved === undefined) {
-    if (options?.persistFallback) {
-      setStoredBoolean(key, fallback);
+    if (options.persistFallback) {
+      setStoredBoolean(key, isFallback);
     }
 
-    return fallback;
+    return isFallback;
   }
 
   return saved === "true";
 };
 
-export const setStoredBoolean = (key: string, value: boolean): boolean => {
-  return setLocalStorageItem(key, value.toString());
+export const canSetStoredBoolean = (key: string, isValue: boolean): boolean => {
+  return canSetLocalStorageItem(key, isValue.toString());
+};
+
+export const setStoredBoolean = (key: string, isValue: boolean): void => {
+  setLocalStorageItem(key, isValue.toString());
 };
 
 type StoredNumberParser = (value: string) => number;
@@ -70,6 +78,10 @@ export const getStoredNumber = (
   return saved === undefined ? fallback : parser(saved);
 };
 
-export const setStoredNumber = (key: string, value: number): boolean => {
-  return setLocalStorageItem(key, value.toString());
+export const canSetStoredNumber = (key: string, value: number): boolean => {
+  return canSetLocalStorageItem(key, value.toString());
+};
+
+export const setStoredNumber = (key: string, value: number): void => {
+  setLocalStorageItem(key, value.toString());
 };

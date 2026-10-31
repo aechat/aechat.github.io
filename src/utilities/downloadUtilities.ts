@@ -21,18 +21,18 @@ export const clickHiddenDownloadLink = (href: string, fileName: string) => {
 export const resolveDownloadLinkFileSize = async (
   href: string
 ): Promise<string | undefined> => {
-  const url = new URL(href, globalThis.location.href);
+  const url = new URL(href, location.href);
 
-  if (url.origin !== globalThis.location.origin) {
+  if (url.origin !== location.origin) {
     return;
   }
 
   try {
-    const response = await fetch(url.toString(), {method: "HEAD"});
+    const response = await fetch(url.href, {method: "HEAD"});
 
     const contentLengthHeader = response.headers.get("content-length");
 
-    const contentLength = Number.parseInt(contentLengthHeader || "", 10);
+    const contentLength = Number(contentLengthHeader ?? "");
 
     if (!Number.isNaN(contentLength) && contentLength > 0) {
       return formatBytes(contentLength);
@@ -48,9 +48,9 @@ export const downloadFileWithFallback = async ({
   signal,
 }: DownloadFileOptions) => {
   try {
-    const downloadUrl = new URL(href, globalThis.location.href);
+    const downloadUrl = new URL(href, location.href);
 
-    const response = await fetch(downloadUrl.toString(), {signal});
+    const response = await fetch(downloadUrl.href, {signal});
 
     if (!response.ok) {
       throw new Error("Failed to fetch downloadable file");
@@ -61,7 +61,7 @@ export const downloadFileWithFallback = async ({
     const objectUrl = URL.createObjectURL(blob);
 
     clickHiddenDownloadLink(objectUrl, fileName);
-    globalThis.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;

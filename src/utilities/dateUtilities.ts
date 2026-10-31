@@ -13,11 +13,7 @@ const getPlural = (number: number, one: string, two: string, five: string) => {
     return one;
   }
 
-  if (n >= 2 && n <= 4) {
-    return two;
-  }
-
-  return five;
+  return n >= 2 && n <= 4 ? two : five;
 };
 
 export const formatRelativeTime = (date: Date): string => {

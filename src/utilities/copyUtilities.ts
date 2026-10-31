@@ -1,4 +1,4 @@
-const copyWithFallback = (text: string): boolean => {
+const canCopyWithFallback = (text: string): boolean => {
   const textArea = document.createElement("textarea");
 
   textArea.value = text;
@@ -22,22 +22,24 @@ const copyWithFallback = (text: string): boolean => {
   textArea.select();
   textArea.setSelectionRange(0, textArea.value.length);
 
-  let success = false;
+  let isSuccess = false;
 
   try {
-    success = document.execCommand("copy");
+    isSuccess = document.execCommand("copy");
   } catch (error) {
     console.error("Fallback copy failed:", error);
   }
 
   textArea.remove();
 
-  return success;
+  return isSuccess;
 };
 
-export const copyText = async (text: string): Promise<boolean> => {
-  if (!navigator.clipboard?.writeText || !globalThis.isSecureContext) {
-    return copyWithFallback(text);
+export const canCopyText = async (text: string): Promise<boolean> => {
+  const isSecure = typeof window !== "undefined" && globalThis.isSecureContext;
+
+  if (!isSecure || !navigator.clipboard?.writeText) {
+    return canCopyWithFallback(text);
   }
 
   try {
@@ -47,6 +49,6 @@ export const copyText = async (text: string): Promise<boolean> => {
   } catch (error) {
     console.error("Clipboard API failed, trying fallback:", error);
 
-    return copyWithFallback(text);
+    return canCopyWithFallback(text);
   }
 };
