@@ -1,11 +1,7 @@
 import {applyInteractiveScaleVariables} from "../../utilities/interactiveScaleUtilities";
 
-const CORNER_CLASSES = [
-  "group-corner-tl",
-  "group-corner-tr",
-  "group-corner-bl",
-  "group-corner-br",
-] as const;
+type CornerClassName =
+  "group-corner-tl" | "group-corner-tr" | "group-corner-bl" | "group-corner-br";
 
 export const GROUP_SELECTORS = [
   ".flexible-links",
@@ -13,6 +9,8 @@ export const GROUP_SELECTORS = [
   "[class*='search-category']",
   "[class*='search-external-links']",
 ] as const;
+
+export const COMBINED_GROUP_SELECTOR = GROUP_SELECTORS.join(", ");
 
 const PREFERRED_RADIUS_SOURCE_SELECTORS = [
   "[class*='modal-content']",
@@ -174,9 +172,13 @@ const resolveSourceRadius = (
   }
 };
 
-const clearCornerClasses = (element: HTMLElement) => {
-  for (const cornerClass of CORNER_CLASSES) {
-    element.classList.remove(cornerClass);
+const syncCornerClass = (
+  element: HTMLElement,
+  cornerClass: CornerClassName,
+  shouldHaveClass: boolean
+) => {
+  if (element.classList.contains(cornerClass) !== shouldHaveClass) {
+    element.classList.toggle(cornerClass, shouldHaveClass);
   }
 };
 
@@ -316,21 +318,22 @@ const applyGroupCornerRadius = (group: HTMLElement, items: HTMLElement[]) => {
     return;
   }
 
-  group.style.setProperty("--group-corner-radius", `${nestedRadius.toFixed(4)}px`);
+  const formattedRadius = `${nestedRadius.toFixed(4)}px`;
+
+  if (group.style.getPropertyValue("--group-corner-radius") !== formattedRadius) {
+    group.style.setProperty("--group-corner-radius", formattedRadius);
+  }
 };
 
 const applyCornersForGroup = (group: HTMLElement) => {
+  if (group.closest("details:not([open])")) {
+    return;
+  }
+
   const items = getGroupItems(group);
 
   if (items.length === 0) {
     return;
-  }
-
-  applyGroupCornerRadius(group, items);
-
-  for (const item of items) {
-    clearCornerClasses(item);
-    applyInteractiveScaleVariables(item);
   }
 
   const topValues = items.map((item) => item.offsetTop);
@@ -339,9 +342,9 @@ const applyCornersForGroup = (group: HTMLElement) => {
 
   const maxTop = Math.max(...topValues);
 
-  const topRow = items.filter((item) => item.offsetTop === minTop);
+  const topRow = items.filter((_, index) => topValues[index] === minTop);
 
-  const bottomRow = items.filter((item) => item.offsetTop === maxTop);
+  const bottomRow = items.filter((_, index) => topValues[index] === maxTop);
 
   const topLeft = findLeftMost(topRow);
 
@@ -351,18 +354,29 @@ const applyCornersForGroup = (group: HTMLElement) => {
 
   const bottomRight = findRightMost(bottomRow);
 
-  topLeft.classList.add("group-corner-tl");
-  topRight.classList.add("group-corner-tr");
-  bottomLeft.classList.add("group-corner-bl");
-  bottomRight.classList.add("group-corner-br");
+  applyGroupCornerRadius(group, items);
+
+  for (const item of items) {
+    applyInteractiveScaleVariables(item);
+    syncCornerClass(item, "group-corner-tl", item === topLeft);
+    syncCornerClass(item, "group-corner-tr", item === topRight);
+    syncCornerClass(item, "group-corner-bl", item === bottomLeft);
+    syncCornerClass(item, "group-corner-br", item === bottomRight);
+  }
+};
+
+export const updateGroupCornersInRoot = (root: ParentNode = document) => {
+  if (root instanceof HTMLElement && root.matches(COMBINED_GROUP_SELECTOR)) {
+    applyCornersForGroup(root);
+  }
+
+  const groups = root.querySelectorAll<HTMLElement>(COMBINED_GROUP_SELECTOR);
+
+  for (const group of groups) {
+    applyCornersForGroup(group);
+  }
 };
 
 export const updateAllGroupCorners = () => {
-  for (const selector of GROUP_SELECTORS) {
-    const groups = document.querySelectorAll<HTMLElement>(selector);
-
-    for (const group of groups) {
-      applyCornersForGroup(group);
-    }
-  }
+  updateGroupCornersInRoot(document);
 };
