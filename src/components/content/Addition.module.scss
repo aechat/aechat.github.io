@@ -208,7 +208,7 @@
 
     li {
       @include fluid-size(margin-block, $space-2, $space-4);
-      @include fluid-size(margin-inline-start, $space-12, $space-16);
+      @include fluid-size(margin-inline-start, $space-4, $space-8);
       @include fluid-inset(
         padding-block,
         $space-2,
