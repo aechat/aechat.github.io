@@ -36,31 +36,31 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
   const macContainerReference = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const {isIOS, isMacOS} = getPlatformInfo();
+    const platform = getPlatformInfo();
 
-    const isMac = isMacOS || isIOS;
+    const isMac = platform.isMacOS || platform.isIOS;
 
-    let activeWindows = !isMac;
+    let isActiveWindows = !isMac;
 
     const currentHash = getCurrentHashAnchor();
 
     if (currentHash) {
       const target = document.querySelector(
-        `[data-anchor="${currentHash}"], [id="${currentHash}"]`
+        `[data-anchor="${CSS.escape(currentHash)}"], [id="${CSS.escape(currentHash)}"]`
       );
 
       if (target) {
         if (windowsContainerReference.current?.contains(target)) {
           if (isMac) {
-            activeWindows = true;
+            isActiveWindows = true;
 
             message.info({
               content:
                 "Внимание: запрашиваемая статья по ссылке предназначена для Windows",
             });
           }
-        } else if (macContainerReference.current?.contains(target) && !isMac) {
-          activeWindows = false;
+        } else if (!isMac && macContainerReference.current?.contains(target)) {
+          isActiveWindows = false;
 
           message.info({
             content: "Внимание: запрашиваемая статья по ссылке предназначена для macOS",
@@ -69,7 +69,7 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
       }
     }
 
-    setIsWindowsActive(activeWindows);
+    setIsWindowsActive(isActiveWindows);
   }, []);
 
   useEffect(() => {
@@ -86,23 +86,23 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
 
   const isToggleButtonVisible = hasWindowsContent && hasMacContent;
 
-  let displayForWindows = isWindowsActive;
+  let isDisplayForWindows = isWindowsActive;
 
   if (hasWindowsContent && !hasMacContent) {
-    displayForWindows = true;
+    isDisplayForWindows = true;
   } else if (!hasWindowsContent && hasMacContent) {
-    displayForWindows = false;
+    isDisplayForWindows = false;
   }
 
-  const osName = displayForWindows ? "Windows" : "macOS";
+  const osName = isDisplayForWindows ? "Windows" : "macOS";
 
-  const osIcon = displayForWindows ? <WindowSharp /> : <Apple />;
+  const osIcon = isDisplayForWindows ? <WindowSharp /> : <Apple />;
 
   const infoMessagePrefix = isToggleButtonVisible
     ? "Информация ниже указана для устройств на "
     : "Информация ниже указана только для устройств на ";
 
-  const buttonLabel = displayForWindows ? "Показать для macOS" : "Показать для Windows";
+  const buttonLabel = isDisplayForWindows ? "Показать для macOS" : "Показать для Windows";
 
   return (
     <>
@@ -143,14 +143,14 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
       <div
         ref={windowsContainerReference}
         className={styles["change-os-content"]}
-        style={{display: displayForWindows ? "block" : "none"}}
+        style={{display: isDisplayForWindows ? "block" : "none"}}
       >
         {windowsContent}
       </div>
       <div
         ref={macContainerReference}
         className={styles["change-os-content"]}
-        style={{display: displayForWindows ? "none" : "block"}}
+        style={{display: isDisplayForWindows ? "none" : "block"}}
       >
         {macContent}
       </div>

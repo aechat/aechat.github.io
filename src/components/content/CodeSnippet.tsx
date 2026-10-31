@@ -4,7 +4,7 @@ import React, {useEffect, useMemo, useRef} from "react";
 
 import {message} from "antd";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {triggerHaptic} from "../../utilities/haptics";
 
@@ -40,16 +40,18 @@ const getCodeTextFromNode = (node: React.ReactNode): string => {
       return;
     }
 
-    if (React.isValidElement<{children?: React.ReactNode}>(entry)) {
-      if (entry.type === "br") {
-        parts.push("\n");
+    if (!React.isValidElement<{children?: React.ReactNode}>(entry)) {
+      return;
+    }
 
-        return;
-      }
+    if (entry.type === "br") {
+      parts.push("\n");
 
-      if (entry.props.children !== undefined) {
-        visit(entry.props.children);
-      }
+      return;
+    }
+
+    if (entry.props.children !== undefined) {
+      visit(entry.props.children);
     }
   };
 
@@ -80,9 +82,9 @@ const CodeSnippet: React.FC<CodeSnippetProperties> = ({
     triggerHaptic("soft");
 
     void (async () => {
-      const success = await copyText(codeReference.current?.textContent ?? "");
+      const isSuccess = await canCopyText(codeReference.current?.textContent ?? "");
 
-      if (success) {
+      if (isSuccess) {
         message.success("Код скопирован в буфер обмена");
       } else {
         message.error("Не удалось скопировать код");

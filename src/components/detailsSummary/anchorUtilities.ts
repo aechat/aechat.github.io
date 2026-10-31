@@ -1,23 +1,21 @@
 import {message} from "antd";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {replaceCurrentUrlHash} from "../../utilities/urlHashUtilities";
 
 export const normalizeAnchor = (anchor?: string): string => anchor?.trim() ?? "";
 
-let lastCacheTime = 0;
+const cacheState = {
+  lastCacheTime: 0,
+};
 
 const cachedFirstOccurrences = new Map<string, HTMLDetailsElement>();
 
 export const isElementHiddenByFilter = (element: HTMLElement): boolean => {
   const filterContainer = element.closest<HTMLElement>('[class*="change-os-content"]');
 
-  if (filterContainer) {
-    return filterContainer.style.display === "none";
-  }
-
-  return false;
+  return filterContainer?.style.display === "none";
 };
 
 export const isFirstAnchorOccurrence = (
@@ -32,7 +30,7 @@ export const isFirstAnchorOccurrence = (
 
   const now = performance.now();
 
-  if (now - lastCacheTime > 50) {
+  if (now - cacheState.lastCacheTime > 50) {
     cachedFirstOccurrences.clear();
 
     const elements =
@@ -53,14 +51,13 @@ export const isFirstAnchorOccurrence = (
       }
     }
 
-    lastCacheTime = now;
+    cacheState.lastCacheTime = now;
   }
 
-  if (isElementHiddenByFilter(detailsElement)) {
-    return true;
-  }
-
-  return cachedFirstOccurrences.get(normalizedTextualAnchor) === detailsElement;
+  return (
+    isElementHiddenByFilter(detailsElement) ||
+    cachedFirstOccurrences.get(normalizedTextualAnchor) === detailsElement
+  );
 };
 
 export const throwDuplicateAnchorError = (anchor: string, componentName: string) => {
@@ -84,7 +81,7 @@ interface CopyAnchorLinkOptions {
   successMessage: string;
 }
 
-export const copyAnchorLink = async ({
+export const canCopyAnchorLink = async ({
   anchorToCopy,
   successMessage,
 }: CopyAnchorLinkOptions): Promise<boolean> => {
@@ -98,15 +95,15 @@ export const copyAnchorLink = async ({
     return false;
   }
 
-  const anchorUrl = `${globalThis.location.origin}${globalThis.location.pathname}#${anchorToCopy}`;
+  const anchorUrl = `${location.origin}${location.pathname}#${anchorToCopy}`;
 
-  const success = await copyText(anchorUrl);
+  const isSuccess = await canCopyText(anchorUrl);
 
-  if (success) {
+  if (isSuccess) {
     message.success(successMessage);
   } else {
     message.error("Не удалось скопировать ссылку");
   }
 
-  return success;
+  return isSuccess;
 };

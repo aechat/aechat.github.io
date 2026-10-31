@@ -8,7 +8,7 @@ import {usePrevious} from "../../hooks/usePrevious";
 
 import {useRipple} from "../../hooks/useRipple";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {triggerDisclosureHaptic} from "../../utilities/haptics";
 
@@ -26,7 +26,7 @@ import {useTheme} from "../modals/ThemeChanger";
 import {CopyButton} from "../ui/CopyButton";
 
 import {
-  copyAnchorLink,
+  canCopyAnchorLink,
   isElementHiddenByFilter,
   isFirstAnchorOccurrence,
   normalizeAnchor,
@@ -87,7 +87,7 @@ const processAnchorTask = (task: AnchorTask, currentHash: string) => {
 
   const isTextualAnchorUsable =
     detailsElement instanceof HTMLDetailsElement &&
-    textualAnchor &&
+    Boolean(textualAnchor) &&
     isFirstAnchorOccurrence(detailsElement, textualAnchor);
 
   if (
@@ -204,8 +204,8 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     const textualAnchor = normalizeAnchor(anchor);
 
     if (
-      detailsElement instanceof HTMLDetailsElement &&
       textualAnchor &&
+      detailsElement instanceof HTMLDetailsElement &&
       !isFirstAnchorOccurrence(detailsElement, textualAnchor)
     ) {
       throwDuplicateAnchorError(textualAnchor, "DetailsSummary");
@@ -215,20 +215,24 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   const updateDynamicStyles = useCallback(() => {
     const details = detailsReference.current;
 
-    if (details?.open) {
-      const contentWrapper = details.querySelector<HTMLElement>(
-        `.${styles["details-content-wrapper"]}`
-      );
-
-      const innerContent = contentWrapper?.querySelector<HTMLElement>(
-        `.${styles["details-content-inner"]}`
-      );
-
-      if (contentWrapper && innerContent) {
-        contentWrapper.style.maxHeight = `${innerContent.scrollHeight}px`;
-        details.style.marginBottom = `${details.offsetHeight * 0.01 + 10}px`;
-      }
+    if (!details?.open) {
+      return;
     }
+
+    const contentWrapper = details.querySelector<HTMLElement>(
+      `.${styles["details-content-wrapper"]}`
+    );
+
+    const innerContent = contentWrapper?.querySelector<HTMLElement>(
+      `.${styles["details-content-inner"]}`
+    );
+
+    if (!contentWrapper || !innerContent) {
+      return;
+    }
+
+    contentWrapper.style.maxHeight = `${innerContent.scrollHeight}px`;
+    details.style.marginBottom = `${details.offsetHeight * 0.01 + 10}px`;
   }, []);
 
   const updateUrlHash = useCallback((hash: string) => {
@@ -278,7 +282,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   }, []);
 
   useEffect(() => {
-    if (globalThis.window === undefined || isSpoilerAnimationEnabled) return;
+    if (isSpoilerAnimationEnabled || typeof window === "undefined") return;
 
     const details = detailsReference.current;
 
@@ -322,7 +326,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   }, [isOpen, isSpoilerAnimationEnabled, updateDimmingEffect, updateDynamicStyles]);
 
   useEffect(() => {
-    if (globalThis.window === undefined || !isSpoilerAnimationEnabled) return;
+    if (!isSpoilerAnimationEnabled || typeof window === "undefined") return;
 
     const details = detailsReference.current;
 
@@ -340,7 +344,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
     if (!innerContent) return;
 
-    const justOpened = isOpen && !previousIsOpen;
+    const isJustOpened = isOpen && !previousIsOpen;
 
     const justClosed = !isOpen && previousIsOpen;
 
@@ -352,12 +356,12 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
     const enableScroll = () => {
       window.removeEventListener("wheel", preventScroll, scrollLockOptions);
-      globalThis.removeEventListener("touchmove", preventScroll, scrollLockOptions);
+      removeEventListener("touchmove", preventScroll, scrollLockOptions);
     };
 
     const disableScroll = () => {
       window.addEventListener("wheel", preventScroll, scrollLockOptions);
-      globalThis.addEventListener("touchmove", preventScroll, scrollLockOptions);
+      addEventListener("touchmove", preventScroll, scrollLockOptions);
     };
 
     const resizeObserver = new ResizeObserver(updateDynamicStyles);
@@ -371,23 +375,22 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
         resizeObserver.observe(innerContent);
         updateDynamicStyles();
 
-        if (justOpened && !hasScrolledAfterOpening.current) {
+        if (isJustOpened && !hasScrolledAfterOpening.current) {
           doScroll();
           hasScrolledAfterOpening.current = true;
         }
-
-        enableScroll();
       } else {
         details.open = false;
         updateDimmingEffect();
         hasScrolledAfterOpening.current = false;
-        enableScroll();
       }
+
+      enableScroll();
     };
 
     contentWrapper.addEventListener("transitionend", handleTransitionEnd);
 
-    if (justOpened || (justClosed && details.open)) {
+    if (isJustOpened || (justClosed && details.open)) {
       disableScroll();
     }
 
@@ -396,7 +399,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     if (isOpen) {
       details.open = true;
 
-      if (!justOpened) {
+      if (!isJustOpened) {
         resizeObserver.observe(innerContent);
         updateDynamicStyles();
       }
@@ -407,7 +410,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
         const viewportHeight = window.innerHeight;
 
         contentWrapper.style.maxHeight =
-          justOpened && scrollHeight > viewportHeight
+          isJustOpened && scrollHeight > viewportHeight
             ? `${viewportHeight}px`
             : `${scrollHeight}px`;
 
@@ -444,7 +447,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
     if (!summaryId || globalThis.window === undefined) return;
 
-    const justOpened = isOpen && !previousIsOpen;
+    const isJustOpened = isOpen && !previousIsOpen;
 
     const justClosed = !isOpen && previousIsOpen;
 
@@ -463,7 +466,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     );
 
     if (
-      justOpened &&
+      isJustOpened &&
       resolvedAnchor &&
       currentHash !== resolvedAnchor &&
       !isCurrentHashAnyNestedInDetails
@@ -487,9 +490,9 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   ]);
 
   useEffect(() => {
-    const justOpened = isOpen && !previousIsOpen;
+    const isJustOpened = isOpen && !previousIsOpen;
 
-    if (!justOpened) {
+    if (!isJustOpened) {
       return;
     }
 
@@ -519,7 +522,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       return;
     }
 
-    const checkId = () => {
+    const shouldCheckId = () => {
       const currentSummaryId = summaryElement.id;
 
       if (currentSummaryId) {
@@ -531,12 +534,12 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       return false;
     };
 
-    if (checkId()) {
+    if (shouldCheckId()) {
       return;
     }
 
     const checkIdInterval = setInterval(() => {
-      if (checkId()) clearInterval(checkIdInterval);
+      if (shouldCheckId()) clearInterval(checkIdInterval);
     }, 100);
 
     return () => clearInterval(checkIdInterval);
@@ -555,25 +558,27 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
         `.${styles["details-summary"]}`
       );
 
-      if (summaryElement && summaryElement.id === id) {
-        if (skipScroll) {
-          skipNextAutoScroll.current = true;
-          hasScrolledAfterOpening.current = true;
-        }
+      if (!(summaryElement && summaryElement.id === id)) {
+        return;
+      }
 
-        if (isOpen) {
-          if (!skipScroll) {
-            doScroll();
-          }
-        } else {
-          setIsOpen(true);
+      if (skipScroll) {
+        skipNextAutoScroll.current = true;
+        hasScrolledAfterOpening.current = true;
+      }
+
+      if (isOpen) {
+        if (!skipScroll) {
+          doScroll();
         }
+      } else {
+        setIsOpen(true);
       }
     };
 
-    globalThis.addEventListener("open-spoiler-by-id", handleOpenEvent);
+    addEventListener("open-spoiler-by-id", handleOpenEvent);
 
-    return () => globalThis.removeEventListener("open-spoiler-by-id", handleOpenEvent);
+    return () => removeEventListener("open-spoiler-by-id", handleOpenEvent);
   }, [isOpen, doScroll]);
 
   useEffect(() => {
@@ -599,14 +604,13 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
       globalWithState.detailsSummaryScrollSubscriberCount = Math.max(0, remainingCount);
 
-      if (remainingCount === 0 && globalWithState.detailsSummaryScrollListener) {
-        window.removeEventListener(
-          "scroll",
-          globalWithState.detailsSummaryScrollListener
-        );
-
-        globalWithState.detailsSummaryScrollListener = undefined;
+      if (!(remainingCount === 0 && globalWithState.detailsSummaryScrollListener)) {
+        return;
       }
+
+      window.removeEventListener("scroll", globalWithState.detailsSummaryScrollListener);
+
+      globalWithState.detailsSummaryScrollListener = undefined;
     };
   }, [updateDimmingEffect]);
 
@@ -642,11 +646,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
           currentHash
         );
 
-        if (
-          anchorForHash &&
-          globalThis.window !== undefined &&
-          !isCurrentHashOpenNested
-        ) {
+        if (anchorForHash && !isCurrentHashOpenNested && typeof window !== "undefined") {
           replaceCurrentUrlHash(`#${anchorForHash}`);
         }
       }, DETAILS_SUMMARY_DELAYS.HOVER_DELAY);
@@ -677,7 +677,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     if (detailsReference.current) setIsOpen(!detailsReference.current.open);
   };
 
-  const handleCopyAnchor = useCallback(
+  const canHandleCopyAnchor = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -691,7 +691,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
         const anchorToCopy = getEffectiveAnchor() || numericAnchor;
 
-        await copyAnchorLink({
+        await canCopyAnchorLink({
           anchorToCopy,
           successMessage: `Ссылка на статью ${numericAnchor || anchorToCopy} скопирована в буфер обмена`,
         });
@@ -702,11 +702,11 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     [getEffectiveAnchor]
   );
 
-  const summaryLongPressProperties = useLongPress(handleCopyAnchor);
+  const summaryLongPressProperties = useLongPress(canHandleCopyAnchor);
 
   const rippleProperties = useRipple<HTMLElement>({haptic: false});
 
-  const handleFlexibleLinkCopy = useCallback(
+  const canHandleFlexibleLinkCopy = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
       const target = event.target as HTMLElement;
 
@@ -714,11 +714,11 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
       if (link) {
         (async () => {
-          const success = await copyText(link.href);
+          const isSuccess = await canCopyText(link.href);
 
           const displayName = link.textContent || link.href;
 
-          if (success) {
+          if (isSuccess) {
             message.success(`Ссылка на «${formatNestedQuotes(displayName)}» скопирована`);
           } else {
             message.error("Не удалось скопировать ссылку");
@@ -750,7 +750,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     []
   );
 
-  const sectionLongPressProperties = useLongPress(handleFlexibleLinkCopy, 500, {
+  const sectionLongPressProperties = useLongPress(canHandleFlexibleLinkCopy, 500, {
     getRippleTarget: getFlexibleLinkRippleTarget,
   });
 
@@ -839,8 +839,8 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
           </div>
           <Tooltip title="Скопировать ссылку">
             <CopyButton
-              disabled={!displayAnchorId}
-              onClick={handleCopyAnchor}
+              isDisabled={!displayAnchorId}
+              onClick={canHandleCopyAnchor}
             />
           </Tooltip>
         </summary>

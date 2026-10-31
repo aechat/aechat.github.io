@@ -25,7 +25,7 @@ import {getCurrentHashAnchor} from "../../utilities/urlHashUtilities";
 import {CopyButton} from "../ui/CopyButton";
 
 import {
-  copyAnchorLink,
+  canCopyAnchorLink,
   isFirstAnchorOccurrence,
   normalizeAnchor,
   replaceUrlHash,
@@ -74,7 +74,7 @@ const getClosedParents = (detailsElement: HTMLDetailsElement | null): string[] =
 const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   anchor,
   children,
-  modifierClass,
+  modifierClass = "",
   startOpen = false,
   title,
 }) => {
@@ -137,16 +137,16 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   const handleSummaryClick = (event: React.MouseEvent) => {
     event.preventDefault();
 
-    const nextIsOpen = !isOpen;
+    const isNextIsOpen = !isOpen;
 
-    if (nextIsOpen) {
+    if (isNextIsOpen) {
       shouldDelayClickScrollReference.current = true;
     } else {
       lastExpandedHeightReference.current = getExpandedHeight();
     }
 
-    isOpenReference.current = nextIsOpen;
-    setIsOpen(nextIsOpen);
+    isOpenReference.current = isNextIsOpen;
+    setIsOpen(isNextIsOpen);
   };
 
   const updateDynamicStyles = useCallback(() => {
@@ -156,16 +156,18 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     const innerContent = innerContentReference.current;
 
-    if (details?.open && contentWrapper && innerContent) {
-      const measuredHeight = innerContent.scrollHeight;
-
-      if (contentWrapper.style.maxHeight !== "none") {
-        contentWrapper.style.maxHeight = `${measuredHeight}px`;
-      }
-
-      lastExpandedHeightReference.current = measuredHeight;
-      details.style.marginBottom = `${details.offsetHeight * 0.005 + 16}px`;
+    if (!contentWrapper || !innerContent || !details?.open) {
+      return;
     }
+
+    const measuredHeight = innerContent.scrollHeight;
+
+    if (contentWrapper.style.maxHeight !== "none") {
+      contentWrapper.style.maxHeight = `${measuredHeight}px`;
+    }
+
+    lastExpandedHeightReference.current = measuredHeight;
+    details.style.marginBottom = `${details.offsetHeight * 0.005 + 16}px`;
   }, []);
 
   const updateUrlHash = useCallback((hash: string) => {
@@ -262,7 +264,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     const nestedSummaryElements = [
       ...parentDetailsElement.querySelectorAll<HTMLElement>(
-        'details[data-nested-details-summary="true"] > summary'
+        ':scope details[data-nested-details-summary="true"] > summary'
       ),
     ];
 
@@ -283,8 +285,8 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
     const detailsElement = detailsReference.current;
 
     if (
-      detailsElement instanceof HTMLDetailsElement &&
       fullAnchor &&
+      detailsElement instanceof HTMLDetailsElement &&
       !isFirstAnchorOccurrence(detailsElement, fullAnchor)
     ) {
       throwDuplicateAnchorError(fullAnchor, "NestedDetailsSummary");
@@ -296,21 +298,23 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       `.${styles["details-nested-summary"]}`
     );
 
-    if (summary) {
-      clearTimeout(scrollTimeoutReference.current);
-
-      const shouldDelay =
-        shouldDelayClickScrollReference.current || shouldDelayNextScrollReference.current;
-
-      const delay = shouldDelay ? DETAILS_SUMMARY_DELAYS.ACTION_DELAY : 0;
-
-      shouldDelayNextScrollReference.current = false;
-      shouldDelayClickScrollReference.current = false;
-
-      scrollTimeoutReference.current = setTimeout(() => {
-        scrollToElement(summary);
-      }, delay);
+    if (!summary) {
+      return;
     }
+
+    clearTimeout(scrollTimeoutReference.current);
+
+    const shouldDelay =
+      shouldDelayClickScrollReference.current || shouldDelayNextScrollReference.current;
+
+    const delay = shouldDelay ? DETAILS_SUMMARY_DELAYS.ACTION_DELAY : 0;
+
+    shouldDelayNextScrollReference.current = false;
+    shouldDelayClickScrollReference.current = false;
+
+    scrollTimeoutReference.current = setTimeout(() => {
+      scrollToElement(summary);
+    }, delay);
   }, []);
 
   useEffect(
@@ -331,26 +335,28 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    const justOpened = isOpen && !previousIsOpen;
+    const isJustOpened = isOpen && !previousIsOpen;
 
-    if (justOpened) {
-      if (shouldDelayClickScrollReference.current) {
-        shouldScrollAfterOpenReference.current = false;
-        scrollToSummary();
-
-        return;
-      }
-
-      shouldScrollAfterOpenReference.current = true;
-    }
-  }, [isOpen, previousIsOpen, scrollToSummary]);
-
-  useEffect(() => {
-    if (globalThis.window === undefined || !displayAnchorId) {
+    if (!isJustOpened) {
       return;
     }
 
-    const justOpened = isOpen && !previousIsOpen;
+    if (shouldDelayClickScrollReference.current) {
+      shouldScrollAfterOpenReference.current = false;
+      scrollToSummary();
+
+      return;
+    }
+
+    shouldScrollAfterOpenReference.current = true;
+  }, [isOpen, previousIsOpen, scrollToSummary]);
+
+  useEffect(() => {
+    if (!displayAnchorId || typeof window === "undefined") {
+      return;
+    }
+
+    const isJustOpened = isOpen && !previousIsOpen;
 
     const justClosed = !isOpen && previousIsOpen;
 
@@ -358,12 +364,13 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     const resolvedAnchor = getEffectiveAnchor();
 
-    if (justOpened && resolvedAnchor && currentHash !== resolvedAnchor) {
+    if (isJustOpened && resolvedAnchor && currentHash !== resolvedAnchor) {
       updateUrlHash(`#${resolvedAnchor}`);
     } else if (justClosed && currentHash === resolvedAnchor) {
-      const {parentSummaryId, parentTextualAnchor} = getParentAnchorData();
+      const parentAnchorData = getParentAnchorData();
 
-      const parentAnchor = parentTextualAnchor || parentSummaryId;
+      const parentAnchor =
+        parentAnchorData.parentTextualAnchor || parentAnchorData.parentSummaryId;
 
       updateUrlHash(parentAnchor ? `#${parentAnchor}` : "");
     }
@@ -404,7 +411,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
       if (closedParents.length > 0) {
         for (const parentId of closedParents) {
-          globalThis.dispatchEvent(
+          dispatchEvent(
             new CustomEvent("open-spoiler-by-id", {
               detail: {id: parentId, skipScroll: true},
             })
@@ -412,7 +419,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         }
 
         setTimeout(() => {
-          globalThis.dispatchEvent(
+          dispatchEvent(
             new CustomEvent("open-spoiler-by-id", {
               detail: {id, skipScroll},
             })
@@ -438,9 +445,9 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       }
     };
 
-    globalThis.addEventListener("open-spoiler-by-id", handleOpenEvent);
+    addEventListener("open-spoiler-by-id", handleOpenEvent);
 
-    return () => globalThis.removeEventListener("open-spoiler-by-id", handleOpenEvent);
+    return () => removeEventListener("open-spoiler-by-id", handleOpenEvent);
   }, [assignFallbackSummaryId, scrollToSummary]);
 
   useEffect(() => {
@@ -485,9 +492,10 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       clearTimeout(timeoutId);
 
       leaveTimeoutId = setTimeout(() => {
-        const {parentSummaryId, parentTextualAnchor} = getParentAnchorData();
+        const parentAnchorData = getParentAnchorData();
 
-        const parentAnchor = parentTextualAnchor || parentSummaryId;
+        const parentAnchor =
+          parentAnchorData.parentTextualAnchor || parentAnchorData.parentSummaryId;
 
         const nestedDetails = detailsReference.current;
 
@@ -496,26 +504,28 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         );
 
         if (
-          parentAnchor &&
-          parentDetails instanceof HTMLDetailsElement &&
-          parentDetails.matches(":hover")
+          !parentAnchor ||
+          !(parentDetails instanceof HTMLDetailsElement) ||
+          !parentDetails.matches(":hover")
         ) {
-          const summaryElement = detailsReference.current?.querySelector(
-            `.${styles["details-nested-summary"]}`
-          );
+          return;
+        }
 
-          const summaryId =
-            summaryElement instanceof HTMLElement
-              ? summaryElement.id || assignFallbackSummaryId(summaryElement)
-              : "";
+        const summaryElement = detailsReference.current?.querySelector(
+          `.${styles["details-nested-summary"]}`
+        );
 
-          const resolvedAnchor = getEffectiveAnchor();
+        const summaryId =
+          summaryElement instanceof HTMLElement
+            ? summaryElement.id || assignFallbackSummaryId(summaryElement)
+            : "";
 
-          const activeAnchor = resolvedAnchor || summaryId;
+        const resolvedAnchor = getEffectiveAnchor();
 
-          if (getCurrentHashAnchor() === activeAnchor) {
-            updateUrlHash(`#${parentAnchor}`);
-          }
+        const activeAnchor = resolvedAnchor || summaryId;
+
+        if (getCurrentHashAnchor() === activeAnchor) {
+          updateUrlHash(`#${parentAnchor}`);
         }
       }, DETAILS_SUMMARY_DELAYS.HOVER_DELAY);
     };
@@ -583,25 +593,27 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         return;
       }
 
-      if (isClosingAnimationReference.current && isOpen) {
+      if (isOpen && isClosingAnimationReference.current) {
         return;
       }
 
+      isClosingAnimationReference.current = false;
+
       if (isOpen) {
-        isClosingAnimationReference.current = false;
         lastExpandedHeightReference.current = innerContent.scrollHeight;
         contentWrapper.style.maxHeight = "none";
         flushPendingScroll();
         updateDynamicStyles();
       } else {
-        isClosingAnimationReference.current = false;
         details.open = false;
       }
 
-      if (openFallbackTimeout) {
-        clearTimeout(openFallbackTimeout);
-        openFallbackTimeout = undefined;
+      if (!openFallbackTimeout) {
+        return;
       }
+
+      clearTimeout(openFallbackTimeout);
+      openFallbackTimeout = undefined;
     };
 
     contentWrapper.addEventListener("transitionend", onTransitionEnd);
@@ -626,8 +638,8 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     window.addEventListener("resize", onWindowResize);
 
-    const duration = Number.parseFloat(
-      getComputedStyle(contentWrapper).transitionDuration
+    const duration = Number(
+      getComputedStyle(contentWrapper).transitionDuration.replace("s", "")
     );
 
     const durationMs = Number.isNaN(duration) ? 350 : duration * 1000;
@@ -706,7 +718,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       return;
     }
 
-    const checkId = () => {
+    const shouldCheckId = () => {
       const resolvedSummaryId =
         summaryElement.id || assignFallbackSummaryId(summaryElement);
 
@@ -719,12 +731,12 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       return false;
     };
 
-    if (checkId()) {
+    if (shouldCheckId()) {
       return;
     }
 
     const checkIdInterval = setInterval(() => {
-      if (checkId()) {
+      if (shouldCheckId()) {
         clearInterval(checkIdInterval);
       }
     }, 100);
@@ -732,7 +744,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
     return () => clearInterval(checkIdInterval);
   }, [assignFallbackSummaryId]);
 
-  const handleCopyAnchor = useCallback(
+  const canHandleCopyAnchor = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -749,7 +761,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
         const anchorToCopy = getEffectiveAnchor() || numericAnchor;
 
-        await copyAnchorLink({
+        await canCopyAnchorLink({
           anchorToCopy,
           successMessage: `Ссылка на вложенную статью ${numericAnchor || anchorToCopy} скопирована в буфер обмена`,
         });
@@ -760,13 +772,13 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
     [assignFallbackSummaryId, getEffectiveAnchor]
   );
 
-  const summaryLongPressProperties = useLongPress(handleCopyAnchor);
+  const summaryLongPressProperties = useLongPress(canHandleCopyAnchor);
 
   return (
     <NestedDetailsSummaryContext.Provider value={true}>
       <details
         ref={detailsReference}
-        className={`${styles["details-nested"]} ${modifierClass || ""} ${
+        className={`${styles["details-nested"]} ${modifierClass} ${
           isOpen ? styles["is-open"] : ""
         }`.trim()}
         data-anchor={fullAnchor || undefined}
@@ -786,8 +798,8 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
           </div>
           <Tooltip title="Скопировать ссылку">
             <CopyButton
-              disabled={!displayAnchorId}
-              onClick={handleCopyAnchor}
+              isDisabled={!displayAnchorId}
+              onClick={canHandleCopyAnchor}
             />
           </Tooltip>
         </summary>

@@ -19,7 +19,7 @@ export const dispatchOpenSpoilerById = (
   const delay = options?.delay ?? DETAILS_SUMMARY_DELAYS.ACTION_DELAY;
 
   setTimeout(() => {
-    globalThis.dispatchEvent(
+    dispatchEvent(
       new CustomEvent("open-spoiler-by-id", {
         detail: {id, skipScroll: options?.skipScroll},
       })
@@ -102,7 +102,7 @@ export const processNestedSummaries = (
 
   const nestedSummaries = [
     ...detailsElement.querySelectorAll<HTMLElement>(
-      `details[data-nested-details-summary="true"] > summary`
+      `:scope details[data-nested-details-summary="true"] > summary`
     ),
   ];
 
@@ -129,7 +129,7 @@ export const processNestedSummaries = (
 
     const isNestedTextualAnchorUsable =
       nestedDetailsElement instanceof HTMLDetailsElement &&
-      normalizedNestedTextualAnchor &&
+      Boolean(normalizedNestedTextualAnchor) &&
       isFirstAnchorOccurrence(nestedDetailsElement, normalizedNestedTextualAnchor);
 
     if (

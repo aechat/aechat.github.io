@@ -21,9 +21,7 @@ const getPluralizedTags = (count: number): string => {
 
   if (lastDigit === 1) return "тег";
 
-  if ([2, 3, 4].includes(lastDigit)) return "тега";
-
-  return "тегов";
+  return [2, 3, 4].includes(lastDigit) ? "тега" : "тегов";
 };
 
 const stopToggleTagsPointerDown = (event: React.MouseEvent | React.TouchEvent) => {
@@ -40,21 +38,26 @@ export const TagList: React.FC<{tags: string}> = ({tags}) => {
   const [randomizedTags, setRandomizedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    if (isOverflowing) {
-      const shuffled = [...allTags];
-
-      for (let index = shuffled.length - 1; index > 0; index--) {
-        const randomValues = new Uint32Array(1);
-
-        crypto.getRandomValues(randomValues);
-
-        const index_ = Math.floor((randomValues[0] / (0xff_ff_ff_ff + 1)) * (index + 1));
-
-        [shuffled[index], shuffled[index_]] = [shuffled[index_], shuffled[index]];
-      }
-
-      setRandomizedTags(shuffled.slice(0, TAG_LIMIT));
+    if (!isOverflowing) {
+      return;
     }
+
+    const shuffled = [...allTags];
+
+    for (let index = shuffled.length - 1; index > 0; index--) {
+      const randomValues = new Uint32Array(1);
+
+      crypto.getRandomValues(randomValues);
+
+      const index_ = Math.floor((randomValues[0] / (0xff_ff_ff_ff + 1)) * (index + 1));
+
+      const temporary = shuffled[index];
+
+      shuffled[index] = shuffled[index_];
+      shuffled[index_] = temporary;
+    }
+
+    setRandomizedTags(shuffled.slice(0, TAG_LIMIT));
   }, [allTags, isOverflowing]);
 
   if (allTags.length === 0) {

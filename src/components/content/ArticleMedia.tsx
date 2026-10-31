@@ -10,7 +10,7 @@ import {animate, AnimatePresence, motion, useMotionValue} from "framer-motion";
 
 import {createPortal} from "react-dom";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {triggerHaptic} from "../../utilities/haptics";
 
@@ -47,9 +47,7 @@ interface YouTubeMediaProperties extends BaseMediaProperties {
 }
 
 export type ArticleMediaProperties =
-  | ImageMediaProperties
-  | VideoMediaProperties
-  | YouTubeMediaProperties;
+  ImageMediaProperties | VideoMediaProperties | YouTubeMediaProperties;
 
 type MediaMetadata = {height: number; width: number};
 
@@ -83,23 +81,13 @@ const clamp = (value: number, min: number, max: number): number => {
 };
 
 const getMediaSource = (source: string): string => {
-  if (source.startsWith("http")) return source;
+  if (source.startsWith("http") || source.startsWith("/")) return source;
 
-  if (source.startsWith("/")) return source;
-
-  if (source.startsWith("media/")) {
-    return `/${source}`;
-  }
-
-  return `/media/${source}`;
+  return source.startsWith("media/") ? `/${source}` : `/media/${source}`;
 };
 
 const getYouTubeId = (source: string): string => {
-  if (source.includes("/")) {
-    return source.split("/").pop() || "";
-  }
-
-  return source;
+  return source.includes("/") ? source.split("/").pop() || "" : source;
 };
 
 const getMetadata = (source: string) => {
@@ -117,11 +105,7 @@ const getDensity = (source: string, density?: number): number => {
     return density;
   }
 
-  if (/@2x\.[a-z0-9]+$/i.test(source)) {
-    return 2;
-  }
-
-  return 1;
+  return /@2x\.[a-z0-9]+$/i.test(source) ? 2 : 1;
 };
 
 const getConstrainedMediaWidth = (
@@ -230,37 +214,41 @@ const ImageViewer: React.FC<{
   }, [onClose]);
 
   useEffect(() => {
-    if (isOpen) {
-      scale.set(1);
-      x.set(0);
-      y.set(0);
-      setIsZoomed(false);
+    if (!isOpen) {
+      return;
     }
+
+    scale.set(1);
+    x.set(0);
+    y.set(0);
+    setIsZoomed(false);
   }, [isOpen, scale, x, y]);
 
   useEffect(() => {
     const unsubscribe = scale.on("change", (scaleValue) => {
-      const newIsZoomed = scaleValue > VIEWER_SCALE.ZOOMED_THRESHOLD;
+      const isNewIsZoomed = scaleValue > VIEWER_SCALE.ZOOMED_THRESHOLD;
 
-      setIsZoomed(newIsZoomed);
+      setIsZoomed(isNewIsZoomed);
 
-      if (imageReference.current) {
-        const newLimits = getDragLimits(imageReference.current, scaleValue);
-
-        setDragLimits(newLimits);
-
-        const currentX = x.get();
-
-        const currentY = y.get();
-
-        const clampedX = clamp(currentX, newLimits.left, newLimits.right);
-
-        const clampedY = clamp(currentY, newLimits.top, newLimits.bottom);
-
-        if (currentX !== clampedX) x.set(clampedX);
-
-        if (currentY !== clampedY) y.set(clampedY);
+      if (!imageReference.current) {
+        return;
       }
+
+      const newLimits = getDragLimits(imageReference.current, scaleValue);
+
+      setDragLimits(newLimits);
+
+      const currentX = x.get();
+
+      const currentY = y.get();
+
+      const clampedX = clamp(currentX, newLimits.left, newLimits.right);
+
+      const clampedY = clamp(currentY, newLimits.top, newLimits.bottom);
+
+      if (currentX !== clampedX) x.set(clampedX);
+
+      if (currentY !== clampedY) y.set(clampedY);
     });
 
     return unsubscribe;
@@ -271,7 +259,7 @@ const ImageViewer: React.FC<{
 
     if (historyPushedReference.current) {
       historyPushedReference.current = false;
-      globalThis.history.back();
+      history.back();
     } else {
       onClose();
     }
@@ -310,7 +298,7 @@ const ImageViewer: React.FC<{
     if (!isOpen) return;
 
     try {
-      globalThis.history.pushState({imageViewerOpen: true}, "");
+      history.pushState({imageViewerOpen: true}, "");
       historyPushedReference.current = true;
     } catch (error) {
       console.warn("History API not available or restricted:", error);
@@ -328,11 +316,11 @@ const ImageViewer: React.FC<{
       }
     };
 
-    globalThis.addEventListener("popstate", handlePopState);
+    addEventListener("popstate", handlePopState);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      globalThis.removeEventListener("popstate", handlePopState);
+      removeEventListener("popstate", handlePopState);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
@@ -367,21 +355,23 @@ const ImageViewer: React.FC<{
   };
 
   const handleTouchMove = (event: React.TouchEvent) => {
-    if (event.touches.length === 2) {
-      const distribution = Math.hypot(
-        event.touches[0].clientX - event.touches[1].clientX,
-        event.touches[0].clientY - event.touches[1].clientY
-      );
-
-      const delta = distribution - distanceReference.current;
-
-      const current = scale.get();
-
-      const newScale = clamp(current + delta * 0.005, VIEWER_SCALE.MIN, VIEWER_SCALE.MAX);
-
-      scale.set(newScale);
-      distanceReference.current = distribution;
+    if (event.touches.length !== 2) {
+      return;
     }
+
+    const distribution = Math.hypot(
+      event.touches[0].clientX - event.touches[1].clientX,
+      event.touches[0].clientY - event.touches[1].clientY
+    );
+
+    const delta = distribution - distanceReference.current;
+
+    const current = scale.get();
+
+    const newScale = clamp(current + delta * 0.005, VIEWER_SCALE.MIN, VIEWER_SCALE.MAX);
+
+    scale.set(newScale);
+    distanceReference.current = distribution;
   };
 
   const lastTapReference = useRef<number>(0);
@@ -579,11 +569,11 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
                 onClick={async () => {
                   triggerHaptic("soft");
 
-                  const success = await copyText(
+                  const isSuccess = await canCopyText(
                     `https://www.youtube.com/watch?v=${videoId}`
                   );
 
-                  if (success) {
+                  if (isSuccess) {
                     message.success("Ссылка на видео скопирована");
                   } else {
                     message.error("Не удалось скопировать ссылку");

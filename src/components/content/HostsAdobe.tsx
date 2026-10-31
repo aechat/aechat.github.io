@@ -56,11 +56,12 @@ const HostsAdobeModal: React.FC = () => {
           return;
         }
 
-        if (error instanceof Error) {
-          console.error("Failed to fetch hosts:", error);
-        } else {
-          console.error("Failed to fetch hosts with unknown error:", error);
-        }
+        console.error(
+          error instanceof Error
+            ? "Failed to fetch hosts:"
+            : "Failed to fetch hosts with unknown error:",
+          error
+        );
       }
     };
 
