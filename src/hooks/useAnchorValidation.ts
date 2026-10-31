@@ -131,13 +131,15 @@ export const useAnchorValidation = (sections: Section[], isPageLoaded: boolean) 
 
       const faqContainer = document.querySelector(".article-content");
 
-      if (faqContainer) {
-        message.error(
-          "Не удалось найти статью по ссылке. Возможно, она была перемещена или удалена."
-        );
-
-        replaceCurrentUrlHash("");
+      if (!faqContainer) {
+        return;
       }
+
+      message.error(
+        "Не удалось найти статью по ссылке. Возможно, она была перемещена или удалена."
+      );
+
+      replaceCurrentUrlHash("");
     };
 
     validationTimeout = setTimeout(validateAnchors, ANCHOR_VALIDATION_DELAY);

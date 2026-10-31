@@ -2,7 +2,7 @@ import {useCallback, useEffect} from "react";
 
 import {message} from "antd";
 
-import {copyText} from "../utilities/copyUtilities";
+import {canCopyText} from "../utilities/copyUtilities";
 
 import {scrollToElement} from "../utilities/scrollToAnchor";
 
@@ -14,11 +14,11 @@ const URL_CLEANUP_DELAY = 5000;
 
 export const useHashAnchorNavigation = (hash: string) => {
   const handleCopyAnchor = useCallback(async (anchorId: string) => {
-    const anchor = `${globalThis.location.origin}${globalThis.location.pathname}#${anchorId}`;
+    const anchor = `${location.origin}${location.pathname}#${anchorId}`;
 
-    const success = await copyText(anchor);
+    const isSuccess = await canCopyText(anchor);
 
-    if (success) {
+    if (isSuccess) {
       message.success("Ссылка на раздел скопирована в буфер обмена");
     }
   }, []);
@@ -33,13 +33,15 @@ export const useHashAnchorNavigation = (hash: string) => {
     const scrollTimer = setTimeout(() => {
       const element = document.querySelector(hash);
 
-      if (element) {
-        scrollToElement(element);
-
-        cleanupTimer = setTimeout(() => {
-          replaceCurrentUrlHash("");
-        }, URL_CLEANUP_DELAY);
+      if (!element) {
+        return;
       }
+
+      scrollToElement(element);
+
+      cleanupTimer = setTimeout(() => {
+        replaceCurrentUrlHash("");
+      }, URL_CLEANUP_DELAY);
     }, SCROLL_DELAY);
 
     return () => {

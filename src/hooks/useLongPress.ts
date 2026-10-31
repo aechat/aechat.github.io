@@ -23,7 +23,7 @@ const resolveDefaultRippleTarget = (event_: React.MouseEvent | React.TouchEvent)
 };
 
 export const useLongPress = (
-  callback: (event: React.MouseEvent | React.TouchEvent) => boolean,
+  canHandlePress: (event: React.MouseEvent | React.TouchEvent) => boolean,
   ms = 500,
   options: UseLongPressOptions = {}
 ) => {
@@ -48,7 +48,9 @@ export const useLongPress = (
   }, []);
 
   const onTouchMove = useCallback((event_: React.TouchEvent<HTMLElement>) => {
-    if (!isPotentialLongPress.current) return;
+    if (!isPotentialLongPress.current) {
+      return;
+    }
 
     const touch = event_.touches[0];
 
@@ -65,21 +67,27 @@ export const useLongPress = (
 
   const onTouchEnd = useCallback(
     (event_: React.TouchEvent<HTMLElement>) => {
-      if (isPotentialLongPress.current) {
-        const pressDuration = Date.now() - touchStartTime.current;
+      if (!isPotentialLongPress.current) {
+        setTimeout(() => {
+          isTouchEventInProgress.current = false;
+        }, 300);
 
-        if (pressDuration > ms && callback(event_)) {
-          const touch = event_.changedTouches[0];
+        return;
+      }
 
-          const rippleTarget =
-            getRippleTarget?.(event_) ?? resolveDefaultRippleTarget(event_);
+      const pressDuration = Date.now() - touchStartTime.current;
 
-          if (touch && rippleTarget) {
-            applyRipple(rippleTarget, touch.clientX, touch.clientY);
-          }
+      if (pressDuration > ms && canHandlePress(event_)) {
+        const touch = event_.changedTouches[0];
 
-          event_.preventDefault();
+        const rippleTarget =
+          getRippleTarget?.(event_) ?? resolveDefaultRippleTarget(event_);
+
+        if (touch && rippleTarget) {
+          applyRipple(rippleTarget, touch.clientX, touch.clientY);
         }
+
+        event_.preventDefault();
       }
 
       setTimeout(() => {
@@ -88,7 +96,7 @@ export const useLongPress = (
 
       isPotentialLongPress.current = false;
     },
-    [callback, getRippleTarget, ms]
+    [canHandlePress, getRippleTarget, ms]
   );
 
   const onContextMenu = useCallback(
@@ -97,17 +105,19 @@ export const useLongPress = (
         return;
       }
 
-      const callbackResult = callback(event_);
+      const isCallbackResult = canHandlePress(event_);
 
       const rippleTarget =
         getRippleTarget?.(event_) ?? resolveDefaultRippleTarget(event_);
 
-      if (callbackResult && rippleTarget) {
-        applyRipple(rippleTarget, event_.clientX, event_.clientY);
-        event_.preventDefault();
+      if (!(isCallbackResult && rippleTarget)) {
+        return;
       }
+
+      applyRipple(rippleTarget, event_.clientX, event_.clientY);
+      event_.preventDefault();
     },
-    [callback, getRippleTarget]
+    [canHandlePress, getRippleTarget]
   );
 
   return {

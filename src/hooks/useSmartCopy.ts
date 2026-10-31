@@ -48,7 +48,7 @@ const isNonSummaryMarkSelection = (range: Range): boolean => {
     }
   }
 
-  const remainingText = (cleanedSelection.textContent || "").replaceAll(/\s+/g, "");
+  const remainingText = (cleanedSelection.textContent ?? "").replaceAll(/\s+/g, "");
 
   return remainingText.length === 0;
 };
@@ -65,22 +65,26 @@ const collectSources = (selection: Selection): ClipboardSource[] => {
   for (const detail of openDetails) {
     const contentSection = detail.querySelector(".details-nested-section");
 
-    if (contentSection && selection.containsNode(contentSection, true)) {
-      const summary = detail.querySelector("summary");
-
-      const numericAnchor = summary?.id;
-
-      const textualAnchor = (detail as HTMLElement).dataset.anchor;
-
-      const anchorToUse = textualAnchor || numericAnchor;
-
-      if (anchorToUse) {
-        const url = new URL(globalThis.location.href);
-
-        url.hash = anchorToUse;
-        sources.push({url: url.toString()});
-      }
+    if (!contentSection || !selection.containsNode(contentSection, true)) {
+      continue;
     }
+
+    const summary = detail.querySelector("summary");
+
+    const numericAnchor = summary?.id;
+
+    const textualAnchor = (detail as HTMLElement).dataset.anchor;
+
+    const anchorToUse = textualAnchor ?? numericAnchor;
+
+    if (!anchorToUse) {
+      continue;
+    }
+
+    const url = new URL(location.href);
+
+    url.hash = anchorToUse;
+    sources.push({url: url.href});
   }
 
   return sources;
@@ -125,7 +129,11 @@ const buildClipboardContent = (
   };
 };
 
-const applySmartCopy = (event: ClipboardEvent, selection: Selection, range: Range) => {
+const canApplySmartCopy = (
+  event: ClipboardEvent,
+  selection: Selection,
+  range: Range
+): boolean => {
   const sources = collectSources(selection);
 
   if (sources.length === 0) {
@@ -137,7 +145,7 @@ const applySmartCopy = (event: ClipboardEvent, selection: Selection, range: Rang
 
   const temporaryDiv = createRangeContainer(range);
 
-  const selectedHtml = temporaryDiv.innerHTML;
+  const selectedHtml = temporaryDiv.getHTML();
 
   const selectedText = selection.toString().trim();
 
@@ -162,9 +170,8 @@ const handleSmartCopy = (event: ClipboardEvent) => {
 
   const {range, selection} = activeSelectionRange;
 
-  const shouldShowCopySuccess = isNonSummaryMarkSelection(range)
-    ? true
-    : applySmartCopy(event, selection, range);
+  const shouldShowCopySuccess =
+    isNonSummaryMarkSelection(range) || canApplySmartCopy(event, selection, range);
 
   if (shouldShowCopySuccess) {
     message.success("Выделенный текст скопирован в буфер обмена");
@@ -173,7 +180,9 @@ const handleSmartCopy = (event: ClipboardEvent) => {
 
 export const useSmartCopy = (isPageLoaded: boolean) => {
   useEffect(() => {
-    if (!isPageLoaded) return;
+    if (!isPageLoaded) {
+      return;
+    }
 
     document.addEventListener("copy", handleSmartCopy);
 

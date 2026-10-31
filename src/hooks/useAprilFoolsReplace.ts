@@ -216,7 +216,7 @@ const applySlangWord = (word: string) => {
   let replacedWord = word;
 
   for (const {pattern, replacementWord} of DICTIONARY_PATTERNS) {
-    replacedWord = replacedWord.replaceAll(pattern, replacementWord);
+    replacedWord = replacedWord.replaceAll(pattern, () => replacementWord);
   }
 
   return replacedWord;
@@ -265,15 +265,15 @@ const applyMixedDialectTransform = (value: string) =>
 const createSearchPattern = (sourceWord: string) => {
   const escapedSourceWord = escapeRegex(sourceWord);
 
-  if (shouldUseWordBoundaries(sourceWord)) {
-    return new RegExp(String.raw`\b${escapedSourceWord}\b`, "gi");
-  }
+  const pattern = shouldUseWordBoundaries(sourceWord)
+    ? String.raw`\b${escapedSourceWord}\b`
+    : escapedSourceWord;
 
-  return new RegExp(escapedSourceWord, "gi");
+  return new RegExp(pattern, "gi");
 };
 
 const DICTIONARY_PATTERNS = DICTIONARY_ENTRIES.filter(
-  ([sourceWord]) => NON_REPLACEABLE_SOURCES.has(sourceWord) === false
+  ([sourceWord]) => !NON_REPLACEABLE_SOURCES.has(sourceWord)
 )
   .toSorted(
     ([leftSourceWord], [rightSourceWord]) =>
@@ -293,19 +293,12 @@ const isAprilFoolsDay = () => {
 const shouldSkipTextNode = (node: Node) => {
   const parentElement = node.parentElement;
 
-  if (!parentElement) {
-    return true;
-  }
-
-  if (
+  return Boolean(
+    !parentElement ||
     parentElement.closest(
       "script, style, noscript, textarea, mark.copy, mark.path, mark.file, mark.code"
     )
-  ) {
-    return true;
-  }
-
-  return false;
+  );
 };
 
 const replaceDictionaryWordsInTextNode = (node: Node) => {
@@ -339,7 +332,7 @@ const replaceDictionaryWordsInTextNode = (node: Node) => {
   replacedValue = applyMixedDialectTransform(replacedValue);
 
   for (const [placeholder, replacementWord] of placeholderEntries) {
-    replacedValue = replacedValue.replaceAll(placeholder, replacementWord);
+    replacedValue = replacedValue.replaceAll(placeholder, () => replacementWord);
   }
 
   if (replacedValue === currentValue) {
@@ -364,7 +357,7 @@ const replaceDictionaryWordsInNodeTree = (rootNode: Node) => {
 
 export const useAprilFoolsReplace = () => {
   useEffect(() => {
-    if (globalThis.document === undefined || isAprilFoolsDay() === false) {
+    if (typeof document === "undefined" || !isAprilFoolsDay()) {
       return;
     }
 

@@ -6,16 +6,18 @@ import {useLoading} from "../context/LoadingContext";
 
 const PAGE_LOAD_DELAY = 100;
 
-export const usePageLoad = (isFaqPage = false) => {
+export const useIsPageLoaded = (isFaqPage = false): boolean => {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
 
   const {canDismiss, setIsLoading} = useLoading();
 
   useEffect(() => {
-    let cancelled = false;
+    let isCancelled = false;
 
     const finishLoading = () => {
-      if (cancelled) return;
+      if (isCancelled) {
+        return;
+      }
 
       setIsPageLoaded(true);
 
@@ -25,7 +27,9 @@ export const usePageLoad = (isFaqPage = false) => {
     };
 
     const timer = setTimeout(async () => {
-      if (cancelled) return;
+      if (isCancelled) {
+        return;
+      }
 
       if (!isFaqPage) {
         finishLoading();
@@ -35,17 +39,15 @@ export const usePageLoad = (isFaqPage = false) => {
 
       await generateAnchorId();
 
-      if (cancelled) return;
-
-      setIsPageLoaded(true);
-
-      if (canDismiss) {
-        setIsLoading(false);
+      if (isCancelled) {
+        return;
       }
+
+      finishLoading();
     }, PAGE_LOAD_DELAY);
 
     return () => {
-      cancelled = true;
+      isCancelled = true;
       clearTimeout(timer);
     };
   }, [setIsLoading, isFaqPage, canDismiss]);

@@ -20,7 +20,7 @@ const useDynamicFavicon = (svgContent: string) => {
       try {
         const color = getAccentColor();
 
-        const themedSvg = svgContent.replaceAll(/fill=".*?"/g, `fill="${color}"`);
+        const themedSvg = svgContent.replaceAll(/fill="[^"]*"/g, () => `fill="${color}"`);
 
         const svgBlob = new Blob([themedSvg], {type: "image/svg+xml"});
 
@@ -40,7 +40,7 @@ const useDynamicFavicon = (svgContent: string) => {
           link = document.createElement("link");
           link.rel = "icon";
           link.href = url;
-          document.querySelectorAll("head")[0].append(link);
+          document.querySelector("head")?.append(link);
         }
       } catch (error) {
         console.error("Failed to update favicon:", error);
@@ -53,10 +53,10 @@ const useDynamicFavicon = (svgContent: string) => {
       updateFavicon();
     };
 
-    globalThis.addEventListener("accentHueChanged", handleAccentHueChange);
+    addEventListener("accentHueChanged", handleAccentHueChange);
 
     return () => {
-      globalThis.removeEventListener("accentHueChanged", handleAccentHueChange);
+      removeEventListener("accentHueChanged", handleAccentHueChange);
 
       if (previousUrl) {
         URL.revokeObjectURL(previousUrl);

@@ -30,7 +30,9 @@ const LinkHandlerContext = createContext<
 export const useLinkHandler = () => {
   const context = useContext(LinkHandlerContext);
 
-  if (!context) throw new Error("useLinkHandler must be used within LinkHandlerProvider");
+  if (!context) {
+    throw new Error("useLinkHandler must be used within LinkHandlerProvider");
+  }
 
   return context;
 };
@@ -58,7 +60,9 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
 
   const handleLinkClick = useCallback(
     (event: React.MouseEvent | MouseEvent) => {
-      if (event.defaultPrevented) return;
+      if (event.defaultPrevented) {
+        return;
+      }
 
       const element = event.target as Element;
 
@@ -76,31 +80,39 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
         sizeCache
       );
 
-      if (!result) return;
+      if (!result) {
+        return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
       setTarget(result);
 
       if (result.type === "download" && !result.fileSize) {
-        resolveDownloadLinkFileSize(result.href).then((size) => {
-          if (size) {
-            setSizeCache((previous) => ({...previous, [result.href]: size}));
+        void (async () => {
+          const size = await resolveDownloadLinkFileSize(result.href);
 
-            setTarget((previous) =>
-              previous?.type === "download" && previous.href === result.href
-                ? {...previous, fileSize: size}
-                : previous
-            );
+          if (!size) {
+            return;
           }
-        });
+
+          setSizeCache((previous) => ({...previous, [result.href]: size}));
+
+          setTarget((previous) =>
+            previous?.type === "download" && previous.href === result.href
+              ? {...previous, fileSize: size}
+              : previous
+          );
+        })();
       }
     },
     [sizeCache]
   );
 
   const handleOk = useCallback(async () => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     switch (target.type) {
       case "external": {
@@ -122,16 +134,18 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
         const element = document.getElementById(target.id);
 
         if (element?.closest("details")) {
-          globalThis.dispatchEvent(new CustomEvent("close-all-spoilers"));
+          dispatchEvent(new CustomEvent("close-all-spoilers"));
 
           setTimeout(
             () =>
-              globalThis.dispatchEvent(
+              dispatchEvent(
                 new CustomEvent("open-spoiler-by-id", {detail: {id: target.id}})
               ),
             50
           );
-        } else scrollToAnchorById(target.id);
+        } else {
+          scrollToAnchorById(target.id);
+        }
 
         break;
       }
@@ -150,8 +164,9 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
             signal: controller.signal,
           });
         } catch (error) {
-          if (!(error instanceof DOMException && error.name === "AbortError"))
+          if (!(error instanceof DOMException && error.name === "AbortError")) {
             console.error(error);
+          }
         } finally {
           setIsDownloadStarting(false);
         }
@@ -164,10 +179,12 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
     closeModal();
   }, [target, navigate, closeModal]);
 
-  useEnterKeyConfirm(!!target, handleOk);
+  useEnterKeyConfirm(Boolean(target), handleOk);
 
   const getModalProperties = () => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     let downloadButtonLabel = "Скачать";
 
@@ -251,7 +268,7 @@ export const LinkHandlerProvider: React.FC<{children: React.ReactNode}> = ({
           centered
           closeIcon={false}
           footer={<></>}
-          open={!!target}
+          open={Boolean(target)}
           zIndex={10_000}
           onCancel={closeModal}
         >

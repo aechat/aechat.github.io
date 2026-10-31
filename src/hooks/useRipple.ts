@@ -42,7 +42,7 @@ const findActiveRect = (
 };
 
 const ensurePositionedHost = (hostElement: HTMLElement) => {
-  const computedStyle = globalThis.getComputedStyle(hostElement);
+  const computedStyle = getComputedStyle(hostElement);
 
   if (computedStyle.position === "static") {
     hostElement.style.position = "relative";
@@ -50,7 +50,7 @@ const ensurePositionedHost = (hostElement: HTMLElement) => {
 };
 
 const isInlineLikeElement = (hostElement: HTMLElement): boolean => {
-  const {display} = globalThis.getComputedStyle(hostElement);
+  const {display} = getComputedStyle(hostElement);
 
   return display.startsWith("inline");
 };
@@ -118,11 +118,9 @@ export const applyRipple = (
     : (() => {
         ensurePositionedHost(hostElement);
 
-        if (isInlineLikeElement(hostElement)) {
-          return hostElement;
-        }
-
-        return getRippleLayer(hostElement);
+        return isInlineLikeElement(hostElement)
+          ? hostElement
+          : getRippleLayer(hostElement);
       })();
 
   const layoutWidth = element.offsetWidth || activeRect.width;
@@ -147,7 +145,8 @@ export const applyRipple = (
 
   const y = isFixedRipple ? clientY : (clientY - activeRect.top) / scaleY;
 
-  ripple.style.width = ripple.style.height = `${size}px`;
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
   ripple.style.left = `${x - size / 2}px`;
   ripple.style.top = `${y - size / 2}px`;
   ripple.classList.add("ripple");
@@ -168,7 +167,9 @@ export const applyRipple = (
 
 export const useRipple = <T extends HTMLElement>(options: RippleOptions = {}) => {
   const handleMouseDown = (event: ReactMouseEvent<T>) => {
-    if (event.button !== 0) return;
+    if (event.button !== 0) {
+      return;
+    }
 
     applyRipple(event.currentTarget, event.clientX, event.clientY, options);
   };

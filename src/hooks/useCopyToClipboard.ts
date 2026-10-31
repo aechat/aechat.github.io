@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef} from "react";
 
 import {message} from "antd";
 
-import {copyText} from "../utilities/copyUtilities";
+import {canCopyText} from "../utilities/copyUtilities";
 
 import {hasActiveTextSelection} from "../utilities/selectionUtilities";
 
@@ -10,7 +10,7 @@ import {useLongPress} from "./useLongPress";
 
 import {applyRipple} from "./useRipple";
 
-export {copyText} from "../utilities/copyUtilities";
+export {canCopyText} from "../utilities/copyUtilities";
 
 const CLICK_COPYABLE_SELECTOR =
   "code, mark.copy, mark.path, mark.code, mark.key, table mark.plugin, table mark.key";
@@ -39,11 +39,9 @@ const resolveClickCopyTarget = (target: HTMLElement): HTMLElement | undefined =>
 
   const copyTarget = target.closest(CLICK_COPYABLE_SELECTOR);
 
-  if (!(copyTarget instanceof HTMLElement) || isExcludedElement(copyTarget)) {
-    return undefined;
-  }
-
-  return copyTarget;
+  return !(copyTarget instanceof HTMLElement) || isExcludedElement(copyTarget)
+    ? undefined
+    : copyTarget;
 };
 
 const resolveMarkOrCodeTarget = (
@@ -117,26 +115,22 @@ export const useCopyToClipboard = () => {
   );
 
   const copyElementContent = useCallback(async (element: HTMLElement) => {
-    if (hasActiveTextSelection()) {
-      return;
-    }
-
-    if (isExcludedElement(element)) {
-      return;
-    }
-
-    if (isCopyingReference.current) {
+    if (
+      hasActiveTextSelection() ||
+      isExcludedElement(element) ||
+      isCopyingReference.current
+    ) {
       return;
     }
 
     isCopyingReference.current = true;
 
-    const textToCopy = element.textContent || "";
+    const textToCopy = element.textContent ?? "";
 
     try {
-      const success = await copyText(textToCopy);
+      const isSuccess = await canCopyText(textToCopy);
 
-      if (success) {
+      if (isSuccess) {
         message.success("Текст скопирован в буфер обмена");
       } else {
         message.error("Не удалось скопировать текст");
@@ -148,7 +142,7 @@ export const useCopyToClipboard = () => {
     }
   }, []);
 
-  const longPressCallback = useCallback(
+  const canHandleLongPress = useCallback(
     (event_: React.MouseEvent | React.TouchEvent) => {
       const target = resolveCopyTarget(event_);
 
@@ -163,7 +157,7 @@ export const useCopyToClipboard = () => {
     [copyElementContent, resolveCopyTarget]
   );
 
-  const longPressHandlers = useLongPress(longPressCallback, 500, {
+  const longPressHandlers = useLongPress(canHandleLongPress, 500, {
     getRippleTarget: resolveCopyTarget,
   });
 
@@ -187,10 +181,12 @@ export const useCopyToClipboard = () => {
 
       const copyTarget = resolveClickCopyTarget(target);
 
-      if (copyTarget instanceof HTMLElement) {
-        applyRipple(copyTarget, event_.clientX, event_.clientY);
-        void copyElementContent(copyTarget);
+      if (!(copyTarget instanceof HTMLElement)) {
+        return;
       }
+
+      applyRipple(copyTarget, event_.clientX, event_.clientY);
+      void copyElementContent(copyTarget);
     };
 
     const onMouseMove = (event_: MouseEvent) => {
