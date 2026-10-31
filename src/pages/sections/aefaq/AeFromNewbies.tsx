@@ -344,7 +344,7 @@ const AeFromNewbies: React.FC = () => {
       </DetailsSummary>
       <DetailsSummary
         anchor="layer"
-        tag="слои, базовые слои, adjustment layer, image sequence, null object, shape layer, solid layer, text layer, корректирующий слой, нулевой объект, нуль, секвенция изображений, сплошная заливка, слой фигура, текст, 3d, слои, трёхмерные слои, 3d layer, 3d object, camera, light, источник света, камера, трёхмерные модели, cineware, effect, blending mode, layer style, marker, эффект, режим наложения, стиль слоя, маркер"
+        tag="слои, базовые слои, adjustment layer, image sequence, null object, shape layer, solid layer, text layer, корректирующий слой, нулевой объект, нуль, секвенция изображений, сплошная заливка, слой фигура, текст, 3d, трёхмерные слои, 3d layer, 3d object, camera, light, источник света, камера, трёхмерные модели, cineware, effect, blending mode, layer style, marker, эффект, режим наложения, стиль слоя, маркер"
         title="Что такое слои и как с ними работать?"
       >
         <p>
