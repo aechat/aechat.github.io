@@ -27,8 +27,9 @@ export default defineConfig(({mode}) => {
       },
     },
     build: {
-      outDir: "./dist/client",
+      chunkSizeWarningLimit: 3000,
       manifest: "manifest.json",
+      outDir: "./dist/client",
     },
     ssr: {
       noExternal: ["react-helmet-async"],
