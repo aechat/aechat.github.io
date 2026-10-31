@@ -196,10 +196,10 @@ export default [
           groups: [
             "index-signature",
             "static-property",
+            "static-method",
             "private-property",
             "property",
             "constructor",
-            "static-method",
             "private-method",
             "method",
             "unknown",
@@ -291,6 +291,7 @@ export default [
         "warn",
         {
           case: "pascalCase",
+          checkDirectories: false,
         },
       ],
     },
