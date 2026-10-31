@@ -91,7 +91,7 @@ const escapeRegExp = (string_: string) =>
   string_.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 const ALIAS_REGEXES: Record<string, RegExp> = Object.fromEntries(
-  Object.entries(KEY_MODIFIER_ALIASES).map(([alias]) => [
+  Object.keys(KEY_MODIFIER_ALIASES).map((alias) => [
     alias,
     new RegExp(escapeRegExp(alias), "g"),
   ])
@@ -118,11 +118,9 @@ const removeNestedDetailsContainers = (root: Element): void => {
 };
 
 const escapeCssClassName = (className: string): string => {
-  if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
-    return CSS.escape(className);
-  }
-
-  return className.replaceAll(/[^a-zA-Z0-9_-]/g, String.raw`\$&`);
+  return typeof CSS !== "undefined" && typeof CSS.escape === "function"
+    ? CSS.escape(className)
+    : className.replaceAll(/[^a-zA-Z0-9_-]/g, String.raw`\$&`);
 };
 
 const cloneWithoutFigures = (element: Element): Element => {
@@ -143,11 +141,11 @@ const isListOrParagraph = (element: Element): boolean => {
 const processTextNode = (
   node: Text,
   compiledQuery: CompiledSearchQuery,
-  hasMatch: SnippetFormattingDependencies["hasMatch"]
+  matchTester: SnippetFormattingDependencies["hasMatch"]
 ): string => {
   const text = node.textContent || "";
 
-  return hasMatch(text, compiledQuery) ? text : "";
+  return matchTester(text, compiledQuery) ? text : "";
 };
 
 const isKeyCombinationWords = (searchWords: string[]): boolean => {
@@ -161,7 +159,7 @@ const isKeyCombinationWords = (searchWords: string[]): boolean => {
   );
 };
 
-const checkKeyCombinationMatch = (
+const isKeyCombinationMatch = (
   clonedRow: HTMLTableRowElement,
   searchWords: string[],
   normalizeKeyCombination: (text: string) => string
@@ -172,24 +170,22 @@ const checkKeyCombinationMatch = (
     .map((cell) => {
       const keyElements = cell.querySelectorAll("mark.key");
 
-      if (keyElements.length > 0) {
-        return [...keyElements]
-          .map((element) => element.textContent?.toLowerCase() || "")
-          .join(" ");
-      }
-
-      return cell.textContent?.toLowerCase() || "";
+      return keyElements.length > 0
+        ? [...keyElements]
+            .map((element) => element.textContent?.toLowerCase() || "")
+            .join(" ")
+        : cell.textContent?.toLowerCase() || "";
     })
     .join(" ");
 
   return normalizeKeyCombination(rowText).includes(searchPattern);
 };
 
-const checkGeneralMatch = (
+const isGeneralMatch = (
   clonedRow: HTMLTableRowElement,
   searchWords: string[]
 ): boolean => {
-  const rowHtml = clonedRow.innerHTML.toLowerCase();
+  const rowHtml = clonedRow.getHTML().toLowerCase();
 
   return searchWords.every((word) => rowHtml.includes(word.toLowerCase()));
 };
@@ -232,7 +228,7 @@ const extractTableHeaders = (
 const processTableRow = (
   row: HTMLTableRowElement,
   excludedColumns: Set<number>,
-  keyCombo: boolean,
+  isKeyCombo: boolean,
   searchWords: string[],
   normalizeKeyCombination: (text: string) => string
 ): string | undefined => {
@@ -248,9 +244,9 @@ const processTableRow = (
     return;
   }
 
-  const hasMatch = keyCombo
-    ? checkKeyCombinationMatch(clonedRow, searchWords, normalizeKeyCombination)
-    : checkGeneralMatch(clonedRow, searchWords);
+  const hasMatch = isKeyCombo
+    ? isKeyCombinationMatch(clonedRow, searchWords, normalizeKeyCombination)
+    : isGeneralMatch(clonedRow, searchWords);
 
   return hasMatch ? clonedRow.outerHTML : undefined;
 };
@@ -295,7 +291,7 @@ const processTable = (
   if (matchingRows.length > 0) {
     const newTable = document.createElement("table");
 
-    const thead = table.querySelector("thead");
+    const thead = table.querySelector(":scope > thead");
 
     if (thead) {
       newTable.append(thead.cloneNode(true));
@@ -340,20 +336,24 @@ const processContainerChildren = (
       continue;
     }
 
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const elementNode = node as Element;
-
-      if (elementNode.classList.toString().includes("media-figure")) {
-        continue;
-      }
-
-      const elementResult = processElement(elementNode, compiledQuery, dependencies);
-
-      if (elementResult.result) {
-        result += elementResult.result;
-        matchCount += elementResult.matchCount;
-      }
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      continue;
     }
+
+    const elementNode = node as Element;
+
+    if (elementNode.classList.toString().includes("media-figure")) {
+      continue;
+    }
+
+    const elementResult = processElement(elementNode, compiledQuery, dependencies);
+
+    if (!elementResult.result) {
+      continue;
+    }
+
+    result += elementResult.result;
+    matchCount += elementResult.matchCount;
   }
 
   return {matchCount, result};
@@ -364,22 +364,9 @@ const handleListWithNestedMatches = (
   compiledQuery: CompiledSearchQuery,
   dependencies: SnippetFormattingDependencies
 ): SearchMatch => {
-  const ul = element.querySelector("ul");
+  const ul = element.querySelector(":scope > ul");
 
-  if (!ul) {
-    const clone = cloneWithoutFigures(element);
-
-    return {
-      matchCount: 1,
-      result: dependencies.wrapSnippetWithClosestAddition(
-        element,
-        `<ul>${clone.outerHTML}</ul>`,
-        dependencies.additionContainerSelector
-      ),
-    };
-  }
-
-  const nestedItems = [...ul.querySelectorAll("li")];
+  const nestedItems = ul ? [...ul.querySelectorAll("li")] : [];
 
   const matchingNestedItems = nestedItems.filter((item) =>
     dependencies.hasMatch(item.textContent || "", compiledQuery)
@@ -387,7 +374,7 @@ const handleListWithNestedMatches = (
 
   const clone = cloneWithoutFigures(element);
 
-  if (matchingNestedItems.length === 0) {
+  if (!ul || matchingNestedItems.length === 0) {
     return {
       matchCount: 1,
       result: dependencies.wrapSnippetWithClosestAddition(
@@ -406,7 +393,7 @@ const handleListWithNestedMatches = (
     newUl.append(nestedItemClone);
   }
 
-  const oldUl = clone.querySelector("ul");
+  const oldUl = clone.querySelector(":scope > ul");
 
   if (oldUl) {
     oldUl.replaceWith(newUl);
@@ -453,16 +440,18 @@ const processElement = (
   return processContainerChildren(element, compiledQuery, dependencies);
 };
 
-const getTruncatedTable = (table: HTMLTableElement, maxRows = 8): string => {
+const getTruncatedTable = (table: HTMLTableElement): string => {
+  const maxRows = 8;
+
   const newTable = document.createElement("table");
 
-  const thead = table.querySelector("thead");
+  const thead = table.querySelector(":scope > thead");
 
   if (thead) {
     newTable.append(thead.cloneNode(true));
   }
 
-  const tbody = table.querySelector("tbody");
+  const tbody = table.querySelector(":scope > tbody");
 
   const allRows = tbody
     ? [...tbody.querySelectorAll("tr")]
@@ -504,7 +493,9 @@ const getTruncatedTable = (table: HTMLTableElement, maxRows = 8): string => {
 };
 
 const getFirstCleanParagraphOrElement = (root: Element): string => {
-  const firstParagraph = root.querySelector("details > p, details > div > p");
+  const firstParagraph = root.querySelector(
+    ":scope details > p, :scope details > div > p"
+  );
 
   if (firstParagraph) {
     const cleanedParagraph = firstParagraph.cloneNode(true) as Element;
@@ -550,7 +541,7 @@ const pickBestListOrParagraphMatch = (
 ): SearchMatch => {
   let bestResult: SearchMatch = {matchCount: 0, result: ""};
 
-  const listItems = root.querySelectorAll("ul > li");
+  const listItems = root.querySelectorAll(":scope ul > li");
 
   for (const item of listItems) {
     const itemResult = processElement(item, compiledQuery, dependencies);
@@ -623,7 +614,7 @@ const pickBestCompactSnippet = (
 
   let bestHtml: string | undefined;
 
-  let bestScore = Number.NEGATIVE_INFINITY;
+  let bestScore = -Infinity;
 
   for (const candidate of candidates) {
     const processedCandidate = processElement(candidate, compiledQuery, dependencies);
@@ -662,10 +653,12 @@ const pickBestCompactSnippet = (
       compiledQuery
     );
 
-    if (candidateScore > bestScore) {
-      bestScore = candidateScore;
-      bestHtml = candidateHtml;
+    if (candidateScore <= bestScore) {
+      continue;
     }
+
+    bestScore = candidateScore;
+    bestHtml = candidateHtml;
   }
 
   return bestHtml;
@@ -703,23 +696,20 @@ export const isKeyCombinationSearch = (text: string): boolean => {
 
   const words = lowerText.split(/\s+/).filter(Boolean);
 
-  if (
+  return (
     words.length > 0 &&
     words.every(
       (word) => (KEY_MODIFIERS as readonly string[]).includes(word) || word.length <= 2
-    )
-  ) {
-    return KEY_MODIFIERS.some((modifier) => lowerText.includes(modifier));
-  }
-
-  return false;
+    ) &&
+    KEY_MODIFIERS.some((modifier) => lowerText.includes(modifier))
+  );
 };
 
 export const normalizeKeyCombination = (text: string): string => {
   let normalized = text.toLowerCase();
 
   for (const [alias, standard] of Object.entries(KEY_MODIFIER_ALIASES)) {
-    normalized = normalized.replaceAll(ALIAS_REGEXES[alias], standard);
+    normalized = normalized.replace(ALIAS_REGEXES[alias], () => standard);
   }
 
   return normalized.replaceAll("+", " ").replaceAll(/\s+/g, " ").trim();
@@ -742,11 +732,9 @@ export const wrapSnippetWithClosestAddition = (
 ): string => {
   const additionContainer = element.closest(additionContainerSelector);
 
-  if (!additionContainer) {
-    return snippetHtml;
-  }
-
-  return wrapSnippetWithAdditionContainer(additionContainer, snippetHtml);
+  return additionContainer
+    ? wrapSnippetWithAdditionContainer(additionContainer, snippetHtml)
+    : snippetHtml;
 };
 
 export const wrapSnippetWithAdditionContainer = (
@@ -795,17 +783,19 @@ export const applyAdditionSnippetStyles = (
   }
 
   for (const element of temporaryDiv.querySelectorAll(additionContainerSelector)) {
-    if (element instanceof HTMLElement) {
-      element.style.fontSize = "0.9rem";
-      element.style.margin = "10px";
+    if (!(element instanceof HTMLElement)) {
+      continue;
+    }
 
-      if (element.closest("li")) {
-        element.style.marginInline = "0";
-      }
+    element.style.fontSize = "0.9rem";
+    element.style.margin = "10px";
+
+    if (element.closest("li")) {
+      element.style.marginInline = "0";
     }
   }
 
-  return temporaryDiv.innerHTML;
+  return temporaryDiv.getHTML();
 };
 
 export const getTopLevelAdditionContainer = (
@@ -864,7 +854,7 @@ export const collectDividerTexts = (detail: Element): string[] => {
 };
 
 export const collectFlexibleLinksTexts = (detail: Element): string[] => {
-  return [...detail.querySelectorAll(".flexible-links a")]
+  return [...detail.querySelectorAll(":scope .flexible-links a")]
     .map((element) => element.textContent?.trim() || "")
     .filter(Boolean);
 };
@@ -899,7 +889,7 @@ export const buildTableGroupsHtml = (
 
   const tables = [...detail.querySelectorAll<HTMLTableElement>("table")];
 
-  const keyCombo = isKeyCombinationWords(searchWords);
+  const isKeyCombo = isKeyCombinationWords(searchWords);
 
   for (const table of tables) {
     const headers = extractTableHeaders(table, dependencies.decodeHtmlEntities);
@@ -915,17 +905,19 @@ export const buildTableGroupsHtml = (
         processTableRow(
           row,
           excludedColumns,
-          keyCombo,
+          isKeyCombo,
           searchWords,
           dependencies.normalizeKeyCombination
         )
       )
       .filter(Boolean) as string[];
 
-    if (processedRows.length > 0) {
-      tableGroups[headerKey] ??= [];
-      tableGroups[headerKey].push(...processedRows);
+    if (processedRows.length === 0) {
+      continue;
     }
+
+    tableGroups[headerKey] ??= [];
+    tableGroups[headerKey].push(...processedRows);
   }
 
   return Object.entries(tableGroups)
@@ -998,10 +990,12 @@ export const buildListContentHtml = (
 
     const ulHtml = ulClone.outerHTML;
 
-    if (!addedParts.has(ulHtml)) {
-      parts.push(ulHtml);
-      addedParts.add(ulHtml);
+    if (addedParts.has(ulHtml)) {
+      continue;
     }
+
+    parts.push(ulHtml);
+    addedParts.add(ulHtml);
   }
 
   return parts.filter(Boolean).join("\n");
@@ -1055,7 +1049,7 @@ export const formatSearchSnippetResult = (
   const tagMatch = (temporaryDiv.querySelector("[data-tags]") as HTMLElement)?.dataset
     .tags;
 
-  const titleMatch = temporaryDiv.querySelector("summary h2")?.textContent;
+  const titleMatch = temporaryDiv.querySelector(":scope summary h2")?.textContent;
 
   if (
     (tagMatch && dependencies.hasMatch(tagMatch, compiledQuery)) ||
@@ -1086,15 +1080,8 @@ export const formatSearchSnippetResult = (
     dependencies
   );
 
-  if (!bestResult.result) {
-    return dependencies.applyAdditionSnippetStyles(
-      pickTableOrFallback(temporaryDiv, compiledQuery, dependencies),
-      dependencies.additionContainerSelector
-    );
-  }
-
   return dependencies.applyAdditionSnippetStyles(
-    bestResult.result,
+    bestResult.result || pickTableOrFallback(temporaryDiv, compiledQuery, dependencies),
     dependencies.additionContainerSelector
   );
 };
@@ -1118,8 +1105,8 @@ export const mapRankedResultsToSearchResults = (
     }
 
     mappedResults.push({
-      ...(detail.anchor ? {anchor: detail.anchor} : {}),
-      ...(detail.tag ? {tag: detail.tag} : {}),
+      ...(detail.anchor && {anchor: detail.anchor}),
+      ...(detail.tag && {tag: detail.tag}),
       content: dependencies.formatContent(detail.content, compiledQuery),
       hasTagMatch: workerResult.hasTagMatch,
       hasTitleMatch: workerResult.hasTitleMatch,
@@ -1136,15 +1123,15 @@ export const getMatchingTagsByQuery = (
   tag: string | undefined,
   compiledQuery: CompiledSearchQuery
 ): string[] => {
-  if (!tag || tag.trim() === "" || compiledQuery.searchWords.length === 0) {
-    return [];
-  }
-
-  return tag
-    .split(",")
-    .map((tagItem) => tagItem.trim())
-    .filter(Boolean)
-    .filter((tagItem) => hasCompiledQueryMatchInFields([tagItem], compiledQuery, "any"));
+  return !tag || compiledQuery.searchWords.length === 0 || tag.trim() === ""
+    ? []
+    : tag
+        .split(",")
+        .map((tagItem) => tagItem.trim())
+        .filter(Boolean)
+        .filter((tagItem) =>
+          hasCompiledQueryMatchInFields([tagItem], compiledQuery, "any")
+        );
 };
 
 export const getResultWord = (count: number): string => {
@@ -1152,11 +1139,9 @@ export const getResultWord = (count: number): string => {
     return "результат";
   }
 
-  if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) {
-    return "результата";
-  }
-
-  return "результатов";
+  return count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)
+    ? "результата"
+    : "результатов";
 };
 
 export {extractMatchingLine} from "./searchHighlightUtilities";

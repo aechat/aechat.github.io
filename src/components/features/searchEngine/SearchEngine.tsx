@@ -111,13 +111,13 @@ export const SearchInPage: React.FC<{sections: SearchSection[]}> = ({sections}) 
       return;
     }
 
-    const timeout = globalThis.setTimeout(() => {
-      if (results.length > 0 && resultsQuery === query) {
+    const timeout = setTimeout(() => {
+      if (resultsQuery === query && results.length > 0) {
         addQueryToHistory(query);
       }
     }, 5000);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [query, addQueryToHistory, results, resultsQuery]);
 
   const handleRecentQuerySelect = useCallback(
@@ -147,28 +147,30 @@ export const SearchInPage: React.FC<{sections: SearchSection[]}> = ({sections}) 
       return "results";
     }
 
-    if (query.trim() !== "" && results.length === 0 && resultsQuery === query) {
-      return "no-results";
-    }
-
-    return previousTargetContentType;
+    return resultsQuery === query && results.length === 0 && query.trim() !== ""
+      ? "no-results"
+      : previousTargetContentType;
   };
 
   const targetContentType = getTargetContentType();
 
   useEffect(() => {
-    if (targetContentType !== previousTargetContentType) {
-      setPreviousTargetContentType(targetContentType);
-      setContentTransitionPhase("exit");
+    if (targetContentType === previousTargetContentType) {
+      return;
     }
+
+    setPreviousTargetContentType(targetContentType);
+    setContentTransitionPhase("exit");
   }, [targetContentType, previousTargetContentType]);
 
   useEffect(() => {
-    if (contentTransitionPhase !== "exit" && displayedContentType === targetContentType) {
-      setDisplayedResults(results);
-      setDisplayedResultsQuery(resultsQuery);
-      setDisplayedResultsCount(totalResultsCount);
+    if (contentTransitionPhase === "exit" || displayedContentType !== targetContentType) {
+      return;
     }
+
+    setDisplayedResults(results);
+    setDisplayedResultsQuery(resultsQuery);
+    setDisplayedResultsCount(totalResultsCount);
   }, [
     results,
     resultsQuery,
@@ -187,12 +189,12 @@ export const SearchInPage: React.FC<{sections: SearchSection[]}> = ({sections}) 
       return;
     }
 
-    const timeout = globalThis.setTimeout(() => {
+    const timeout = setTimeout(() => {
       setDisplayedContentType(previousTargetContentType);
       setContentTransitionPhase("enter");
     }, 350);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [contentTransitionPhase, previousTargetContentType, resultsQuery, query]);
 
   useEffect(() => {
@@ -200,11 +202,11 @@ export const SearchInPage: React.FC<{sections: SearchSection[]}> = ({sections}) 
       return;
     }
 
-    const timeout = globalThis.setTimeout(() => {
+    const timeout = setTimeout(() => {
       setContentTransitionPhase("idle");
     }, 300);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [contentTransitionPhase]);
 
   const getModalContent = () => {

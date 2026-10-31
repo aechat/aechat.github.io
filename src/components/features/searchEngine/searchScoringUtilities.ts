@@ -165,7 +165,7 @@ const getSmallestTokenRange = (tokenPositions: number[][]): number | undefined =
 
   const pointers = Array.from({length: tokenPositions.length}, () => 0);
 
-  let bestRange = Number.POSITIVE_INFINITY;
+  let bestRange = Infinity;
 
   while (true) {
     const currentValues = tokenPositions.map(
@@ -334,13 +334,13 @@ export const getShortQueryAdjustment = ({
     return 0;
   }
 
-  const onlyContentSignal =
+  const isOnlyContentSignal =
     contentTotalMatched > 0 &&
     titleTotalMatched === 0 &&
     tagTotalMatched === 0 &&
     entityTotalMatched === 0;
 
-  if (!onlyContentSignal) {
+  if (!isOnlyContentSignal) {
     return 0;
   }
 
@@ -628,11 +628,9 @@ export const selectCandidatesForRescore = <TItem>({
         return b.idMatchPriority - a.idMatchPriority;
       }
 
-      if (b.preliminaryScore !== a.preliminaryScore) {
-        return b.preliminaryScore - a.preliminaryScore;
-      }
-
-      return a.sourceOrder - b.sourceOrder;
+      return b.preliminaryScore === a.preliminaryScore
+        ? a.sourceOrder - b.sourceOrder
+        : b.preliminaryScore - a.preliminaryScore;
     })
     .slice(0, candidateLimit)
     .map((entry) => entry.item);

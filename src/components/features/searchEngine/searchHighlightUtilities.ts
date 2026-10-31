@@ -40,11 +40,7 @@ const getLongestPrefixVariantLength = (token: string, variants: string[]): numbe
   let longestLength = 0;
 
   for (const variant of variants) {
-    if (variant.length < MIN_PREFIX_LENGTH) {
-      continue;
-    }
-
-    if (!token.startsWith(variant)) {
+    if (variant.length < MIN_PREFIX_LENGTH || !token.startsWith(variant)) {
       continue;
     }
 
@@ -66,17 +62,19 @@ const applyTokenHighlightCandidate = (
 
   const priority = WORD_MATCH_PRIORITY[matchType];
 
-  if (
+  if (!(
     priority > accumulator.bestPriority ||
     (priority === accumulator.bestPriority &&
       (length > accumulator.bestLength ||
         (length === accumulator.bestLength && startOffset < accumulator.bestStartOffset)))
-  ) {
-    accumulator.bestMatch = {length, matchType, startOffset};
-    accumulator.bestPriority = priority;
-    accumulator.bestLength = length;
-    accumulator.bestStartOffset = startOffset;
+  )) {
+    return;
   }
+
+  accumulator.bestMatch = {length, matchType, startOffset};
+  accumulator.bestPriority = priority;
+  accumulator.bestLength = length;
+  accumulator.bestStartOffset = startOffset;
 };
 
 const getLongestIncludedVariantMatch = (
@@ -85,7 +83,7 @@ const getLongestIncludedVariantMatch = (
 ): {length: number; startOffset: number} | undefined => {
   let bestLength = 0;
 
-  let bestStartOffset = Number.POSITIVE_INFINITY;
+  let bestStartOffset = Infinity;
 
   for (const variant of variants) {
     if (!variant) {
@@ -100,17 +98,20 @@ const getLongestIncludedVariantMatch = (
 
     const length = variant.length;
 
-    if (length > bestLength || (length === bestLength && startOffset < bestStartOffset)) {
-      bestLength = length;
-      bestStartOffset = startOffset;
+    if (!(
+      length > bestLength ||
+      (length === bestLength && startOffset < bestStartOffset)
+    )) {
+      continue;
     }
+
+    bestLength = length;
+    bestStartOffset = startOffset;
   }
 
-  if (bestLength <= 0 || !Number.isFinite(bestStartOffset)) {
-    return undefined;
-  }
-
-  return {length: bestLength, startOffset: bestStartOffset};
+  return bestLength <= 0 || !Number.isFinite(bestStartOffset)
+    ? undefined
+    : {length: bestLength, startOffset: bestStartOffset};
 };
 
 const applyWordTokenHighlight = (
@@ -217,7 +218,7 @@ const getTokenHighlightMatch = (
     bestLength: -1,
     bestMatch: undefined,
     bestPriority: -1,
-    bestStartOffset: Number.POSITIVE_INFINITY,
+    bestStartOffset: Infinity,
   };
 
   for (const {features, normalizedWord} of compiledQuery.words) {
@@ -285,7 +286,7 @@ const getTextHighlightRanges = (
 
     const highlightMatch = tokenMatchCache.get(cacheKey);
 
-    if (!highlightMatch || highlightMatch.length <= 0) {
+    if (!highlightMatch || highlightMatch.length === 0) {
       continue;
     }
 
@@ -315,23 +316,12 @@ const collectHighlightableTextNodes = (root: Element): Text[] => {
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: (node) => {
-      if (!(node instanceof Text)) {
-        return NodeFilter.FILTER_REJECT;
-      }
-
-      if (!node.textContent?.trim()) {
-        return NodeFilter.FILTER_REJECT;
-      }
-
-      if (node.parentElement?.closest('[data-search-hit="true"]')) {
-        return NodeFilter.FILTER_REJECT;
-      }
-
-      if (node.parentElement?.closest("script, style")) {
-        return NodeFilter.FILTER_REJECT;
-      }
-
-      return NodeFilter.FILTER_ACCEPT;
+      return !(node instanceof Text) ||
+        !node.textContent?.trim() ||
+        node.parentElement?.closest('[data-search-hit="true"]') ||
+        node.parentElement?.closest("script, style")
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT;
     },
   });
 
@@ -405,14 +395,14 @@ export const highlightMatchedTokens = (
     highlightSingleTextNode(textNode, compiledQuery);
   }
 
-  return root.innerHTML;
+  return root.getHTML();
 };
 
 export const renderHighlightedText = (
   text: string,
   compiledQuery: CompiledSearchQuery
 ): ReactNode[] => {
-  const normalizedText = text.replaceAll("\u00A0", " ");
+  const normalizedText = text.replaceAll("\u{A0}", " ");
 
   const ranges = getTextHighlightRanges(normalizedText, compiledQuery);
 
@@ -496,7 +486,7 @@ export const extractMatchingLine = (content: string, query: string): string => {
   const allElements = [...temporaryDiv.querySelectorAll("*")];
 
   for (const element of allElements) {
-    const elementHtml = element.innerHTML.toLowerCase();
+    const elementHtml = element.getHTML().toLowerCase();
 
     if (searchWords.every((word) => elementHtml.includes(word))) {
       return element.outerHTML;

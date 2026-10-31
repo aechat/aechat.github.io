@@ -27,7 +27,7 @@ const TgsToJsonConverter: React.FC = () => {
 
   const [decompressedJsonSize, setDecompressedJsonSize] = useState<number | undefined>();
 
-  const handleFileUpload = async (file: File): Promise<boolean> => {
+  const canHandleFileUpload = async (file: File): Promise<boolean> => {
     try {
       const fileData = await file.arrayBuffer();
 
@@ -52,15 +52,17 @@ const TgsToJsonConverter: React.FC = () => {
   };
 
   const downloadJson = (): void => {
-    if (jsonData) {
-      const jsonString = JSON.stringify(jsonData, undefined, 2);
-
-      const blob = new Blob([jsonString], {
-        type: "application/json",
-      });
-
-      saveAs(blob, `${originalFileName.replace(/\.tgs$/, "")}.json`);
+    if (!jsonData) {
+      return;
     }
+
+    const jsonString = JSON.stringify(jsonData, undefined, 2);
+
+    const blob = new Blob([jsonString], {
+      type: "application/json",
+    });
+
+    saveAs(blob, `${originalFileName.replace(/\.tgs$/, "")}.json`);
   };
 
   const handleReset = withSoftHaptic(() => {
@@ -79,7 +81,7 @@ const TgsToJsonConverter: React.FC = () => {
       <div onMouseDown={() => triggerHaptic("selection")}>
         <Upload.Dragger
           accept=".tgs"
-          beforeUpload={handleFileUpload}
+          beforeUpload={canHandleFileUpload}
           className={styles["converter-dragger"]}
           name="file"
           showUploadList={false}
@@ -104,8 +106,8 @@ const TgsToJsonConverter: React.FC = () => {
           </>
         )}
       </p>
-      {jsonData ? (
-        <div className={`${modalStyles["modal-controls-group"]}`}>
+      {Boolean(jsonData) && (
+        <div className={modalStyles["modal-controls-group"]}>
           <button
             className={`${modalStyles["modal-controls-option"]} ${styles["converter-reset-desaturated"]}`}
             onClick={handleReset}
@@ -119,7 +121,7 @@ const TgsToJsonConverter: React.FC = () => {
             Скачать преобразованный JSON
           </button>
         </div>
-      ) : undefined}
+      )}
     </div>
   );
 };

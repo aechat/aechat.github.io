@@ -22,7 +22,7 @@ interface AnimationControlsProperties {
   setAnimationProperty: (property: AnimationProperty) => void;
   setDuration: (value: number) => void;
   setFps: (value: number) => void;
-  setIsTrailVisible: (show: boolean) => void;
+  setIsTrailVisible: (isShow: boolean) => void;
 }
 
 const modeTextMap: Record<AnimationMode, string> = {

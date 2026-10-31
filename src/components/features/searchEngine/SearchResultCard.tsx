@@ -31,15 +31,9 @@ const getResultCardStyle = ({
   isMobile: boolean;
   isSelected: boolean;
 }): React.CSSProperties => {
-  if (isMobile) {
-    return {filter: "none", opacity: 1};
-  }
-
-  if (isSelected || isHovered) {
-    return {filter: "none", opacity: 1};
-  }
-
-  return {filter: "saturate(0.25)", opacity: 0.85};
+  return isMobile || isSelected || isHovered
+    ? {filter: "none", opacity: 1}
+    : {filter: "saturate(0.25)", opacity: 0.85};
 };
 
 const SearchResultCardComponent: React.FC<SearchResultCardProperties> = ({

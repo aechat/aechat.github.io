@@ -20,10 +20,12 @@ type WorkerResultMessage = {
   type: "results";
 };
 
-let cachedDetailsData: SearchWorkerDetail[] = [];
+const workerState: {cachedDetailsData: SearchWorkerDetail[]} = {
+  cachedDetailsData: [],
+};
 
 const getWorkerHostOrigin = (): string => {
-  const href = globalThis.location.href;
+  const href = location.href;
 
   if (href.startsWith("blob:")) {
     try {
@@ -31,16 +33,16 @@ const getWorkerHostOrigin = (): string => {
     } catch {}
   }
 
-  return globalThis.location.origin;
+  return location.origin;
 };
 
-globalThis.addEventListener("message", (event: MessageEvent<WorkerMessage>) => {
+addEventListener("message", (event: MessageEvent<WorkerMessage>) => {
   const hostOrigin = getWorkerHostOrigin();
 
   if (
+    hostOrigin !== "null" &&
     event.origin &&
     event.origin !== "null" &&
-    hostOrigin !== "null" &&
     event.origin !== hostOrigin
   ) {
     return;
@@ -49,7 +51,7 @@ globalThis.addEventListener("message", (event: MessageEvent<WorkerMessage>) => {
   const message = event.data;
 
   if (message.type === "init") {
-    cachedDetailsData = message.details;
+    workerState.cachedDetailsData = message.details;
 
     return;
   }
@@ -63,9 +65,9 @@ globalThis.addEventListener("message", (event: MessageEvent<WorkerMessage>) => {
   const response: WorkerResultMessage = {
     query,
     requestId,
-    results: searchDetails(cachedDetailsData, query),
+    results: searchDetails(workerState.cachedDetailsData, query),
     type: "results",
   };
 
-  self.postMessage(response);
+  postMessage(response);
 });

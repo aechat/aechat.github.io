@@ -121,15 +121,17 @@ const processDetailCandidate = (
     }
   }
 
-  if (detail.tag) {
-    const tags = detail.tag
-      .split(/[,+]/)
-      .map((t) => t.trim())
-      .filter(Boolean);
+  if (!detail.tag) {
+    return;
+  }
 
-    for (const tag of tags) {
-      rawCandidates.add(tag.toLowerCase());
-    }
+  const tags = detail.tag
+    .split(/[,+]/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  for (const tag of tags) {
+    rawCandidates.add(tag.toLowerCase());
   }
 };
 
@@ -188,9 +190,11 @@ const filterTooSimilar = (
       break;
     }
 
-    if (!isCandidateTooSimilar(item.candidate, selectedSuggestions)) {
-      selectedSuggestions.push(item.candidate);
+    if (isCandidateTooSimilar(item.candidate, selectedSuggestions)) {
+      continue;
     }
+
+    selectedSuggestions.push(item.candidate);
   }
 
   return selectedSuggestions;

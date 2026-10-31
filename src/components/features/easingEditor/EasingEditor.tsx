@@ -394,21 +394,21 @@ const EasingEditor: React.FC = () => {
 
   useEffect(() => {
     if (dragInfo) {
-      globalThis.addEventListener("mousemove", handleMouseMove);
+      addEventListener("mousemove", handleMouseMove);
 
-      globalThis.addEventListener("touchmove", handleMouseMove, {
+      addEventListener("touchmove", handleMouseMove, {
         passive: false,
       });
 
-      globalThis.addEventListener("mouseup", handleMouseUp);
-      globalThis.addEventListener("touchend", handleMouseUp);
+      addEventListener("mouseup", handleMouseUp);
+      addEventListener("touchend", handleMouseUp);
     }
 
     return () => {
-      globalThis.removeEventListener("mousemove", handleMouseMove);
-      globalThis.removeEventListener("touchmove", handleMouseMove);
-      globalThis.removeEventListener("mouseup", handleMouseUp);
-      globalThis.removeEventListener("touchend", handleMouseUp);
+      removeEventListener("mousemove", handleMouseMove);
+      removeEventListener("touchmove", handleMouseMove);
+      removeEventListener("mouseup", handleMouseUp);
+      removeEventListener("touchend", handleMouseUp);
     };
   }, [dragInfo, handleMouseMove, handleMouseUp]);
 

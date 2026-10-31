@@ -66,13 +66,11 @@ const stripHtml = (html: string): string => {
 const extractKeyCombinationText = (element: Element): string => {
   const keyElements = element.querySelectorAll("mark.key");
 
-  if (keyElements.length > 0) {
-    return [...keyElements]
-      .map((element_) => element_.textContent?.toLowerCase() || "")
-      .join(" ");
-  }
-
-  return element.textContent?.toLowerCase() || "";
+  return keyElements.length > 0
+    ? [...keyElements]
+        .map((element_) => element_.textContent?.toLowerCase() || "")
+        .join(" ")
+    : element.textContent?.toLowerCase() || "";
 };
 
 const hasMatch = (text: string, compiledQuery: CompiledSearchQuery): boolean => {
@@ -104,13 +102,13 @@ const getCompactSnippetScore = (
   const plainText = stripHtml(html);
 
   if (!plainText.trim()) {
-    return Number.NEGATIVE_INFINITY;
+    return -Infinity;
   }
 
   const matchInfo = getFieldMatchInfo(buildSearchIndex(plainText), compiledQuery);
 
   if (!matchInfo.totalMatched) {
-    return Number.NEGATIVE_INFINITY;
+    return -Infinity;
   }
 
   let score = getFieldMatchTypeScore(matchInfo, 1);
@@ -145,11 +143,9 @@ const getSummaryTitle = (summary: Element): string => {
 
   const expectedPrefix = `${summaryId}.`;
 
-  if (normalizedBaseTitle.startsWith(expectedPrefix)) {
-    return normalizedBaseTitle;
-  }
-
-  return `${summaryId}. ${normalizedBaseTitle}`;
+  return normalizedBaseTitle.startsWith(expectedPrefix)
+    ? normalizedBaseTitle
+    : `${summaryId}. ${normalizedBaseTitle}`;
 };
 
 const isPlaceholderOnlyDetail = (detail: Element): boolean => {
@@ -359,9 +355,7 @@ const isResultHidden = (sourceOrder: number): boolean => {
 
   const element = details[sourceOrder];
 
-  if (!element) return false;
-
-  return isElementHiddenByFilter(element);
+  return Boolean(element && isElementHiddenByFilter(element));
 };
 
 export const useSearchLogic = (
@@ -512,9 +506,9 @@ export const useSearchLogic = (
 
   useEffect(() => {
     if (
+      typeof Worker === "undefined" ||
       !isPageLoaded ||
-      workerDetailsData.length === 0 ||
-      typeof Worker === "undefined"
+      workerDetailsData.length === 0
     ) {
       searchWorkerReference.current?.terminate();
       searchWorkerReference.current = undefined;
@@ -532,11 +526,10 @@ export const useSearchLogic = (
     const handleWorkerMessage = (event: MessageEvent<SearchWorkerResponse>) => {
       const message_ = event.data;
 
-      if (message_.type !== "results") {
-        return;
-      }
-
-      if (message_.requestId !== workerRequestIdReference.current) {
+      if (
+        message_.type !== "results" ||
+        message_.requestId !== workerRequestIdReference.current
+      ) {
         return;
       }
 
@@ -571,47 +564,43 @@ export const useSearchLogic = (
 
   const handleSearch = useCallback(
     (text: string) => {
-      if (text.trim()) {
-        workerRequestIdReference.current += 1;
+      workerRequestIdReference.current += 1;
 
-        const requestId = workerRequestIdReference.current;
-
-        if (searchWorkerReference.current) {
-          searchWorkerReference.current.postMessage({
-            query: text,
-            requestId,
-            type: "search",
-          });
-        } else {
-          runSearchOnMainThread(text);
-        }
-      } else {
-        workerRequestIdReference.current += 1;
+      if (!text.trim()) {
         setResults([]);
         setTotalResultsCount(0);
         setResultsQuery("");
+
+        return;
+      }
+
+      const requestId = workerRequestIdReference.current;
+
+      if (searchWorkerReference.current) {
+        searchWorkerReference.current.postMessage({
+          query: text,
+          requestId,
+          type: "search",
+        });
+      } else {
+        runSearchOnMainThread(text);
       }
     },
     [runSearchOnMainThread]
   );
 
   useEffect(() => {
-    if (isLoaded) {
-      if (query.trim()) {
-        handleSearch(query);
-      } else {
-        workerRequestIdReference.current += 1;
-        setResults([]);
-        setTotalResultsCount(0);
-        setResultsQuery("");
-      }
-    } else {
-      workerRequestIdReference.current += 1;
-      setResults([]);
-      setTotalResultsCount(0);
-      setResultsQuery("");
+    if (isLoaded && query.trim()) {
+      handleSearch(query);
+
+      return;
     }
-  }, [query, handleSearch, isPageLoaded]);
+
+    workerRequestIdReference.current += 1;
+    setResults([]);
+    setTotalResultsCount(0);
+    setResultsQuery("");
+  }, [query, handleSearch, isLoaded]);
 
   useEffect(() => {
     setSelectedResultIndex(results.length > 0 ? 0 : -1);
@@ -639,11 +628,9 @@ export const useSearchLogic = (
   }, [sectionsHash]);
 
   const suggestions = useMemo(() => {
-    if (!isLoaded || results.length > 0 || !query.trim() || resultsQuery !== query) {
-      return EMPTY_SUGGESTIONS;
-    }
-
-    return getSuggestions(query, cachedDetailsData, sectionTitles);
+    return !isLoaded || resultsQuery !== query || results.length > 0 || !query.trim()
+      ? EMPTY_SUGGESTIONS
+      : getSuggestions(query, cachedDetailsData, sectionTitles);
   }, [isLoaded, results.length, query, resultsQuery, cachedDetailsData, sectionTitles]);
 
   return {

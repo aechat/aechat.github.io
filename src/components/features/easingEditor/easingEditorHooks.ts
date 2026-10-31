@@ -35,19 +35,21 @@ export function useGetTforX(p0: Point, p1: Point, p2: Point, p3: Point) {
 
   return useCallback(
     (xTarget: number): number => {
-      const duration = p3.x;
-
       if (xTarget <= 0) {
         return 0;
       }
+
+      const duration = p3.x;
 
       if (xTarget >= duration) {
         return 1;
       }
 
-      let high = SAMPLES,
-        index = 0,
-        low = 0;
+      let high = SAMPLES;
+
+      let index = 0;
+
+      let low = 0;
 
       while (low <= high) {
         index = Math.floor((low + high) / 2);
@@ -67,11 +69,12 @@ export function useGetTforX(p0: Point, p1: Point, p2: Point, p3: Point) {
         index--;
       }
 
-      const lower = timeToTMap[index],
-        upper = timeToTMap[index + 1];
+      const lower = timeToTMap[index];
+
+      const upper = timeToTMap[index + 1];
 
       if (!lower || !upper) {
-        return timeToTMap[index]?.t || 0;
+        return timeToTMap[index]?.t ?? 0;
       }
 
       const range = upper.x - lower.x;
@@ -112,9 +115,7 @@ export function useLinearTime(
 
     const timeInCycle = elapsedTime % cycleTime;
 
-    return timeInCycle < durationMs
-      ? timeInCycle / 1000
-      : (cycleTime - timeInCycle) / 1000;
+    return (timeInCycle < durationMs ? timeInCycle : cycleTime - timeInCycle) / 1000;
   }, [elapsedTime, duration, animationMode]);
 }
 
@@ -165,7 +166,7 @@ export function useValueGraphMapping(
 
   const mapValueToSvg = useCallback(
     (p: Point): Point => {
-      if (graphWidth <= 0 || graphHeight <= 0 || yRange === 0) {
+      if (yRange === 0 || graphWidth <= 0 || graphHeight <= 0) {
         return {x: PADDING, y: PADDING};
       }
 
@@ -183,7 +184,7 @@ export function useValueGraphMapping(
 
   const mapValueFromSvg = useCallback(
     (svgP: Point): Point | undefined => {
-      if (!svgReference.current || trackWidth === 0 || graphWidth <= 0) {
+      if (trackWidth === 0 || graphWidth <= 0 || !svgReference.current) {
         return undefined;
       }
 
@@ -238,15 +239,16 @@ export function useSpeedGraphMapping(
 
   const mapSpeedToSvg = useCallback(
     (speed: number) =>
-      speedYRange === 0
-        ? PADDING + graphHeight / 2
-        : PADDING + (1 - (speed - speedYMin) / speedYRange) * graphHeight,
+      PADDING +
+      (speedYRange === 0
+        ? graphHeight / 2
+        : (1 - (speed - speedYMin) / speedYRange) * graphHeight),
     [speedYMin, speedYRange, graphHeight]
   );
 
   const mapSpeedFromSvg = useCallback(
     (svgP: Point): Point | undefined => {
-      if (!svgReference.current || graphWidth <= 0 || speedYRange === 0) {
+      if (speedYRange === 0 || graphWidth <= 0 || !svgReference.current) {
         return undefined;
       }
 
@@ -270,7 +272,7 @@ export function useSpeedGraphMapping(
   );
 
   const speedCurvePath = useMemo(() => {
-    if (width <= 0 || speedYRange === 0) {
+    if (speedYRange === 0 || width <= 0) {
       return "";
     }
 

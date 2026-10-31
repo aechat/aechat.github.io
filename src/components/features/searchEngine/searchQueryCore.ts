@@ -249,21 +249,17 @@ const getWordMatchType = (
     return "consonant";
   }
 
-  if (hasStemMatch(wordFeatures.stemVariants, index.stemSet, index.foldedStemSet)) {
-    return "stem";
-  }
-
-  return undefined;
+  return hasStemMatch(wordFeatures.stemVariants, index.stemSet, index.foldedStemSet)
+    ? "stem"
+    : undefined;
 };
 
 const hasWordMatch = (searchWord: string, index: TextSearchIndex): boolean => {
   const normalizedWord = normalizeWord(searchWord);
 
-  if (!normalizedWord) {
-    return false;
-  }
-
-  return Boolean(getWordMatchType(getWordFeatures(normalizedWord), index));
+  return Boolean(
+    normalizedWord && getWordMatchType(getWordFeatures(normalizedWord), index)
+  );
 };
 
 export const hasAllQueryWordsMatch = (
@@ -496,14 +492,10 @@ const getIdMatchPriority = (id: string, queryText: string): number => {
     return 2;
   }
 
-  if (normalizedId.includes(normalizedQuery)) {
-    return 1;
-  }
-
-  return 0;
+  return normalizedId.includes(normalizedQuery) ? 1 : 0;
 };
 
-const filterByKeyCombination = (
+const isMatchingKeyCombination = (
   {normalizedKeyFields}: Pick<SearchWorkerDetail, "normalizedKeyFields">,
   originalText: string
 ): boolean => {
@@ -512,26 +504,23 @@ const filterByKeyCombination = (
   return normalizedKeyFields.some((field) => field.includes(searchPattern));
 };
 
-const filterByWords = (
+const isMatchingWords = (
   {fieldIndexes, id}: Pick<SearchWorkerDetail, "fieldIndexes" | "id">,
   compiledQuery: CompiledSearchQuery
 ): boolean => {
-  if (getIdMatchPriority(id, compiledQuery.originalText) > 0) {
-    return true;
-  }
-
-  return hasCompiledQueryMatchInIndexes(fieldIndexes, compiledQuery);
+  return (
+    getIdMatchPriority(id, compiledQuery.originalText) > 0 ||
+    hasCompiledQueryMatchInIndexes(fieldIndexes, compiledQuery)
+  );
 };
 
-const filterDetail = (
+const isMatchingDetail = (
   detail: SearchWorkerDetail,
   compiledQuery: CompiledSearchQuery
 ): boolean => {
-  if (compiledQuery.isKeyCombination) {
-    return filterByKeyCombination(detail, compiledQuery.originalText);
-  }
-
-  return filterByWords(detail, compiledQuery);
+  return compiledQuery.isKeyCombination
+    ? isMatchingKeyCombination(detail, compiledQuery.originalText)
+    : isMatchingWords(detail, compiledQuery);
 };
 
 const rankDetail = (
@@ -626,7 +615,9 @@ export const searchDetails = (
 
   const compiledQuery = compileSearchQuery(query);
 
-  const filtered = detailsData.filter((detail) => filterDetail(detail, compiledQuery));
+  const filtered = detailsData.filter((detail) =>
+    isMatchingDetail(detail, compiledQuery)
+  );
 
   const candidatesForRescore =
     filtered.length >= SEARCH_RESCORE_CONFIG.activationThreshold
@@ -646,11 +637,7 @@ export const searchDetails = (
         return b.idMatchPriority - a.idMatchPriority;
       }
 
-      if (b.score !== a.score) {
-        return b.score - a.score;
-      }
-
-      return a.sourceOrder - b.sourceOrder;
+      return b.score === a.score ? a.sourceOrder - b.sourceOrder : b.score - a.score;
     });
 
   return ranked;

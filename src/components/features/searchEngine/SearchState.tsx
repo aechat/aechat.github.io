@@ -83,19 +83,19 @@ export const SearchProvider: React.FC<{
 
   const saveHistoryToStorage = useCallback(
     (history: string[]) => {
-      if (globalThis.localStorage !== undefined) {
-        globalThis.localStorage.setItem(pageKey, JSON.stringify(history));
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(pageKey, JSON.stringify(history));
       }
     },
     [pageKey]
   );
 
   useEffect(() => {
-    if (globalThis.localStorage === undefined) {
+    if (typeof localStorage === "undefined") {
       return;
     }
 
-    const rawHistory = globalThis.localStorage.getItem(pageKey);
+    const rawHistory = localStorage.getItem(pageKey);
 
     if (!rawHistory) {
       setQueryHistory([]);
@@ -120,7 +120,7 @@ export const SearchProvider: React.FC<{
 
       setQueryHistory(sanitizedHistory);
     } catch {
-      globalThis.localStorage.removeItem(pageKey);
+      localStorage.removeItem(pageKey);
       setQueryHistory([]);
     }
   }, [pageKey]);
@@ -162,30 +162,35 @@ export const SearchProvider: React.FC<{
   const clearQueryHistory = useCallback(() => {
     setQueryHistory([]);
 
-    if (globalThis.localStorage !== undefined) {
-      globalThis.localStorage.removeItem(pageKey);
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem(pageKey);
     }
   }, [pageKey]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey && event.key === "f") || (event.ctrlKey && event.key === "а")) {
-        event.preventDefault();
+      if (!(
+        (event.ctrlKey && event.key === "f") ||
+        (event.ctrlKey && event.key === "а")
+      )) {
+        return;
+      }
 
-        if (isPageLoaded) {
-          openModal();
-        } else {
-          message.warning(
-            "Прежде чем воспользоваться поиском по странице - дождитесь полной загрузки страницы"
-          );
-        }
+      event.preventDefault();
+
+      if (isPageLoaded) {
+        openModal();
+      } else {
+        message.warning(
+          "Прежде чем воспользоваться поиском по странице - дождитесь полной загрузки страницы"
+        );
       }
     };
 
-    globalThis.addEventListener("keydown", handleKeyDown);
+    addEventListener("keydown", handleKeyDown);
 
     return () => {
-      globalThis.removeEventListener("keydown", handleKeyDown);
+      removeEventListener("keydown", handleKeyDown);
     };
   }, [isPageLoaded]);
 
@@ -258,11 +263,9 @@ const resolveCurrentResult = (
 
   const match = positionedResults.find((item) => item.index === currentIndex);
 
-  if (match) {
-    return {currentResult: match, isExactMatch: true};
-  }
-
-  return {currentResult: positionedResults[0], isExactMatch: false};
+  return match
+    ? {currentResult: match, isExactMatch: true}
+    : {currentResult: positionedResults[0], isExactMatch: false};
 };
 
 const getColumnCenters = (
@@ -318,11 +321,9 @@ const getVisualNeighborIndexRuntime = ({
   const columnCenters = getColumnCenters(positionedResults, columnTolerance);
 
   if (columnCenters.length <= 1) {
-    if (direction === "down") {
-      return Math.min(currentIndex + 1, resultsLength - 1);
-    }
-
-    return Math.max(currentIndex - 1, 0);
+    return direction === "down"
+      ? Math.min(currentIndex + 1, resultsLength - 1)
+      : Math.max(currentIndex - 1, 0);
   }
 
   const currentColumnCenter =
@@ -489,14 +490,14 @@ const scrollSelectedResultIntoViewRuntime = ({
     }
   };
 
-  globalThis.requestAnimationFrame(verifyAndFallback);
+  requestAnimationFrame(verifyAndFallback);
 };
 
-const openDetailsChain = (
+const canOpenDetailsChain = (
   resolvedDetails: HTMLDetailsElement,
   closeModal: () => void
 ): boolean => {
-  const summaryElement = resolvedDetails.querySelector("summary");
+  const summaryElement = resolvedDetails.querySelector(":scope > summary");
 
   if (!(summaryElement instanceof HTMLElement) || !summaryElement.id) {
     return false;
@@ -518,25 +519,25 @@ const openDetailsChain = (
 
   const delayStep = isAlreadyOpen ? 0 : 400;
 
-  globalThis.setTimeout(closeModal, 0);
+  setTimeout(closeModal, 0);
 
   for (const [index, details] of detailsChain.entries()) {
-    const currentSummary = details.querySelector("summary");
+    const currentSummary = details.querySelector(":scope > summary");
 
     if (!(currentSummary instanceof HTMLElement) || !currentSummary.id) {
       continue;
     }
 
     if (!details.hasAttribute("open")) {
-      details.setAttribute("open", "true");
+      details.setAttribute("open", "");
     }
 
     const isLast = index === detailsChain.length - 1;
 
     const delay = index * delayStep;
 
-    globalThis.setTimeout(() => {
-      globalThis.dispatchEvent(
+    setTimeout(() => {
+      dispatchEvent(
         new CustomEvent("open-spoiler-by-id", {
           detail: {id: currentSummary.id, skipScroll: !isLast},
         })
@@ -556,7 +557,7 @@ const openSearchAnchorRuntime = ({
 }): void => {
   const resolvedDetails = resolveDetailsByAnchor(anchorValue);
 
-  if (resolvedDetails && openDetailsChain(resolvedDetails, closeModal)) {
+  if (resolvedDetails && canOpenDetailsChain(resolvedDetails, closeModal)) {
     return;
   }
 
@@ -567,7 +568,7 @@ const openSearchAnchorRuntime = ({
   }
 
   scrollToElement(targetElement);
-  globalThis.setTimeout(closeModal, 0);
+  setTimeout(closeModal, 0);
 };
 
 type SearchModalBehaviorParameters = {
@@ -613,15 +614,9 @@ export const useSearchViewState = (
 
   const handleQueryChange = useCallback(
     (value: string) => {
-      if (value.trim() === "") {
-        setIsSearching(false);
-        setIsResultsProcessed(false);
-        setQuery(value);
-      } else {
-        setIsSearching(true);
-        setIsResultsProcessed(false);
-        setQuery(value);
-      }
+      setIsSearching(value.trim() !== "");
+      setIsResultsProcessed(false);
+      setQuery(value);
     },
     [setQuery]
   );
@@ -665,14 +660,16 @@ export const useSearchModalBehavior = ({
   const columnTolerance = 40;
 
   useEffect(() => {
-    if (isModalOpen) {
-      const timeout = setTimeout(() => {
-        inputReference.current?.focus();
-        inputReference.current?.select();
-      }, 0);
-
-      return () => clearTimeout(timeout);
+    if (!isModalOpen) {
+      return;
     }
+
+    const timeout = setTimeout(() => {
+      inputReference.current?.focus();
+      inputReference.current?.select();
+    }, 0);
+
+    return () => clearTimeout(timeout);
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -689,12 +686,27 @@ export const useSearchModalBehavior = ({
       );
     };
 
-    checkFadeVisibility();
-    element.addEventListener("scroll", checkFadeVisibility);
-    globalThis.addEventListener("resize", checkFadeVisibility);
+    let isScheduled = false;
 
-    const observer = new globalThis.MutationObserver(() => {
-      checkFadeVisibility();
+    const handleScroll = () => {
+      if (isScheduled) {
+        return;
+      }
+
+      isScheduled = true;
+
+      requestAnimationFrame(() => {
+        isScheduled = false;
+        checkFadeVisibility();
+      });
+    };
+
+    checkFadeVisibility();
+    element.addEventListener("scroll", handleScroll, {passive: true});
+    window.addEventListener("resize", handleScroll);
+
+    const observer = new MutationObserver(() => {
+      handleScroll();
     });
 
     observer.observe(element, {
@@ -703,8 +715,8 @@ export const useSearchModalBehavior = ({
     });
 
     return () => {
-      element.removeEventListener("scroll", checkFadeVisibility);
-      globalThis.removeEventListener("resize", checkFadeVisibility);
+      element.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       observer.disconnect();
     };
   }, [resultsContainer]);
@@ -756,8 +768,12 @@ export const useSearchModalBehavior = ({
   );
 
   useEffect(() => {
+    if (!isModalOpen) {
+      return;
+    }
+
     const handleKeyDown = (event_: KeyboardEvent) => {
-      if (!isModalOpen || results.length === 0) {
+      if (results.length === 0) {
         return;
       }
 
@@ -816,10 +832,6 @@ export const useSearchModalBehavior = ({
       }
     };
 
-    if (!isModalOpen) {
-      return;
-    }
-
     document.addEventListener("keydown", handleKeyDown);
 
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -840,11 +852,11 @@ export const useSearchModalBehavior = ({
       return;
     }
 
-    const justOpened = !wasModalOpenReference.current;
+    const isJustOpened = !wasModalOpenReference.current;
 
     wasModalOpenReference.current = true;
 
-    if (!justOpened) {
+    if (!isJustOpened) {
       scrollSelectedResultIntoView("smooth");
 
       return;
@@ -871,7 +883,7 @@ export const useSearchModalBehavior = ({
 
       if (!container || !selectedElement) {
         if (frameCount < maxFrames) {
-          rafId = globalThis.requestAnimationFrame(waitForStableLayoutAndScroll);
+          rafId = requestAnimationFrame(waitForStableLayoutAndScroll);
         } else {
           scrollSelectedResultIntoView("smooth");
         }
@@ -902,31 +914,32 @@ export const useSearchModalBehavior = ({
         return;
       }
 
-      rafId = globalThis.requestAnimationFrame(waitForStableLayoutAndScroll);
+      rafId = requestAnimationFrame(waitForStableLayoutAndScroll);
     };
 
-    rafId = globalThis.requestAnimationFrame(waitForStableLayoutAndScroll);
+    rafId = requestAnimationFrame(waitForStableLayoutAndScroll);
 
     return () => {
-      globalThis.cancelAnimationFrame(rafId);
+      cancelAnimationFrame(rafId);
     };
   }, [isModalOpen, resultReferences, scrollSelectedResultIntoView, selectedResultIndex]);
 
   useEffect(() => {
-    if (resultsLimit === Number.MAX_SAFE_INTEGER) {
+    if (
+      !isModalOpen ||
+      selectedResultIndex < 0 ||
+      results.length === 0 ||
+      resultsLimit === Number.MAX_SAFE_INTEGER
+    ) {
       return;
     }
 
-    if (!isModalOpen || selectedResultIndex < 0 || results.length === 0) {
-      return;
-    }
-
-    const rafId = globalThis.requestAnimationFrame(() => {
+    const rafId = requestAnimationFrame(() => {
       scrollSelectedResultIntoView("smooth");
     });
 
     return () => {
-      globalThis.cancelAnimationFrame(rafId);
+      cancelAnimationFrame(rafId);
     };
   }, [
     isModalOpen,
@@ -945,20 +958,22 @@ export const useSearchModalBehavior = ({
     }
 
     const handleClick = (event: MouseEvent) => {
-      if (event.target instanceof HTMLElement && event.target.tagName === "MARK") {
-        event.stopPropagation();
+      if (!(event.target instanceof HTMLElement && event.target.tagName === "MARK")) {
+        return;
+      }
 
-        const button = event.target.closest(
-          `.${resultLinkClassName}`
-        ) as HTMLButtonElement | null;
+      event.stopPropagation();
 
-        if (button) {
-          button.click();
-        }
+      const button = event.target.closest(
+        `.${resultLinkClassName}`
+      ) as HTMLButtonElement | null;
+
+      if (button) {
+        button.click();
       }
     };
 
-    container.addEventListener("click", handleClick, true);
+    container.addEventListener("click", handleClick, {capture: true});
 
     return () => {
       container.removeEventListener("click", handleClick, true);

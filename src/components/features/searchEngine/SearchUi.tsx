@@ -20,7 +20,7 @@ import {useRipple} from "../../../hooks/useRipple";
 
 import {isMobileDevice} from "../../../utilities/browserDetection";
 
-import {copyText} from "../../../utilities/copyUtilities";
+import {canCopyText} from "../../../utilities/copyUtilities";
 
 import {withSelectionHaptic} from "../../../utilities/haptics";
 
@@ -51,18 +51,22 @@ import {
 
 interface SearchButtonProperties {
   className?: string;
+  isWide?: boolean;
   style?: React.CSSProperties;
   wide?: boolean;
 }
 
 export const SearchButton: React.FC<SearchButtonProperties> = ({
   className = "",
+  isWide = false,
   style = {},
-  wide = false,
+  wide: isLegacyWide = false,
 }) => {
   const {isPageLoaded, openModal} = useSearch();
 
   const ripple = useRipple<HTMLButtonElement>();
+
+  const shouldRenderWide = isWide || isLegacyWide;
 
   return (
     <button
@@ -83,7 +87,7 @@ export const SearchButton: React.FC<SearchButtonProperties> = ({
       }}
       onMouseDown={ripple.onMouseDown}
     >
-      {wide ? (
+      {shouldRenderWide ? (
         <>
           <Search />
           <span>
@@ -109,7 +113,7 @@ export const SearchCategories: React.FC<SearchCategoriesProperties> = ({
   onLinkClick,
   sections,
 }) => {
-  const handleCopy = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+  const canHandleCopy = useCallback((event: React.MouseEvent | React.TouchEvent) => {
     const target = event.target as HTMLElement;
 
     const button = target.closest("button");
@@ -121,11 +125,11 @@ export const SearchCategories: React.FC<SearchCategoriesProperties> = ({
 
       if (id && title) {
         (async () => {
-          const anchorUrl = `${globalThis.location.origin}${globalThis.location.pathname}#${id}`;
+          const anchorUrl = `${location.origin}${location.pathname}#${id}`;
 
-          const success = await copyText(anchorUrl);
+          const isSuccess = await canCopyText(anchorUrl);
 
-          if (success) {
+          if (isSuccess) {
             message.success(
               `Ссылка на категорию «${formatNestedQuotes(title)}» скопирована`
             );
@@ -141,7 +145,7 @@ export const SearchCategories: React.FC<SearchCategoriesProperties> = ({
     return false;
   }, []);
 
-  const longPressProperties = useLongPress(handleCopy, 500, {
+  const longPressProperties = useLongPress(canHandleCopy, 500, {
     getRippleTarget: getRippleButtonTarget,
   });
 
@@ -219,10 +223,12 @@ const SearchModalContent: React.FC<SearchModalContentProperties> = ({
     const isFocused =
       inputRef.current !== null && document.activeElement === inputRef.current;
 
-    if (query === "" || !isFocused || query !== lastSentQueryReference.current) {
-      setLocalQuery(query);
-      lastSentQueryReference.current = query;
+    if (query !== "" && isFocused && query === lastSentQueryReference.current) {
+      return;
     }
+
+    setLocalQuery(query);
+    lastSentQueryReference.current = query;
   }, [query, inputRef]);
 
   const debouncedOnChangeQuery = useMemo(
@@ -264,7 +270,7 @@ const SearchModalContent: React.FC<SearchModalContentProperties> = ({
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const updateKeyboardState = useCallback(() => {
-    const viewport = globalThis.visualViewport;
+    const viewport = visualViewport;
 
     if (!viewport) {
       setIsKeyboardOpen(false);
@@ -330,7 +336,7 @@ const SearchModalContent: React.FC<SearchModalContentProperties> = ({
 
     updateKeyboardState();
 
-    const viewport = globalThis.visualViewport;
+    const viewport = visualViewport;
 
     if (!viewport) {
       return;
@@ -444,7 +450,7 @@ export const SearchModal: React.FC<SearchModalProperties> = (properties) => {
 };
 
 const getSearchQuery = (query: string) => {
-  const path = globalThis.location.pathname;
+  const path = location.pathname;
 
   let context = "";
 
@@ -461,17 +467,19 @@ const getSearchQuery = (query: string) => {
 
 type ExternalSearchProperties = {
   query: string;
-  disableAnimation?: boolean;
+  isAnimationDisabled?: boolean;
+  shouldDisableAnimation?: boolean;
   totalResultsCount?: number;
   resultsLength?: number;
   setResultsLimit?: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export const ExternalSearch: React.FC<ExternalSearchProperties> = ({
-  disableAnimation = false,
+  isAnimationDisabled = false,
   query,
   resultsLength,
   setResultsLimit,
+  shouldDisableAnimation: isShouldDisableAnimation = false,
   totalResultsCount,
 }) => {
   const ripple = useRipple<HTMLElement>();
@@ -480,12 +488,12 @@ export const ExternalSearch: React.FC<ExternalSearchProperties> = ({
 
   const isMobile = isMobileDevice();
 
-  const shouldDisableAnimation = isMobile || disableAnimation;
+  const isAnimationOff = isMobile || isAnimationDisabled || isShouldDisableAnimation;
 
-  const showAllButton = totalResultsCount !== undefined &&
+  const showAllButton = setResultsLimit &&
+    totalResultsCount !== undefined &&
     resultsLength !== undefined &&
-    totalResultsCount > resultsLength &&
-    setResultsLimit && (
+    totalResultsCount > resultsLength && (
       <button
         onClick={() => setResultsLimit(Number.MAX_SAFE_INTEGER)}
         onMouseDown={showAllRipple.onMouseDown}
@@ -496,7 +504,7 @@ export const ExternalSearch: React.FC<ExternalSearchProperties> = ({
 
   return (
     <div
-      className={`${searchStyles["search-external-container"]} ${shouldDisableAnimation ? searchStyles["is-mobile"] : ""}`}
+      className={`${searchStyles["search-external-container"]} ${isAnimationOff ? searchStyles["is-mobile"] : ""}`}
     >
       <div className={searchStyles["search-external-links"]}>
         {showAllButton}
@@ -534,9 +542,9 @@ type NoResultsProperties = {
 };
 
 const useScrollFade = () => {
-  const [showLeftFade, setShowLeftFade] = useState(false);
+  const [hasLeftFade, setHasLeftFade] = useState(false);
 
-  const [showRightFade, setShowRightFade] = useState(false);
+  const [hasRightFade, setHasRightFade] = useState(false);
 
   const containerReference = useRef<HTMLDivElement | null>(null);
 
@@ -553,20 +561,20 @@ const useScrollFade = () => {
 
     const scrollWidth = target.scrollWidth;
 
-    setShowLeftFade(scrollLeft > 0);
+    setHasLeftFade(scrollLeft > 0);
 
     const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1;
 
     const isScrollable = scrollWidth > clientWidth;
 
-    setShowRightFade(isScrollable && !isAtEnd);
+    setHasRightFade(isScrollable && !isAtEnd);
   }, []);
 
   return {
     checkScrollLimits,
     containerReference,
-    showLeftFade,
-    showRightFade,
+    hasLeftFade,
+    hasRightFade,
   };
 };
 
@@ -575,7 +583,7 @@ export const NoResults: React.FC<NoResultsProperties> = ({
   query,
   suggestions = [],
 }) => {
-  const {checkScrollLimits, containerReference, showLeftFade, showRightFade} =
+  const {checkScrollLimits, containerReference, hasLeftFade, hasRightFade} =
     useScrollFade();
 
   const [visibleSuggestions, setVisibleSuggestions] = useState<string[]>(suggestions);
@@ -587,10 +595,10 @@ export const NoResults: React.FC<NoResultsProperties> = ({
 
     const handleResize = () => checkScrollLimits();
 
-    globalThis.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      globalThis.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [visibleSuggestions, checkScrollLimits]);
 
@@ -602,33 +610,35 @@ export const NoResults: React.FC<NoResultsProperties> = ({
       } else if (suggestions.join(",") !== visibleSuggestions.join(",")) {
         setAnimationPhase("exit");
 
-        const timeout = globalThis.setTimeout(() => {
+        const timeout = setTimeout(() => {
           setVisibleSuggestions(suggestions);
           setAnimationPhase("enter");
         }, 200);
 
-        return () => globalThis.clearTimeout(timeout);
+        return () => clearTimeout(timeout);
       }
     } else if (visibleSuggestions.length > 0) {
       setAnimationPhase("exit");
 
-      const timeout = globalThis.setTimeout(() => {
+      const timeout = setTimeout(() => {
         setVisibleSuggestions([]);
         setAnimationPhase("idle");
       }, 200);
 
-      return () => globalThis.clearTimeout(timeout);
+      return () => clearTimeout(timeout);
     }
   }, [suggestions]);
 
   useEffect(() => {
-    if (animationPhase === "enter") {
-      const timeout = globalThis.setTimeout(() => {
-        setAnimationPhase("idle");
-      }, 200);
-
-      return () => globalThis.clearTimeout(timeout);
+    if (animationPhase !== "enter") {
+      return;
     }
+
+    const timeout = setTimeout(() => {
+      setAnimationPhase("idle");
+    }, 200);
+
+    return () => clearTimeout(timeout);
   }, [animationPhase]);
 
   const ripple = useRipple<HTMLButtonElement>();
@@ -689,8 +699,8 @@ export const NoResults: React.FC<NoResultsProperties> = ({
             <div
               ref={containerReference}
               className={`${searchStyles["search-suggestions-items"]} ${
-                showLeftFade ? searchStyles["show-left-fade"] : ""
-              } ${showRightFade ? searchStyles["show-right-fade"] : ""}`}
+                hasLeftFade ? searchStyles["show-left-fade"] : ""
+              } ${hasRightFade ? searchStyles["show-right-fade"] : ""}`}
               onScroll={handleScroll}
             >
               {visibleSuggestions.map((suggestion) => (
@@ -817,14 +827,14 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       return;
     }
 
-    const timeout = globalThis.setTimeout(() => {
+    const timeout = setTimeout(() => {
       setDisplayedResults(previousResults);
       setDisplayedQuery(previousQuery);
       setDisplayedTotalResultsCount(totalResultsCount || 0);
       setTransitionPhase("enter");
     }, 350);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [transitionPhase, previousQuery, previousResults, totalResultsCount]);
 
   useEffect(() => {
@@ -832,21 +842,21 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       return;
     }
 
-    const timeout = globalThis.setTimeout(() => {
+    const timeout = setTimeout(() => {
       setTransitionPhase("idle");
     }, 350);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [transitionPhase]);
 
   useEffect(() => {
     setIsHighlightReady(false);
 
-    const timeout = globalThis.setTimeout(() => {
+    const timeout = setTimeout(() => {
       setIsHighlightReady(true);
     }, HIGHLIGHT_DELAY_MS);
 
-    return () => globalThis.clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [HIGHLIGHT_DELAY_MS, displayedQuery]);
 
   useEffect(() => {
@@ -860,7 +870,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       return;
     }
 
-    const viewportHeight = globalThis.innerHeight || 0;
+    const viewportHeight = window.innerHeight || 0;
 
     const viewportBuffer = viewportHeight * HIGHLIGHT_BUFFER_VIEWPORTS;
 
@@ -883,12 +893,12 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
     }
 
-    if (
-      selectedResultIndex >= 0 &&
-      selectedResultIndex < displayedResults.length &&
-      displayedResults[selectedResultIndex]
-    ) {
-      nextEligibleIds.add(displayedResults[selectedResultIndex].id);
+    if (selectedResultIndex >= 0 && selectedResultIndex < displayedResults.length) {
+      const selectedResult = displayedResults[selectedResultIndex];
+
+      if (selectedResult) {
+        nextEligibleIds.add(selectedResult.id);
+      }
     }
 
     setHighlightEligibleIds(nextEligibleIds);
@@ -901,7 +911,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   ]);
 
   useEffect(() => {
-    const rafId = globalThis.requestAnimationFrame(updateHighlightEligibility);
+    const rafId = requestAnimationFrame(updateHighlightEligibility);
 
     const scrollContainer = document.querySelector(
       `.${searchStyles["search-results-scroll"]}`
@@ -911,12 +921,12 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       passive: true,
     });
 
-    globalThis.addEventListener("resize", updateHighlightEligibility);
+    window.addEventListener("resize", updateHighlightEligibility);
 
     return () => {
-      globalThis.cancelAnimationFrame(rafId);
+      cancelAnimationFrame(rafId);
       scrollContainer?.removeEventListener("scroll", updateHighlightEligibility);
-      globalThis.removeEventListener("resize", updateHighlightEligibility);
+      window.removeEventListener("resize", updateHighlightEligibility);
     };
   }, [displayedResults, updateHighlightEligibility]);
 
@@ -927,7 +937,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   useEffect(() => {
     const updateLayout = () => {
       const containerWidth =
-        masonryContainerReference.current?.clientWidth ?? globalThis.innerWidth;
+        masonryContainerReference.current?.clientWidth ?? window.innerWidth;
 
       setIsSingleColumnLayout(containerWidth < MASONRY_SINGLE_COLUMN_BREAKPOINT);
     };
@@ -942,15 +952,12 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       observer.observe(masonryContainerReference.current);
     }
 
-    globalThis.addEventListener("resize", updateLayout);
-
     return () => {
       observer.disconnect();
-      globalThis.removeEventListener("resize", updateLayout);
     };
   }, [MASONRY_SINGLE_COLUMN_BREAKPOINT]);
 
-  const handleCopy = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+  const canHandleCopy = useCallback((event: React.MouseEvent | React.TouchEvent) => {
     const target = event.target as HTMLElement;
 
     const button = target.closest("button");
@@ -964,11 +971,11 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
         (async () => {
           const anchorToCopy = anchor || id;
 
-          const anchorUrl = `${globalThis.location.origin}${globalThis.location.pathname}#${anchorToCopy}`;
+          const anchorUrl = `${location.origin}${location.pathname}#${anchorToCopy}`;
 
-          const success = await copyText(anchorUrl);
+          const isSuccess = await canCopyText(anchorUrl);
 
-          if (success) {
+          if (isSuccess) {
             message.success(`Ссылка на статью ${id} скопирована`);
           } else {
             message.error("Не удалось скопировать ссылку");
@@ -982,7 +989,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
     return false;
   }, []);
 
-  const longPressProperties = useLongPress(handleCopy, 500, {
+  const longPressProperties = useLongPress(canHandleCopy, 500, {
     getRippleTarget: getRippleButtonTarget,
   });
 
@@ -1027,17 +1034,17 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   }, [displayedResults]);
 
   useEffect(() => {
-    const rafId = globalThis.requestAnimationFrame(checkResultOverflow);
+    const rafId = requestAnimationFrame(checkResultOverflow);
 
     const handleResize = () => {
       checkResultOverflow();
     };
 
-    globalThis.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      globalThis.cancelAnimationFrame(rafId);
-      globalThis.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", handleResize);
     };
   }, [checkResultOverflow, isSingleColumnLayout]);
 
@@ -1047,7 +1054,9 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
     }
 
     const updateResultScales = () => {
-      for (const resultElement of resultRefs.current ?? []) {
+      const elements = resultRefs.current ?? [];
+
+      for (const resultElement of elements) {
         if (!resultElement) {
           continue;
         }
@@ -1056,16 +1065,18 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
     };
 
-    const rafId = globalThis.requestAnimationFrame(updateResultScales);
+    const rafId = requestAnimationFrame(updateResultScales);
 
     const observer =
-      "ResizeObserver" in globalThis
-        ? new ResizeObserver(() => {
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(() => {
             updateResultScales();
-          })
-        : undefined;
+          });
 
-    for (const resultElement of resultRefs.current ?? []) {
+    const elements = resultRefs.current ?? [];
+
+    for (const resultElement of elements) {
       if (!resultElement) {
         continue;
       }
@@ -1073,21 +1084,21 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       observer?.observe(resultElement);
     }
 
-    globalThis.addEventListener("resize", updateResultScales);
+    window.addEventListener("resize", updateResultScales);
 
     return () => {
-      globalThis.cancelAnimationFrame(rafId);
+      cancelAnimationFrame(rafId);
       observer?.disconnect();
-      globalThis.removeEventListener("resize", updateResultScales);
+      window.removeEventListener("resize", updateResultScales);
     };
   }, [isMobile, isSingleColumnLayout, resultRefs, displayedResults]);
 
   useEffect(() => {
     if (
       !isHighlightReady ||
-      !displayedQuery.trim() ||
+      compiledQuery.isKeyCombination ||
       compiledQuery.words.length === 0 ||
-      compiledQuery.isKeyCombination
+      !displayedQuery.trim()
     ) {
       return;
     }
@@ -1108,7 +1119,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
 
     let isCancelled = false;
 
-    let timeoutId: ReturnType<typeof globalThis.setTimeout> | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     let currentIndex = 0;
 
@@ -1151,17 +1162,17 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
 
       if (currentIndex < idsToPrecompute.length) {
-        timeoutId = globalThis.setTimeout(processChunk, 0);
+        timeoutId = setTimeout(processChunk, 0);
       }
     };
 
-    timeoutId = globalThis.setTimeout(processChunk, 0);
+    timeoutId = setTimeout(processChunk, 0);
 
     return () => {
       isCancelled = true;
 
       if (timeoutId !== undefined) {
-        globalThis.clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
       }
     };
   }, [
@@ -1321,7 +1332,7 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
   onClear,
   onSelect,
 }) => {
-  const {checkScrollLimits, containerReference, showLeftFade, showRightFade} =
+  const {checkScrollLimits, containerReference, hasLeftFade, hasRightFade} =
     useScrollFade();
 
   useEffect(() => {
@@ -1329,10 +1340,10 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
 
     const handleResize = () => checkScrollLimits();
 
-    globalThis.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      globalThis.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [history, checkScrollLimits]);
 
@@ -1344,7 +1355,7 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
     }
 
     const updateScales = () => {
-      const buttons = container.querySelectorAll("button");
+      const buttons = container.querySelectorAll<HTMLButtonElement>(":scope button");
 
       for (const button of buttons) {
         applyInteractiveScaleVariables(button);
@@ -1354,23 +1365,23 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
     updateScales();
 
     const observer =
-      "ResizeObserver" in globalThis
-        ? new ResizeObserver(() => {
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(() => {
             updateScales();
-          })
-        : undefined;
+          });
 
-    const buttons = container.querySelectorAll("button");
+    const buttons = container.querySelectorAll(":scope button");
 
     for (const button of buttons) {
       observer?.observe(button);
     }
 
-    globalThis.addEventListener("resize", updateScales);
+    window.addEventListener("resize", updateScales);
 
     return () => {
       observer?.disconnect();
-      globalThis.removeEventListener("resize", updateScales);
+      window.removeEventListener("resize", updateScales);
     };
   }, [history]);
 
@@ -1392,8 +1403,8 @@ export const RecentQueries: React.FC<RecentQueriesProperties> = ({
       <div
         ref={containerReference}
         className={`${searchStyles["search-recent-items"]} ${
-          showLeftFade ? searchStyles["show-left-fade"] : ""
-        } ${showRightFade ? searchStyles["show-right-fade"] : ""}`}
+          hasLeftFade ? searchStyles["show-left-fade"] : ""
+        } ${hasRightFade ? searchStyles["show-right-fade"] : ""}`}
         onScroll={handleScroll}
       >
         {history.map((historyQuery) => (

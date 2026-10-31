@@ -132,7 +132,7 @@ const translitCyrToLat = (text: string): string => {
   let output = text.toLowerCase();
 
   for (const [from, to] of CYR_TO_LAT_MULTI) {
-    output = output.replaceAll(from, to);
+    output = output.split(from).join(to);
   }
 
   return [...output].map((char) => CYR_TO_LAT_SINGLE[char] ?? char).join("");
@@ -142,7 +142,7 @@ const translitLatToCyr = (text: string): string => {
   let output = text.toLowerCase();
 
   for (const [from, to] of LAT_TO_CYR_MULTI) {
-    output = output.replaceAll(from, to);
+    output = output.split(from).join(to);
   }
 
   return [...output].map((char) => LAT_TO_CYR_SINGLE[char] ?? char).join("");
@@ -153,11 +153,11 @@ type VariantRule = (word: string, output: Set<string>) => void;
 const createBidirectionalReplaceRule = (from: string, to: string): VariantRule => {
   return (word, output) => {
     if (word.includes(from)) {
-      output.add(word.replaceAll(from, to));
+      output.add(word.split(from).join(to));
     }
 
     if (word.includes(to)) {
-      output.add(word.replaceAll(to, from));
+      output.add(word.split(to).join(from));
     }
   };
 };
@@ -288,11 +288,9 @@ export const getWordStem = (word: string): string => {
     return "";
   }
 
-  if (/[а-я]/i.test(normalized) || normalized.includes("ё")) {
-    return russianStemmer(normalized);
-  }
-
-  return englishStemmer(normalized);
+  return /[а-я]/i.test(normalized) || normalized.includes("ё")
+    ? russianStemmer(normalized)
+    : englishStemmer(normalized);
 };
 
 const buildWordFeatures = (word: string): WordFeatures => {
@@ -417,15 +415,14 @@ export const hasTokenConsonantMatch = (
 ): boolean => {
   const tokenConsonantSignature = getConsonantSignature(token);
 
-  if (tokenConsonantSignature.length < MIN_CONSONANT_SIGNATURE_LENGTH) {
-    return false;
-  }
-
-  return consonantSignatures.some(
-    (signature) =>
-      tokenConsonantSignature === signature ||
-      tokenConsonantSignature.startsWith(signature) ||
-      signature.startsWith(tokenConsonantSignature)
+  return (
+    tokenConsonantSignature.length >= MIN_CONSONANT_SIGNATURE_LENGTH &&
+    consonantSignatures.some(
+      (signature) =>
+        tokenConsonantSignature === signature ||
+        tokenConsonantSignature.startsWith(signature) ||
+        signature.startsWith(tokenConsonantSignature)
+    )
   );
 };
 
@@ -434,17 +431,10 @@ export const isTokenMatchingWordFeatures = (
   foldedToken: string,
   wordFeatures: WordFeatures
 ): boolean => {
-  if (hasTokenVariantMatch(token, wordFeatures.variants)) {
-    return true;
-  }
-
-  if (hasTokenVariantMatch(foldedToken, wordFeatures.foldedVariants)) {
-    return true;
-  }
-
-  if (hasTokenStemMatch(token, wordFeatures.stemVariants)) {
-    return true;
-  }
-
-  return hasTokenConsonantMatch(token, wordFeatures.consonantSignatures);
+  return (
+    hasTokenVariantMatch(token, wordFeatures.variants) ||
+    hasTokenVariantMatch(foldedToken, wordFeatures.foldedVariants) ||
+    hasTokenStemMatch(token, wordFeatures.stemVariants) ||
+    hasTokenConsonantMatch(token, wordFeatures.consonantSignatures)
+  );
 };

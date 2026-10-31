@@ -25,21 +25,17 @@ const {saveAs} = pkg;
 const roundNumber = (value: number, digits: number): number =>
   Number(value.toFixed(digits));
 
-const processValue = (
-  value: unknown,
-  digits: number,
-  rounding: (input: number, decimals: number) => number
-): unknown => {
+const processValue = (value: unknown, digits: number): unknown => {
   if (value === null) {
     return value;
   }
 
   if (typeof value === "number") {
-    return rounding(value, digits);
+    return roundNumber(value, digits);
   }
 
   if (Array.isArray(value)) {
-    return value.map((item) => processValue(item, digits, rounding));
+    return value.map((item) => processValue(item, digits));
   }
 
   if (typeof value === "object") {
@@ -48,7 +44,7 @@ const processValue = (
     const nextValue: Record<string, unknown> = {};
 
     for (const [key, entryValue] of entries) {
-      nextValue[key] = processValue(entryValue, digits, rounding);
+      nextValue[key] = processValue(entryValue, digits);
     }
 
     return nextValue;
@@ -66,11 +62,11 @@ const JsonToTgsConverter: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [precisionEnabled, setPrecisionEnabled] = useState(false);
+  const [isPrecisionEnabled, setIsPrecisionEnabled] = useState(false);
 
   const [precisionDigits, setPrecisionDigits] = useState(3);
 
-  const handleFileUpload = async (file: File): Promise<boolean> => {
+  const canHandleFileUpload = async (file: File): Promise<boolean> => {
     try {
       const fileData = await file.text();
 
@@ -95,8 +91,8 @@ const JsonToTgsConverter: React.FC = () => {
     }
 
     const optimizedData =
-      precisionEnabled && precisionDigits >= 0
-        ? processValue(jsonData, precisionDigits, roundNumber)
+      isPrecisionEnabled && precisionDigits >= 0
+        ? processValue(jsonData, precisionDigits)
         : jsonData;
 
     const jsonString = JSON.stringify(optimizedData);
@@ -109,9 +105,9 @@ const JsonToTgsConverter: React.FC = () => {
       gzipBytes,
       jsonBytes,
     };
-  }, [jsonData, precisionDigits, precisionEnabled]);
+  }, [jsonData, precisionDigits, isPrecisionEnabled]);
 
-  const downloadTgs = async (): Promise<void> => {
+  const downloadTgs = (): void => {
     if (!jsonData) {
       return;
     }
@@ -119,8 +115,8 @@ const JsonToTgsConverter: React.FC = () => {
     setIsLoading(true);
 
     const optimizedData =
-      precisionEnabled && precisionDigits >= 0
-        ? processValue(jsonData, precisionDigits, roundNumber)
+      isPrecisionEnabled && precisionDigits >= 0
+        ? processValue(jsonData, precisionDigits)
         : jsonData;
 
     const jsonString = JSON.stringify(optimizedData);
@@ -141,13 +137,15 @@ const JsonToTgsConverter: React.FC = () => {
   };
 
   const handlePrecisionDigitsChange = (nextValue: number | null) => {
-    if (typeof nextValue === "number") {
-      triggerHaptic("selection");
-      setPrecisionDigits(nextValue);
+    if (typeof nextValue !== "number") {
+      return;
     }
+
+    triggerHaptic("selection");
+    setPrecisionDigits(nextValue);
   };
 
-  const handlePrecisionToggle = withSelectionHaptic(setPrecisionEnabled);
+  const handlePrecisionToggle = withSelectionHaptic(setIsPrecisionEnabled);
 
   const handleReset = withSoftHaptic(() => {
     setJsonData(undefined);
@@ -155,8 +153,8 @@ const JsonToTgsConverter: React.FC = () => {
     setOriginalFileSize(undefined);
   });
 
-  const handleDownload = withSoftHaptic(async () => {
-    await downloadTgs();
+  const handleDownload = withSoftHaptic(() => {
+    downloadTgs();
   });
 
   return (
@@ -164,7 +162,7 @@ const JsonToTgsConverter: React.FC = () => {
       <div onMouseDown={() => triggerHaptic("selection")}>
         <Upload.Dragger
           accept=".json"
-          beforeUpload={handleFileUpload}
+          beforeUpload={canHandleFileUpload}
           className={styles["converter-dragger"]}
           name="file"
           showUploadList={false}
@@ -189,7 +187,7 @@ const JsonToTgsConverter: React.FC = () => {
             </span>
           </div>
           <div className={styles["converter-precision-controls"]}>
-            {precisionEnabled && (
+            {isPrecisionEnabled && (
               <InputNumber
                 className={styles["converter-precision-input"]}
                 max={8}
@@ -200,7 +198,7 @@ const JsonToTgsConverter: React.FC = () => {
               />
             )}
             <Switch
-              checked={precisionEnabled}
+              checked={isPrecisionEnabled}
               onChange={handlePrecisionToggle}
             />
           </div>
@@ -224,7 +222,7 @@ const JsonToTgsConverter: React.FC = () => {
         )}
       </p>
       {jsonData && typeof jsonData === "object" && (
-        <div className={`${modalStyles["modal-controls-group"]}`}>
+        <div className={modalStyles["modal-controls-group"]}>
           <button
             className={`${modalStyles["modal-controls-option"]} ${styles["converter-reset-desaturated"]}`}
             onClick={handleReset}

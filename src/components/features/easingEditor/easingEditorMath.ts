@@ -13,13 +13,17 @@ export const getPointOnCubicBezier = (
   p2: Point,
   p3: Point
 ): Point => {
-  const cX = 3 * (p1.x - p0.x),
-    bX = 3 * (p2.x - p1.x) - cX,
-    aX = p3.x - p0.x - cX - bX;
+  const cX = 3 * (p1.x - p0.x);
 
-  const cY = 3 * (p1.y - p0.y),
-    bY = 3 * (p2.y - p1.y) - cY,
-    aY = p3.y - p0.y - cY - bY;
+  const bX = 3 * (p2.x - p1.x) - cX;
+
+  const aX = p3.x - p0.x - cX - bX;
+
+  const cY = 3 * (p1.y - p0.y);
+
+  const bY = 3 * (p2.y - p1.y) - cY;
+
+  const aY = p3.y - p0.y - cY - bY;
 
   const x = aX * t ** 3 + bX * t ** 2 + cX * t + p0.x;
 
@@ -49,11 +53,7 @@ export const getNiceTickStep = (range: number, maxTicks: number): number => {
     return 5 * magnitude;
   }
 
-  if (residual > 1) {
-    return 2 * magnitude;
-  }
-
-  return magnitude;
+  return residual > 1 ? 2 * magnitude : magnitude;
 };
 
 const getCubicDerivative = (
@@ -92,11 +92,7 @@ export const getSpeedOnCubicBezier = (
 };
 
 export const getAnimationPreviewHeight = (animationProperty: string): number => {
-  if (["scale", "scaleAndRotate"].includes(animationProperty)) {
-    return 250;
-  }
-
-  return 120;
+  return ["scale", "scaleAndRotate"].includes(animationProperty) ? 250 : 120;
 };
 
 export const calculateBezierGeometry = ({
@@ -144,7 +140,7 @@ export const calculateBezierGeometry = ({
     currentSpeedOut = p1.y / p1x;
   }
 
-  let currentSpeedIn = trackWidth - p2.y > 0 ? INFINITE_SPEED : -INFINITE_SPEED;
+  let currentSpeedIn = trackWidth > p2.y ? INFINITE_SPEED : -INFINITE_SPEED;
 
   if (p2xRelative > 1e-6) {
     currentSpeedIn = (trackWidth - p2.y) / p2xRelative;
