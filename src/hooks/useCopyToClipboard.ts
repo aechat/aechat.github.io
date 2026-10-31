@@ -189,8 +189,16 @@ export const useCopyToClipboard = () => {
       void copyElementContent(copyTarget);
     };
 
+    let lastHoveredElement: EventTarget | null | undefined;
+
     const onMouseMove = (event_: MouseEvent) => {
       const target = event_.target;
+
+      if (target === lastHoveredElement) {
+        return;
+      }
+
+      lastHoveredElement = target;
 
       if (!(target instanceof HTMLElement)) {
         resetPointerTarget();
@@ -202,6 +210,8 @@ export const useCopyToClipboard = () => {
     };
 
     const onSelectionChange = () => {
+      lastHoveredElement = undefined;
+
       if (hasActiveTextSelection()) {
         setPointerTarget(undefined);
       }

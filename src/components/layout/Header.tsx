@@ -68,9 +68,15 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
   };
 
   const checkScrollPosition = (): void => {
-    if (typeof window !== "undefined") {
-      setIsScrollButtonVisible(window.scrollY > constants.SCROLL_THRESHOLD);
+    if (typeof window === "undefined") {
+      return;
     }
+
+    const isVisible = window.scrollY > constants.SCROLL_THRESHOLD;
+
+    setIsScrollButtonVisible((previous) =>
+      previous === isVisible ? previous : isVisible
+    );
   };
 
   useEffect(() => {
@@ -78,7 +84,7 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
       return;
     }
 
-    window.addEventListener("scroll", checkScrollPosition);
+    window.addEventListener("scroll", checkScrollPosition, {passive: true});
 
     return () => {
       window.removeEventListener("scroll", checkScrollPosition);
