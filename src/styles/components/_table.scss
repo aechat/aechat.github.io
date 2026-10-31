@@ -138,10 +138,10 @@ table {
     font-family: Onest, Inter, sans-serif;
 
     th {
-      text-wrap: balance;
       border: $stroke-1 solid var(--color-table-border);
       border-radius: $roundness * 0.75;
       background-color: var(--color-panel-background);
+      text-wrap: balance;
       font-weight: 600;
     }
   }

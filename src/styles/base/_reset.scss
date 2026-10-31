@@ -68,7 +68,6 @@ audio {
   border: none;
   max-width: 100%;
   height: auto;
-  vertical-align: middle;
 }
 
 button,
@@ -97,8 +96,8 @@ input[type="submit"] {
   border: none;
   box-shadow: none;
   background: none;
-  cursor: pointer;
   text-align: inherit;
+  cursor: pointer;
 }
 
 input:focus,

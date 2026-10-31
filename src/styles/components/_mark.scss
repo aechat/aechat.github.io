@@ -60,13 +60,13 @@ mark {
   margin-inline: $space-0;
   outline: $stroke-1 solid var(--color-mark-border);
   border-radius: $roundness * 0.5;
+  filter: saturate(75%);
   background-color: var(--color-mark-background);
   padding: 2px 3px;
   color: var(--color-mark-text);
   font-family: Onest, Inter, sans-serif;
   font-size: 0.95em;
   font-weight: 550;
-  filter: saturate(75%);
 
   &.file,
   &.key,

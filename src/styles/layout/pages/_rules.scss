@@ -8,13 +8,13 @@
   margin-block: $space-8;
   border: $stroke-1 solid var(--color-mark-border);
   border-radius: $roundness * 0.75;
+  filter: saturate($saturate);
   background-color: var(--color-mark-background);
   max-width: 70%;
   text-align: $text-align;
   line-height: 1.5;
   color: var(--color-mark-text);
   font-size: $font-size-text-sm;
-  filter: saturate($saturate);
 }
 
 .message {

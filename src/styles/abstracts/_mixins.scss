@@ -148,7 +148,6 @@
     outline-color $duration-500 cubic-bezier(0.075, 0.82, 0.165, 1);
   border: $stroke-1 solid var(--color-panel-border);
   background-color: var(--color-panel-background);
-  cursor: pointer;
   padding: $space-12 $space-16;
   text-transform: uppercase;
   line-height: 1.3;
@@ -159,6 +158,7 @@
     1.225rem
   );
   font-weight: 650;
+  cursor: pointer;
 
   &:not(:last-child) {
     border-top: $stroke-1 solid var(--color-panel-border);
@@ -357,6 +357,7 @@
 
 @mixin link-card-name-base {
   text-align: left;
+  text-wrap: balance;
   line-height: 1.35;
   color: var(--color-panel-card-text);
   font-family: Onest, sans-serif;
@@ -365,7 +366,6 @@
     1.1rem
   );
   font-weight: 600;
-  text-wrap: balance;
 }
 
 @mixin link-card-description-base {
@@ -375,13 +375,13 @@
   padding-inline: $space-12;
   vertical-align: middle;
   text-align: left;
+  text-wrap: balance;
   line-height: 1.35;
   font-size: min(
     calc(0.875rem + (0.9 - 0.875) * ((100vw - 320px) / (768 - 320))),
     0.9rem
   );
   font-weight: 375;
-  text-wrap: balance;
 }
 
 @mixin article-list-edge-spacing {
@@ -433,10 +433,6 @@
   transition:
     --fade-left $duration-250 ease,
     --fade-right $duration-250 ease;
-  padding: $space-4;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   mask-image: linear-gradient(
     to right,
     transparent 0%,
@@ -444,6 +440,10 @@
     black calc(100% - var(--fade-right)),
     transparent 100%
   );
+  padding: $space-4;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -472,7 +472,6 @@
     border: none;
     border-radius: $roundness * 0.5;
     background-color: var(--color-action-background);
-    cursor: pointer;
     padding-block: 4px;
     padding-inline: 8px;
     line-height: 1.2;
@@ -480,6 +479,7 @@
     color: var(--color-action-text);
     font-size: 0.9rem;
     font-weight: 500;
+    cursor: pointer;
 
     &:hover {
       transform: scale(

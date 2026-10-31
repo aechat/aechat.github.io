@@ -76,12 +76,12 @@
   min-width: 150px;
   text-align: center;
   text-decoration: none;
+  text-wrap: wrap;
   line-height: 1.25;
   color: var(--color-action-text);
   font-family: Onest, sans-serif;
   font-size: $font-size-text-base;
   font-weight: 500;
-  text-wrap: wrap;
 
   &:hover {
     transform: scale(var(--links-hover-scale-x, 1.02), var(--links-hover-scale-y, 1.02));
@@ -243,11 +243,11 @@
 
 .search {
   &-input {
-    cursor: text;
     width: 100%;
     color: var(--color-panel-text);
     font-size: $font-size-text-base;
     font-weight: 600;
+    cursor: text;
 
     &::-webkit-search-decoration,
     &::-webkit-search-cancel-button,
@@ -313,14 +313,14 @@
       opacity: 0.75;
       border: none;
       background: none;
-      cursor: pointer;
       text-decoration: underline;
       text-decoration-style: dashed;
+      text-underline-offset: 3px;
       white-space: nowrap;
       color: var(--color-page-text-muted);
       font-size: 0.75rem;
       font-weight: 550;
-      text-underline-offset: 3px;
+      cursor: pointer;
 
       &:hover {
         opacity: 1;
@@ -349,9 +349,9 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      animation: suggestions-fade-in 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) both;
       padding-block: $space-4;
       width: 100%;
-      animation: suggestions-fade-in 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) both;
 
       &.exit {
         animation: suggestions-fade-out 0.2s cubic-bezier(0.075, 0.82, 0.165, 1) both;
@@ -394,10 +394,10 @@
       100svh
     );
 
-    filter: $shadow-filter-overlay;
     position: relative;
     transition: max-height $duration-250 cubic-bezier(0.2, 0, 0.2, 1);
     border-radius: $roundness;
+    filter: $shadow-filter-overlay;
     max-height: var(--search-results-max-height);
     overflow: visible;
 
@@ -413,16 +413,16 @@
       mask-position $duration-500 ease;
     margin-inline: -$space-8;
     border-radius: $roundness;
+    mask-image: linear-gradient(to bottom, black 92.5%, transparent 100%);
+    mask-size: 100% 200%;
+    mask-position: 0 50%;
+    mask-repeat: no-repeat;
     padding-top: $space-4;
     padding-bottom: var(--search-results-safe-block-end);
     padding-inline: $space-8;
     max-height: inherit;
     overflow-y: auto;
     overflow-anchor: none;
-    mask-image: linear-gradient(to bottom, black 92.5%, transparent 100%);
-    mask-position: 0 50%;
-    mask-size: 100% 200%;
-    mask-repeat: no-repeat;
     scrollbar-color: var(--color-panel-border) transparent;
     scrollbar-width: thin;
 
@@ -446,8 +446,8 @@
   &-static {
     display: block;
     position: relative;
-    padding-top: $space-4;
     filter: $shadow-filter-overlay;
+    padding-top: $space-4;
   }
 
   &-link {
@@ -538,10 +538,10 @@
   }
 
   &-results-item {
-    width: 100%;
-    min-width: 0;
     animation: search-card-in 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) both;
     animation-delay: calc(var(--card-index, 0) * 30ms);
+    width: 100%;
+    min-width: 0;
 
     &.is-mobile {
       animation: none;
@@ -829,9 +829,9 @@
     &-title {
       @include fluid-size(padding-inline, $space-4, $space-8);
 
+      text-wrap: balance;
       font-family: Onest, sans-serif;
       font-size: $font-size-heading-xs;
-      text-wrap: balance;
     }
 
     &-message {
@@ -839,15 +839,15 @@
 
       opacity: 0.5;
       width: 100%;
-      font-size: $font-size-text-xs;
       text-wrap: balance;
+      font-size: $font-size-text-xs;
 
       a {
         transition: opacity $duration-250 ease;
         opacity: 0.85;
         text-decoration: underline;
-        color: var(--color-panel-text);
         text-underline-offset: 2px;
+        color: var(--color-panel-text);
 
         &:hover {
           opacity: 1;
@@ -867,9 +867,9 @@
       opacity: 0.35;
       margin-inline-start: auto;
       text-align: right;
+      text-wrap: balance;
       line-height: 1.25;
       font-size: $font-size-text-xs !important;
-      text-wrap: balance;
     }
   }
 
@@ -879,8 +879,8 @@
 
     &.is-mobile {
       transform: none;
-      opacity: 1;
       animation: none;
+      opacity: 1;
     }
   }
 
@@ -931,9 +931,9 @@
       opacity: 0.4;
       margin-block: $space-4 $space-16;
       text-align: center;
+      text-wrap: balance;
       line-height: 1.25;
       font-size: $font-size-text-xs;
-      text-wrap: balance;
     }
   }
 }

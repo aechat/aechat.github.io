@@ -20,12 +20,12 @@
   z-index: $z-top;
   outline: $stroke-1 solid var(--color-header-backdrop-border);
   box-shadow: 0 0 15px 0 var(--shadow-soft);
+  backdrop-filter: blur(15px) saturate(50%);
   background-color: var(--color-header-backdrop-background);
   padding-inline: $space-12;
   width: 100%;
   max-width: 1075px;
   translate: 0 0 0;
-  backdrop-filter: blur(15px) saturate(50%);
 
   svg {
     @include fluid-icon-size(18px, 20px);
@@ -89,10 +89,10 @@
     opacity $duration-500 cubic-bezier(0.075, 0.82, 0.165, 1);
   outline: $stroke-1 solid transparent;
   border-radius: $roundness * 0.75;
+  aspect-ratio: 1 / 1;
   height: var(--header-control-height, 30px);
   min-height: var(--header-control-height, 30px);
   line-height: 1;
-  aspect-ratio: 1 / 1;
 
   &:hover {
     outline-color: var(--color-panel-border-hover);

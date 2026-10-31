@@ -124,7 +124,6 @@
     border: $stroke-1 solid var(--color-panel-border);
     border-radius: 0;
     background-color: var(--color-panel-background);
-    cursor: pointer;
     padding: $space-10 $space-14;
     text-transform: uppercase;
     line-height: 1.2;
@@ -132,6 +131,7 @@
     font-family: Onest, sans-serif;
     font-size: min(calc(1rem + (1.1 - 1) * ((100vw - 320px) / (768 - 320))), 1.1rem);
     font-weight: 600;
+    cursor: pointer;
 
     &:hover {
       border-color: var(--color-panel-border-hover);
@@ -230,8 +230,8 @@
     li {
       position: relative;
       list-style-type: none;
-      line-height: 1.7;
       text-wrap: stable;
+      line-height: 1.7;
 
       &::before {
         display: inline-block;

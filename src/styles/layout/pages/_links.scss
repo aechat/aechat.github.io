@@ -1,9 +1,9 @@
 @use "../../abstracts/mixins" as *;
 
 .links {
-  filter: $shadow-filter-surface;
   margin-top: 0;
   margin-inline: auto;
+  filter: $shadow-filter-surface;
   width: calc(100% - clamp(16px, 5vw, 64px));
   max-width: 1200px;
 
@@ -112,7 +112,6 @@
   border: none;
   border-radius: $roundness * 0.75;
   background: transparent;
-  cursor: pointer;
   padding-block: $space-8;
   padding-inline: $space-16 !important;
   height: 36px;
@@ -122,6 +121,7 @@
   font-family: Onest, Inter, sans-serif;
   font-size: $font-size-text-sm;
   font-weight: 500;
+  cursor: pointer;
 
   &:hover {
     outline-color: var(--color-panel-border-hover);

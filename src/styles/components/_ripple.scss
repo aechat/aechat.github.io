@@ -3,9 +3,9 @@
 .ripple {
   position: absolute;
   transform: scale(0);
+  animation: ripple-enter $duration-750 cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
   background-color: var(--color-interaction-ripple);
-  animation: ripple-enter $duration-750 cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 
   &-container {

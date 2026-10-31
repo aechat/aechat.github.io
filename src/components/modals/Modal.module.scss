@@ -151,12 +151,12 @@
     border: $stroke-1 solid transparent;
     border-radius: $roundness * 0.75;
     background-color: transparent;
-    cursor: pointer;
+    aspect-ratio: 1 / 1;
     height: var(--header-control-height, 30px);
     min-height: var(--header-control-height, 30px);
     line-height: 1;
     color: var(--color-panel-text);
-    aspect-ratio: 1 / 1;
+    cursor: pointer;
 
     &:focus,
     &:focus-visible {
@@ -245,11 +245,11 @@
   border: $stroke-1 solid var(--color-panel-border);
   border-radius: $roundness;
   background-color: var(--color-panel-background);
-  cursor: pointer;
   width: calc(100% - 20px);
   text-align: center;
   color: var(--color-panel-text);
   font-weight: 700;
+  cursor: pointer;
 }
 
 .modal-modal-title {
