@@ -146,6 +146,7 @@
   transition:
     background-color $duration-500 cubic-bezier(0.075, 0.82, 0.165, 1),
     outline-color $duration-500 cubic-bezier(0.075, 0.82, 0.165, 1);
+  z-index: $z-raised;
   border: $stroke-1 solid var(--color-panel-border);
   background-color: var(--color-panel-background);
   padding: $space-12 $space-16;

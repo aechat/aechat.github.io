@@ -32,6 +32,7 @@
 
   summary {
     position: relative;
+    z-index: $z-raised;
     list-style: none;
     cursor: pointer;
 
@@ -183,7 +184,10 @@
 
 :global(.article-content) {
   .details-summary-root:not([open]) {
-    transition: $duration-1000 cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition:
+      opacity $duration-1000 cubic-bezier(0.075, 0.82, 0.165, 1),
+      transform $duration-1000 cubic-bezier(0.075, 0.82, 0.165, 1),
+      margin-block $duration-1000 cubic-bezier(0.075, 0.82, 0.165, 1);
   }
 
   .details-summary-root {
@@ -377,11 +381,18 @@
 }
 
 .details-content-wrapper {
-  transition: max-height $duration-350 cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  transition: max-height var(--spoiler-transition-duration, #{$duration-350})
+    cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: $z-base;
   margin-block-start: -$space-16;
   max-height: 0;
   overflow: hidden;
-  will-change: max-height;
+  contain: style;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .details-content-inner {

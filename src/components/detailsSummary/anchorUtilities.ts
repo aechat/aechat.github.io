@@ -30,7 +30,7 @@ export const isFirstAnchorOccurrence = (
 
   const now = performance.now();
 
-  if (now - cacheState.lastCacheTime > 50) {
+  if (now - cacheState.lastCacheTime > 250) {
     cachedFirstOccurrences.clear();
 
     const elements =

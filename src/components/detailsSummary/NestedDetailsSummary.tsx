@@ -32,7 +32,14 @@ import {
   throwDuplicateAnchorError,
 } from "./anchorUtilities";
 
-import {DETAILS_SUMMARY_DELAYS} from "./detailsSummaryUtilities";
+import {
+  DETAILS_SUMMARY_DELAYS,
+  getSpoilerCloseStartHeight,
+  getSpoilerMaxAnimatedHeight,
+  getSpoilerTransitionDurationMs,
+  setInstantSpoilerMaxHeight,
+  SPOILER_ANCHOR_ASSIGNED_EVENT,
+} from "./detailsSummaryUtilities";
 
 import styles from "./NestedDetailsSummary.module.scss";
 
@@ -95,6 +102,8 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   const [isOpen, setIsOpen] = useState(startOpen);
 
   const [displayAnchorId, setDisplayAnchorId] = useState("");
+
+  const [isCopyTooltipEnabled, setIsCopyTooltipEnabled] = useState(false);
 
   const isOpenReference = useRef(isOpen);
 
@@ -162,12 +171,14 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     const measuredHeight = innerContent.scrollHeight;
 
+    const detailsHeight = details.offsetHeight;
+
     if (contentWrapper.style.maxHeight !== "none") {
-      contentWrapper.style.maxHeight = `${measuredHeight}px`;
+      setInstantSpoilerMaxHeight(contentWrapper, `${measuredHeight}px`);
     }
 
     lastExpandedHeightReference.current = measuredHeight;
-    details.style.marginBottom = `${details.offsetHeight * 0.005 + 16}px`;
+    details.style.marginBottom = `${detailsHeight * 0.005 + 16}px`;
   }, []);
 
   const updateUrlHash = useCallback((hash: string) => {
@@ -282,6 +293,10 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
   }, []);
 
   useEffect(() => {
+    if (!import.meta.env.DEV) {
+      return;
+    }
+
     const detailsElement = detailsReference.current;
 
     if (
@@ -555,6 +570,13 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     if (!details || !contentWrapper || !innerContent) return;
 
+    if (!isOpen && !details.open) {
+      contentWrapper.style.maxHeight = "0px";
+      details.style.marginBottom = "";
+
+      return;
+    }
+
     let openRetryAnimationFrame: number | undefined;
 
     let transitionAnimationFrame: number | undefined;
@@ -562,6 +584,8 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
     let openFallbackTimeout: ReturnType<typeof setTimeout> | undefined;
 
     let closeFallbackTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    let resizeObserver: ResizeObserver | undefined;
 
     const flushPendingScroll = () => {
       if (!shouldScrollAfterOpenReference.current) {
@@ -572,13 +596,43 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       scrollToSummary();
     };
 
+    const finalizeOpen = () => {
+      if (!isOpenReference.current) {
+        return;
+      }
+
+      lastExpandedHeightReference.current = innerContent.scrollHeight;
+      setInstantSpoilerMaxHeight(contentWrapper, "none");
+      resizeObserver?.observe(innerContent);
+      flushPendingScroll();
+      updateDynamicStyles();
+    };
+
     const updateOpenHeight = (attempt = 0) => {
       const targetHeight = innerContent.scrollHeight;
 
       if (targetHeight > 0 || attempt >= 40) {
-        contentWrapper.style.maxHeight = `${targetHeight}px`;
+        const animatedHeight = getSpoilerMaxAnimatedHeight(details, targetHeight);
+
+        const openDurationMs = getSpoilerTransitionDurationMs();
+
+        contentWrapper.style.setProperty(
+          "--spoiler-transition-duration",
+          `${openDurationMs}ms`
+        );
+
         lastExpandedHeightReference.current = targetHeight;
-        updateDynamicStyles();
+        details.style.marginBottom = `${(details.offsetHeight + targetHeight) * 0.005 + 16}px`;
+
+        openRetryAnimationFrame = requestAnimationFrame(() => {
+          contentWrapper.style.maxHeight = `${animatedHeight}px`;
+        });
+
+        clearTimeout(openFallbackTimeout);
+
+        openFallbackTimeout = setTimeout(() => {
+          finalizeOpen();
+        }, openDurationMs + 60);
 
         return;
       }
@@ -600,10 +654,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       isClosingAnimationReference.current = false;
 
       if (isOpen) {
-        lastExpandedHeightReference.current = innerContent.scrollHeight;
-        contentWrapper.style.maxHeight = "none";
-        flushPendingScroll();
-        updateDynamicStyles();
+        finalizeOpen();
       } else {
         details.open = false;
       }
@@ -618,16 +669,6 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     contentWrapper.addEventListener("transitionend", onTransitionEnd);
 
-    const resizeObserver = new ResizeObserver(() => {
-      if (!isOpen) {
-        return;
-      }
-
-      updateDynamicStyles();
-    });
-
-    resizeObserver.observe(innerContent);
-
     const onWindowResize = () => {
       if (!isOpen) {
         return;
@@ -636,7 +677,17 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       updateDynamicStyles();
     };
 
-    window.addEventListener("resize", onWindowResize);
+    if (isOpen) {
+      resizeObserver = new ResizeObserver(() => {
+        if (!isOpenReference.current) {
+          return;
+        }
+
+        updateDynamicStyles();
+      });
+
+      window.addEventListener("resize", onWindowResize);
+    }
 
     const duration = Number(
       getComputedStyle(contentWrapper).transitionDuration.replace("s", "")
@@ -646,44 +697,52 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
 
     if (isOpen) {
       isClosingAnimationReference.current = false;
+
+      const currentHeight = details.open
+        ? contentWrapper.getBoundingClientRect().height
+        : 0;
+
       details.open = true;
 
-      const currentHeight = contentWrapper.getBoundingClientRect().height;
+      if (durationMs <= 0) {
+        finalizeOpen();
+      } else {
+        setInstantSpoilerMaxHeight(contentWrapper, `${currentHeight}px`);
 
-      contentWrapper.style.maxHeight = `${currentHeight}px`;
-      updateDynamicStyles();
-
-      transitionAnimationFrame = requestAnimationFrame(() => {
-        updateOpenHeight();
-      });
-
-      openFallbackTimeout = setTimeout(() => {
-        if (!isOpenReference.current) {
-          return;
-        }
-
-        contentWrapper.style.maxHeight = "none";
-        flushPendingScroll();
-        updateDynamicStyles();
-      }, durationMs + 60);
-    } else {
+        transitionAnimationFrame = requestAnimationFrame(() => {
+          updateOpenHeight();
+        });
+      }
+    } else if (details.open) {
       isClosingAnimationReference.current = true;
 
-      const currentHeight = getExpandedHeight();
+      if (durationMs <= 0) {
+        details.open = false;
+        setInstantSpoilerMaxHeight(contentWrapper, "0px");
+        details.style.marginBottom = "";
+      } else {
+        const currentHeight = getSpoilerCloseStartHeight(details, getExpandedHeight());
 
-      contentWrapper.style.maxHeight = `${currentHeight}px`;
-      contentWrapper.getBoundingClientRect();
-      details.style.marginBottom = "";
+        const closeDurationMs = getSpoilerTransitionDurationMs();
 
-      transitionAnimationFrame = requestAnimationFrame(() => {
-        contentWrapper.style.maxHeight = "0px";
-      });
+        contentWrapper.style.setProperty(
+          "--spoiler-transition-duration",
+          `${closeDurationMs}ms`
+        );
 
-      closeFallbackTimeout = setTimeout(() => {
-        if (!isOpen) {
-          details.open = false;
-        }
-      }, durationMs + 50);
+        setInstantSpoilerMaxHeight(contentWrapper, `${currentHeight}px`);
+        details.style.marginBottom = "";
+
+        transitionAnimationFrame = requestAnimationFrame(() => {
+          contentWrapper.style.maxHeight = "0px";
+        });
+
+        closeFallbackTimeout = setTimeout(() => {
+          if (!isOpenReference.current) {
+            details.open = false;
+          }
+        }, closeDurationMs + 50);
+      }
     }
 
     return () => {
@@ -703,7 +762,7 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
         clearTimeout(closeFallbackTimeout);
       }
 
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", onWindowResize);
       contentWrapper.removeEventListener("transitionend", onTransitionEnd);
     };
@@ -735,13 +794,17 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
       return;
     }
 
-    const checkIdInterval = setInterval(() => {
+    const handleAnchorAssigned = () => {
       if (shouldCheckId()) {
-        clearInterval(checkIdInterval);
+        removeEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
       }
-    }, 100);
+    };
 
-    return () => clearInterval(checkIdInterval);
+    addEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
+
+    return () => {
+      removeEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
+    };
   }, [assignFallbackSummaryId]);
 
   const canHandleCopyAnchor = useCallback(
@@ -796,12 +859,27 @@ const NestedDetailsSummary: React.FC<NestedDetailsSummaryProperties> = ({
               <h3>{title}</h3>
             </div>
           </div>
-          <Tooltip title="Скопировать ссылку">
-            <CopyButton
-              isDisabled={!displayAnchorId}
-              onClick={canHandleCopyAnchor}
-            />
-          </Tooltip>
+          {isCopyTooltipEnabled ? (
+            <Tooltip
+              defaultOpen
+              title="Скопировать ссылку"
+            >
+              <CopyButton
+                isDisabled={!displayAnchorId}
+                onClick={canHandleCopyAnchor}
+              />
+            </Tooltip>
+          ) : (
+            <span
+              onFocus={() => setIsCopyTooltipEnabled(true)}
+              onMouseEnter={() => setIsCopyTooltipEnabled(true)}
+            >
+              <CopyButton
+                isDisabled={!displayAnchorId}
+                onClick={canHandleCopyAnchor}
+              />
+            </span>
+          )}
         </summary>
         <div
           ref={contentWrapperReference}

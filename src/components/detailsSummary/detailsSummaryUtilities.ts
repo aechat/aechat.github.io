@@ -12,6 +12,8 @@ export const DETAILS_SUMMARY_DELAYS = {
   NESTED_OPEN_AFTER_PARENT_DELAY: 150,
 } as const;
 
+export const SPOILER_ANCHOR_ASSIGNED_EVENT = "spoiler-anchor-assigned";
+
 export const dispatchOpenSpoilerById = (
   id: string,
   options?: {delay?: number; skipScroll?: boolean}
@@ -128,8 +130,9 @@ export const processNestedSummaries = (
     const normalizedNestedTextualAnchor = normalizeAnchor(nestedTextualAnchor);
 
     const isNestedTextualAnchorUsable =
+      Boolean(currentHash) &&
+      normalizedNestedTextualAnchor === currentHash &&
       nestedDetailsElement instanceof HTMLDetailsElement &&
-      Boolean(normalizedNestedTextualAnchor) &&
       isFirstAnchorOccurrence(nestedDetailsElement, normalizedNestedTextualAnchor);
 
     if (
@@ -155,4 +158,156 @@ export const getTopLevelSummaryElements = (container: Element): HTMLElement[] =>
       `details:not(.details-nested) > .${styles["details-summary"]}`
     ),
   ];
+};
+
+const pendingStackingContainers = new Set<Element>();
+
+const stackingState: {frameId: number | undefined} = {
+  frameId: undefined,
+};
+
+const setStylePropertyIfChanged = (
+  element: HTMLElement,
+  property: string,
+  value: string
+) => {
+  if (element.style.getPropertyValue(property) !== value) {
+    element.style.setProperty(property, value);
+  }
+};
+
+const getNestedDepth = (spoilerElement: HTMLDetailsElement): number => {
+  let depth = 0;
+
+  let ancestorNestedDetails = spoilerElement.parentElement?.closest<HTMLDetailsElement>(
+    'details[data-nested-details-summary="true"]'
+  );
+
+  while (ancestorNestedDetails) {
+    depth += 1;
+
+    ancestorNestedDetails =
+      ancestorNestedDetails.parentElement?.closest<HTMLDetailsElement>(
+        'details[data-nested-details-summary="true"]'
+      );
+  }
+
+  return depth;
+};
+
+const updateContainerSpoilerStacking = (articleContent: Element) => {
+  const spoilerElements = articleContent.querySelectorAll<HTMLDetailsElement>(
+    'details[data-anchor], details[data-nested-details-summary="true"]'
+  );
+
+  const spoilersByDepth = new Map<number, HTMLDetailsElement[]>();
+
+  for (const spoilerElement of spoilerElements) {
+    const depth = getNestedDepth(spoilerElement);
+
+    setStylePropertyIfChanged(spoilerElement, "--spoiler-depth", String(depth));
+
+    const spoilersAtDepth = spoilersByDepth.get(depth) ?? [];
+
+    spoilersAtDepth.push(spoilerElement);
+    spoilersByDepth.set(depth, spoilersAtDepth);
+  }
+
+  for (const spoilersAtDepth of spoilersByDepth.values()) {
+    const totalSpoilers = spoilersAtDepth.length;
+
+    for (const [index, spoilerElement] of spoilersAtDepth.entries()) {
+      setStylePropertyIfChanged(
+        spoilerElement,
+        "--spoiler-order",
+        String(totalSpoilers - index)
+      );
+    }
+  }
+};
+
+export const scheduleSpoilerStackingUpdate = (
+  detailsElement: HTMLDetailsElement | null
+) => {
+  if (!detailsElement || globalThis.window === undefined) {
+    return;
+  }
+
+  const articleContent = detailsElement.closest(".article-content");
+
+  if (!articleContent) {
+    return;
+  }
+
+  pendingStackingContainers.add(articleContent);
+
+  if (stackingState.frameId !== undefined) {
+    return;
+  }
+
+  stackingState.frameId = requestAnimationFrame(() => {
+    stackingState.frameId = undefined;
+
+    for (const container of pendingStackingContainers) {
+      updateContainerSpoilerStacking(container);
+    }
+
+    pendingStackingContainers.clear();
+  });
+};
+
+export const getSpoilerMaxAnimatedHeight = (
+  detailsElement: HTMLDetailsElement,
+  fullHeight: number
+): number => {
+  if (globalThis.window === undefined) {
+    return fullHeight;
+  }
+
+  const headerHeight = document.querySelector("header")?.offsetHeight ?? 0;
+
+  const summaryElement = detailsElement.querySelector("summary");
+
+  const summaryHeight =
+    summaryElement instanceof HTMLElement ? summaryElement.offsetHeight : 0;
+
+  const viewportLimit = Math.max(320, window.innerHeight - headerHeight - summaryHeight);
+
+  return Math.min(fullHeight, viewportLimit);
+};
+
+export const getSpoilerCloseStartHeight = (
+  detailsElement: HTMLDetailsElement,
+  fullHeight: number
+): number => {
+  const animatedLimit = getSpoilerMaxAnimatedHeight(detailsElement, fullHeight);
+
+  if (fullHeight <= animatedLimit || globalThis.window === undefined) {
+    return fullHeight;
+  }
+
+  const documentElement = document.documentElement;
+
+  const bottomSlack = Math.max(
+    0,
+    documentElement.scrollHeight - (window.scrollY + window.innerHeight)
+  );
+
+  const maxSafeReduction = Math.min(fullHeight - animatedLimit, bottomSlack);
+
+  return Math.max(animatedLimit, fullHeight - maxSafeReduction);
+};
+
+export const getSpoilerTransitionDurationMs = (): number => {
+  return 300;
+};
+
+export const setInstantSpoilerMaxHeight = (
+  contentWrapper: HTMLElement,
+  maxHeight: string
+) => {
+  contentWrapper.style.transition = "none";
+  contentWrapper.style.maxHeight = maxHeight;
+  contentWrapper.getBoundingClientRect();
+  contentWrapper.style.transition = "";
 };

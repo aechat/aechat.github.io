@@ -28,14 +28,16 @@ const stopToggleTagsPointerDown = (event: React.MouseEvent | React.TouchEvent) =
   event.stopPropagation();
 };
 
-export const TagList: React.FC<{tags: string}> = ({tags}) => {
+const TagListComponent = ({tags}: {tags: string}) => {
   const [expanded, setExpanded] = useState(false);
 
   const allTags = useMemo(() => parseTags(tags), [tags]);
 
   const isOverflowing = allTags.length > TAG_LIMIT;
 
-  const [randomizedTags, setRandomizedTags] = useState<string[]>([]);
+  const [randomizedTags, setRandomizedTags] = useState<string[]>(() =>
+    allTags.slice(0, TAG_LIMIT)
+  );
 
   useEffect(() => {
     if (!isOverflowing) {
@@ -44,17 +46,20 @@ export const TagList: React.FC<{tags: string}> = ({tags}) => {
 
     const shuffled = [...allTags];
 
-    for (let index = shuffled.length - 1; index > 0; index--) {
-      const randomValues = new Uint32Array(1);
+    const randomValues = new Uint32Array(TAG_LIMIT);
 
-      crypto.getRandomValues(randomValues);
+    crypto.getRandomValues(randomValues);
 
-      const index_ = Math.floor((randomValues[0] / (0xff_ff_ff_ff + 1)) * (index + 1));
+    for (let index = 0; index < TAG_LIMIT; index++) {
+      const remaining = shuffled.length - index;
+
+      const swapIndex =
+        index + Math.floor((randomValues[index] / (0xff_ff_ff_ff + 1)) * remaining);
 
       const temporary = shuffled[index];
 
-      shuffled[index] = shuffled[index_];
-      shuffled[index_] = temporary;
+      shuffled[index] = shuffled[swapIndex];
+      shuffled[swapIndex] = temporary;
     }
 
     setRandomizedTags(shuffled.slice(0, TAG_LIMIT));
@@ -101,3 +106,7 @@ export const TagList: React.FC<{tags: string}> = ({tags}) => {
     </span>
   );
 };
+
+export const TagList = React.memo(TagListComponent);
+
+TagList.displayName = "TagList";

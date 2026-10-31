@@ -42,10 +42,16 @@ import {
   assignAnchorIdIfMissing,
   DETAILS_SUMMARY_DELAYS,
   dispatchOpenSpoilerById,
+  getSpoilerCloseStartHeight,
+  getSpoilerMaxAnimatedHeight,
+  getSpoilerTransitionDurationMs,
   getTopLevelSummaryElements,
   isHashForNestedInDetails,
   isHashForOpenNestedInDetails,
   processNestedSummaries,
+  scheduleSpoilerStackingUpdate,
+  setInstantSpoilerMaxHeight,
+  SPOILER_ANCHOR_ASSIGNED_EVENT,
 } from "./detailsSummaryUtilities";
 
 import {
@@ -61,9 +67,23 @@ interface DetailsSummaryProperties {
   title: string;
 }
 
-const CHUNK_SIZE = 30;
+const TASK_BUDGET_MS = 50;
 
-const yieldToMain = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
+interface SchedulerHost {
+  scheduler?: {yield?: () => Promise<void>};
+}
+
+const yieldToMain = async (): Promise<void> => {
+  const {scheduler: globalScheduler} = globalThis as SchedulerHost;
+
+  if (typeof globalScheduler?.yield === "function") {
+    await globalScheduler.yield();
+
+    return;
+  }
+
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
+};
 
 interface AnchorTask {
   blockIndex: number;
@@ -86,8 +106,9 @@ const processAnchorTask = (task: AnchorTask, currentHash: string) => {
   const textualAnchor = normalizeAnchor(detailsElement?.dataset.anchor);
 
   const isTextualAnchorUsable =
+    Boolean(currentHash) &&
+    textualAnchor === currentHash &&
     detailsElement instanceof HTMLDetailsElement &&
-    Boolean(textualAnchor) &&
     isFirstAnchorOccurrence(detailsElement, textualAnchor);
 
   if (
@@ -112,9 +133,15 @@ const processAnchorTask = (task: AnchorTask, currentHash: string) => {
   }
 };
 
-export const generateAnchorId = async () => {
-  if (globalThis.window === undefined) return;
+const anchorGenerationState: {
+  activePromise: Promise<void> | undefined;
+  hasPending: boolean;
+} = {
+  activePromise: undefined,
+  hasPending: false,
+};
 
+const runAnchorGenerationPass = async () => {
   const containers = [...document.querySelectorAll(".article-content")];
 
   const currentHash = getCurrentHashAnchor();
@@ -131,16 +158,44 @@ export const generateAnchorId = async () => {
     }
   }
 
-  for (let index = 0; index < tasks.length; index += CHUNK_SIZE) {
-    const chunk = tasks.slice(index, index + CHUNK_SIZE);
+  let deadline = performance.now() + TASK_BUDGET_MS;
 
-    for (const task of chunk) {
-      processAnchorTask(task, currentHash);
+  for (const task of tasks) {
+    processAnchorTask(task, currentHash);
+
+    if (performance.now() < deadline) {
+      continue;
     }
 
-    if (index + CHUNK_SIZE < tasks.length) {
-      await yieldToMain();
-    }
+    await yieldToMain();
+    deadline = performance.now() + TASK_BUDGET_MS;
+  }
+
+  dispatchEvent(new Event(SPOILER_ANCHOR_ASSIGNED_EVENT));
+};
+
+export const generateAnchorId = async () => {
+  if (globalThis.window === undefined) return;
+
+  if (anchorGenerationState.activePromise) {
+    anchorGenerationState.hasPending = true;
+
+    await anchorGenerationState.activePromise;
+
+    return;
+  }
+
+  anchorGenerationState.activePromise = (async () => {
+    do {
+      anchorGenerationState.hasPending = false;
+      await runAnchorGenerationPass();
+    } while (anchorGenerationState.hasPending);
+  })();
+
+  try {
+    await anchorGenerationState.activePromise;
+  } finally {
+    anchorGenerationState.activePromise = undefined;
   }
 };
 
@@ -162,6 +217,10 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   const skipNextAutoScroll = useRef(false);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const wasOpenReference = useRef(false);
+
+  const [isCopyTooltipEnabled, setIsCopyTooltipEnabled] = useState(false);
 
   const previousIsOpen = usePrevious(isOpen);
 
@@ -199,6 +258,10 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
   }, [anchor, displayAnchorId]);
 
   useEffect(() => {
+    if (!import.meta.env.DEV) {
+      return;
+    }
+
     const detailsElement = detailsReference.current;
 
     const textualAnchor = normalizeAnchor(anchor);
@@ -231,8 +294,12 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       return;
     }
 
-    contentWrapper.style.maxHeight = `${innerContent.scrollHeight}px`;
-    details.style.marginBottom = `${details.offsetHeight * 0.01 + 10}px`;
+    const scrollHeight = innerContent.scrollHeight;
+
+    const detailsHeight = details.offsetHeight;
+
+    setInstantSpoilerMaxHeight(contentWrapper, `${scrollHeight}px`);
+    details.style.marginBottom = `${detailsHeight * 0.01 + 10}px`;
   }, []);
 
   const updateUrlHash = useCallback((hash: string) => {
@@ -246,27 +313,28 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       `.${styles["details-summary-root"]}[open]`
     );
 
-    document.body.classList.toggle(
-      "body-has-any-spoiler-open",
-      openDetailsElements.length > 0
-    );
+    const hasAnyOpen = openDetailsElements.length > 0;
 
-    if (openDetailsElements.length > 0) {
-      const viewportHeight = window.innerHeight;
+    document.body.classList.toggle("body-has-any-spoiler-open", hasAnyOpen);
 
-      const isAnyInMainView = [...openDetailsElements].some((details) => {
-        const rect = details.getBoundingClientRect();
-
-        const isOutOfMainView =
-          rect.bottom < viewportHeight * 0.15 || rect.top > viewportHeight * 0.9;
-
-        return !isOutOfMainView;
-      });
-
-      document.body.classList.toggle("has-open-details", isAnyInMainView);
-    } else {
+    if (!hasAnyOpen) {
       document.body.classList.remove("has-open-details");
+
+      return;
     }
+
+    const viewportHeight = window.innerHeight;
+
+    const isAnyInMainView = [...openDetailsElements].some((details) => {
+      const rect = details.getBoundingClientRect();
+
+      const isOutOfMainView =
+        rect.bottom < viewportHeight * 0.15 || rect.top > viewportHeight * 0.9;
+
+      return !isOutOfMainView;
+    });
+
+    document.body.classList.toggle("has-open-details", isAnyInMainView);
   }, []);
 
   const doScroll = useCallback(() => {
@@ -283,6 +351,8 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
   useEffect(() => {
     if (isSpoilerAnimationEnabled || typeof window === "undefined") return;
+
+    wasOpenReference.current = isOpen;
 
     const details = detailsReference.current;
 
@@ -344,9 +414,13 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
     if (!innerContent) return;
 
-    const isJustOpened = isOpen && !previousIsOpen;
+    const wasOpen = wasOpenReference.current;
 
-    const justClosed = !isOpen && previousIsOpen;
+    wasOpenReference.current = isOpen;
+
+    const isJustOpened = isOpen && !wasOpen;
+
+    const isJustClosed = !isOpen && wasOpen;
 
     const preventScroll = (event: Event) => {
       event.preventDefault();
@@ -368,8 +442,24 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
     window.addEventListener("resize", updateDynamicStyles);
 
-    const handleTransitionEnd = (event: TransitionEvent) => {
-      if (event.target !== contentWrapper) return;
+    let openAnimationFrame = 0;
+
+    let openTransitionFrame = 0;
+
+    let fallbackTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    let dimmingTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    let isTransitionFinished = false;
+
+    const finishTransition = () => {
+      if (isTransitionFinished) {
+        return;
+      }
+
+      isTransitionFinished = true;
+      clearTimeout(fallbackTimeout);
+      fallbackTimeout = undefined;
 
       if (isOpen) {
         resizeObserver.observe(innerContent);
@@ -388,46 +478,85 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       enableScroll();
     };
 
+    const handleTransitionEnd = (event: TransitionEvent) => {
+      if (event.target !== contentWrapper || event.propertyName !== "max-height") {
+        return;
+      }
+
+      finishTransition();
+    };
+
     contentWrapper.addEventListener("transitionend", handleTransitionEnd);
 
-    if (isJustOpened || (justClosed && details.open)) {
+    if (isJustOpened || (isJustClosed && details.open)) {
       disableScroll();
     }
 
-    let openAnimationFrame: number | undefined;
-
-    if (isOpen) {
+    if (isOpen && !isJustOpened) {
       details.open = true;
+      resizeObserver.observe(innerContent);
+      updateDynamicStyles();
+    } else if (isOpen) {
+      const currentHeight = details.open
+        ? contentWrapper.getBoundingClientRect().height
+        : 0;
 
-      if (!isJustOpened) {
-        resizeObserver.observe(innerContent);
-        updateDynamicStyles();
-      }
+      details.open = true;
+      setInstantSpoilerMaxHeight(contentWrapper, `${currentHeight}px`);
+      updateDimmingEffect();
+      dimmingTimeout = setTimeout(updateDimmingEffect, 100);
 
       openAnimationFrame = requestAnimationFrame(() => {
         const scrollHeight = innerContent.scrollHeight;
 
-        const viewportHeight = window.innerHeight;
+        const animatedHeight = getSpoilerMaxAnimatedHeight(details, scrollHeight);
 
-        contentWrapper.style.maxHeight =
-          isJustOpened && scrollHeight > viewportHeight
-            ? `${viewportHeight}px`
-            : `${scrollHeight}px`;
+        const durationMs = getSpoilerTransitionDurationMs();
 
-        updateDimmingEffect();
-        setTimeout(updateDimmingEffect, 100);
+        contentWrapper.style.setProperty(
+          "--spoiler-transition-duration",
+          `${durationMs}ms`
+        );
+
+        setInstantSpoilerMaxHeight(contentWrapper, `${currentHeight}px`);
+        details.style.marginBottom = `${(details.offsetHeight + scrollHeight) * 0.01 + 10}px`;
+
+        openTransitionFrame = requestAnimationFrame(() => {
+          contentWrapper.style.maxHeight = `${animatedHeight}px`;
+        });
+
+        fallbackTimeout = setTimeout(finishTransition, durationMs + 60);
       });
     } else if (details.open) {
       resizeObserver.unobserve(innerContent);
-      contentWrapper.style.maxHeight = "0px";
+
+      const renderedHeight =
+        contentWrapper.getBoundingClientRect().height || innerContent.scrollHeight;
+
+      const startHeight = getSpoilerCloseStartHeight(details, renderedHeight);
+
+      const durationMs = getSpoilerTransitionDurationMs();
+
+      contentWrapper.style.setProperty(
+        "--spoiler-transition-duration",
+        `${durationMs}ms`
+      );
+
+      setInstantSpoilerMaxHeight(contentWrapper, `${startHeight}px`);
       details.style.marginBottom = "";
+
+      openAnimationFrame = requestAnimationFrame(() => {
+        contentWrapper.style.maxHeight = "0px";
+      });
+
+      fallbackTimeout = setTimeout(finishTransition, durationMs + 60);
     }
 
     return () => {
-      if (openAnimationFrame !== undefined) {
-        cancelAnimationFrame(openAnimationFrame);
-      }
-
+      cancelAnimationFrame(openAnimationFrame);
+      cancelAnimationFrame(openTransitionFrame);
+      clearTimeout(fallbackTimeout);
+      clearTimeout(dimmingTimeout);
       resizeObserver.disconnect();
       contentWrapper.removeEventListener("transitionend", handleTransitionEnd);
       window.removeEventListener("resize", updateDynamicStyles);
@@ -435,7 +564,6 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     };
   }, [
     isOpen,
-    previousIsOpen,
     updateDimmingEffect,
     isSpoilerAnimationEnabled,
     doScroll,
@@ -538,11 +666,17 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
       return;
     }
 
-    const checkIdInterval = setInterval(() => {
-      if (shouldCheckId()) clearInterval(checkIdInterval);
-    }, 100);
+    const handleAnchorAssigned = () => {
+      if (shouldCheckId()) {
+        removeEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
+      }
+    };
 
-    return () => clearInterval(checkIdInterval);
+    addEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
+
+    return () => {
+      removeEventListener(SPOILER_ANCHOR_ASSIGNED_EVENT, handleAnchorAssigned);
+    };
   }, []);
 
   useEffect(() => {
@@ -585,6 +719,7 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     if (globalThis.window === undefined) return;
 
     const globalWithState = globalThis as typeof globalThis & {
+      detailsSummaryScrollFrameId?: number;
       detailsSummaryScrollListener?: () => void;
       detailsSummaryScrollSubscriberCount?: number;
     };
@@ -594,8 +729,22 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     globalWithState.detailsSummaryScrollSubscriberCount = currentCount + 1;
 
     if (currentCount === 0) {
-      globalWithState.detailsSummaryScrollListener = updateDimmingEffect;
-      window.addEventListener("scroll", updateDimmingEffect, {passive: true});
+      const handleScroll = () => {
+        if (
+          globalWithState.detailsSummaryScrollFrameId !== undefined ||
+          !document.body.classList.contains("body-has-any-spoiler-open")
+        ) {
+          return;
+        }
+
+        globalWithState.detailsSummaryScrollFrameId = requestAnimationFrame(() => {
+          globalWithState.detailsSummaryScrollFrameId = undefined;
+          updateDimmingEffect();
+        });
+      };
+
+      globalWithState.detailsSummaryScrollListener = handleScroll;
+      window.addEventListener("scroll", handleScroll, {passive: true});
     }
 
     return () => {
@@ -606,6 +755,11 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
 
       if (!(remainingCount === 0 && globalWithState.detailsSummaryScrollListener)) {
         return;
+      }
+
+      if (globalWithState.detailsSummaryScrollFrameId !== undefined) {
+        cancelAnimationFrame(globalWithState.detailsSummaryScrollFrameId);
+        globalWithState.detailsSummaryScrollFrameId = undefined;
       }
 
       window.removeEventListener("scroll", globalWithState.detailsSummaryScrollListener);
@@ -754,65 +908,9 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
     getRippleTarget: getFlexibleLinkRippleTarget,
   });
 
-  const updateSpoilerStacking = useCallback(() => {
-    const detailsElement = detailsReference.current;
-
-    if (!detailsElement) {
-      return;
-    }
-
-    const articleContent = detailsElement.closest(".article-content");
-
-    if (!articleContent) {
-      return;
-    }
-
-    const spoilerElements = articleContent.querySelectorAll<HTMLDetailsElement>(
-      'details[data-anchor], details[data-nested-details-summary="true"]'
-    );
-
-    const spoilersByDepth = new Map<number, HTMLDetailsElement[]>();
-
-    for (const spoilerElement of spoilerElements) {
-      let depth = 0;
-
-      let ancestorNestedDetails =
-        spoilerElement.parentElement?.closest<HTMLDetailsElement>(
-          'details[data-nested-details-summary="true"]'
-        );
-
-      while (ancestorNestedDetails) {
-        depth += 1;
-
-        ancestorNestedDetails =
-          ancestorNestedDetails.parentElement?.closest<HTMLDetailsElement>(
-            'details[data-nested-details-summary="true"]'
-          );
-      }
-
-      spoilerElement.style.setProperty("--spoiler-depth", String(depth));
-
-      const spoilersAtDepth = spoilersByDepth.get(depth) ?? [];
-
-      spoilersAtDepth.push(spoilerElement);
-      spoilersByDepth.set(depth, spoilersAtDepth);
-    }
-
-    for (const spoilersAtDepth of spoilersByDepth.values()) {
-      const totalSpoilers = spoilersAtDepth.length;
-
-      for (const [index, spoilerElement] of spoilersAtDepth.entries()) {
-        spoilerElement.style.setProperty(
-          "--spoiler-order",
-          String(totalSpoilers - index)
-        );
-      }
-    }
-  }, []);
-
   useEffect(() => {
-    updateSpoilerStacking();
-  }, [children, updateSpoilerStacking]);
+    scheduleSpoilerStackingUpdate(detailsReference.current);
+  }, [children]);
 
   const headingText = (displayAnchorId ? `${displayAnchorId}. ` : "") + title;
 
@@ -837,12 +935,27 @@ const DetailsSummary: React.FC<DetailsSummaryProperties> = ({
               {normalizedTag && <TagList tags={normalizedTag} />}
             </div>
           </div>
-          <Tooltip title="Скопировать ссылку">
-            <CopyButton
-              isDisabled={!displayAnchorId}
-              onClick={canHandleCopyAnchor}
-            />
-          </Tooltip>
+          {isCopyTooltipEnabled ? (
+            <Tooltip
+              defaultOpen
+              title="Скопировать ссылку"
+            >
+              <CopyButton
+                isDisabled={!displayAnchorId}
+                onClick={canHandleCopyAnchor}
+              />
+            </Tooltip>
+          ) : (
+            <span
+              onFocus={() => setIsCopyTooltipEnabled(true)}
+              onMouseEnter={() => setIsCopyTooltipEnabled(true)}
+            >
+              <CopyButton
+                isDisabled={!displayAnchorId}
+                onClick={canHandleCopyAnchor}
+              />
+            </span>
+          )}
         </summary>
         <div className={styles["details-content-wrapper"]}>
           <div className={styles["details-content-inner"]}>
