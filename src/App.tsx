@@ -621,12 +621,51 @@ const AppContent = () => {
                     path="/aefaq"
                   />
                   <Route
+                    element={
+                      <Navigate
+                        replace
+                        to={{
+                          hash: location.hash,
+                          pathname: "/aefaq",
+                          search: location.search,
+                        }}
+                      />
+                    }
+                    path="/ae"
+                  />
+                  <Route
                     element={<PrFaqPage />}
                     path="/prfaq"
                   />
                   <Route
+                    element={
+                      <Navigate
+                        replace
+                        to={{
+                          hash: location.hash,
+                          pathname: "/prfaq",
+                          search: location.search,
+                        }}
+                      />
+                    }
+                    path="/pr"
+                  />
+                  <Route
                     element={<PsFaqPage />}
                     path="/psfaq"
+                  />
+                  <Route
+                    element={
+                      <Navigate
+                        replace
+                        to={{
+                          hash: location.hash,
+                          pathname: "/psfaq",
+                          search: location.search,
+                        }}
+                      />
+                    }
+                    path="/ps"
                   />
                   <Route
                     element={<ChatRules />}

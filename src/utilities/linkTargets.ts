@@ -42,8 +42,11 @@ export type LinkTarget =
 
 const pageTitles: Record<string, string> = {
   "/": "links",
+  "/ae": "aefaq",
   "/aefaq": "aefaq",
+  "/pr": "prfaq",
   "/prfaq": "prfaq",
+  "/ps": "psfaq",
   "/psfaq": "psfaq",
   "/reg": "Активация debug-режима для CEP-расширений",
   "/regfile": "Активация debug-режима для CEP-расширений",
