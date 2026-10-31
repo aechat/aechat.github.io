@@ -8,13 +8,13 @@ import styles from "./CopyButton.module.scss";
 
 interface CopyButtonProperties {
   className?: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const CopyButton: React.FC<CopyButtonProperties> = ({
-  className,
-  disabled,
+  className = "",
+  isDisabled = false,
   onClick,
 }) => {
   const handleClick = withSoftHaptic((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,8 +23,8 @@ export const CopyButton: React.FC<CopyButtonProperties> = ({
 
   const buttonClasses = [
     styles["copy-button"],
-    disabled ? styles.disabled : "",
-    className || "",
+    isDisabled ? styles.disabled : "",
+    className,
   ]
     .join(" ")
     .trim();
@@ -33,7 +33,7 @@ export const CopyButton: React.FC<CopyButtonProperties> = ({
     <button
       aria-label="Copy"
       className={buttonClasses}
-      disabled={disabled}
+      disabled={isDisabled}
       onClick={handleClick}
     >
       <ShareRounded />

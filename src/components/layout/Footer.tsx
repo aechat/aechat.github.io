@@ -85,10 +85,12 @@ const Footer: React.FC<FooterProperties> = ({initialYear, title}) => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
+        if (!entry.isIntersecting) {
+          return;
         }
+
+        setIsVisible(true);
+        observer.disconnect();
       },
       {rootMargin: "200px"}
     );

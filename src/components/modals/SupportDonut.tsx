@@ -10,7 +10,7 @@ import {useCloseAllModals} from "../../hooks/useCloseAllModals";
 
 import {useRipple} from "../../hooks/useRipple";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {withSoftHaptic} from "../../utilities/haptics";
 
@@ -18,6 +18,7 @@ import modalStyles from "./Modal.module.scss";
 
 interface SupportDonutProperties {
   className?: string;
+  isWide?: boolean;
   wide?: boolean;
 }
 
@@ -32,7 +33,13 @@ const formatGroupedNumber = (numberValue: string) => {
     .trim();
 };
 
-const SupportDonut: React.FC<SupportDonutProperties> = ({className, wide}) => {
+const SupportDonut: React.FC<SupportDonutProperties> = ({
+  className = "",
+  isWide,
+  wide,
+}) => {
+  const isWideMode = isWide ?? wide;
+
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
 
   const [isSberModalOpen, setIsSberModalOpen] = useState(false);
@@ -58,9 +65,9 @@ const SupportDonut: React.FC<SupportDonutProperties> = ({className, wide}) => {
   const ripple = useRipple<HTMLButtonElement>();
 
   const handleCopyAccount = withSoftHaptic(async (account: string) => {
-    const success = await copyText(account);
+    const isSuccess = await canCopyText(account);
 
-    if (success) {
+    if (isSuccess) {
       message.success("Реквизиты скопированы в буфер обмена");
     } else {
       message.error("Не удалось скопировать реквизиты");
@@ -70,12 +77,12 @@ const SupportDonut: React.FC<SupportDonutProperties> = ({className, wide}) => {
   return (
     <>
       <button
-        className={`${modalStyles["modal-support-header-button"]} ${className || ""}`}
+        className={`${modalStyles["modal-support-header-button"]} ${className}`.trim()}
         onClick={openDonateModal}
         onMouseDown={ripple.onMouseDown}
       >
         <CoffeeRounded />
-        {wide ? <span>Поддержать проект</span> : undefined}
+        {isWideMode && <span>Поддержать проект</span>}
       </button>
       <RemoveScroll enabled={isDonateModalOpen}>
         <Modal

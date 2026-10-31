@@ -35,8 +35,8 @@ import {
 
 import {
   getLocalStorageItem,
-  getStoredBoolean,
   getStoredNumber,
+  hasStoredBoolean,
   isLocalStorageAvailable,
   setLocalStorageItem,
   setStoredBoolean,
@@ -55,10 +55,10 @@ interface ThemeContextProperties {
   isVibrationEnabled: boolean;
   saturateRatio: number;
   setAccentHue: (hue: number) => void;
-  setIsHoverScaleAnimationEnabled: (enabled: boolean) => void;
-  setIsSnowfallEnabled: (enabled: boolean) => void;
-  setIsSpoilerAnimationEnabled: (enabled: boolean) => void;
-  setIsVibrationEnabled: (enabled: boolean) => void;
+  setIsHoverScaleAnimationEnabled: (isEnabled: boolean) => void;
+  setIsSnowfallEnabled: (isEnabled: boolean) => void;
+  setIsSpoilerAnimationEnabled: (isEnabled: boolean) => void;
+  setIsVibrationEnabled: (isEnabled: boolean) => void;
   setSaturateRatio: (ratio: number) => void;
   setTheme: (theme: Theme) => void;
   theme: Theme;
@@ -66,12 +66,8 @@ interface ThemeContextProperties {
 
 const ThemeContext = createContext<ThemeContextProperties | undefined>(undefined);
 
-const getSnowfallEnabledForMonth = (month: number): boolean => {
-  if (![0, 1, 11].includes(month)) {
-    return false;
-  }
-
-  return getStoredBoolean("isSnowfallEnabled", true);
+const isSnowfallEnabledForMonth = (month: number): boolean => {
+  return [0, 1, 11].includes(month) && hasStoredBoolean("isSnowfallEnabled", true);
 };
 
 export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
@@ -96,44 +92,44 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({children})
       return;
     }
 
-    const savedTheme = (getLocalStorageItem("theme") as Theme) || "system";
+    const savedTheme = (getLocalStorageItem("theme") as Theme) ?? "system";
 
     const savedAccentHue = getStoredNumber("accentHue", 210, (value) =>
-      Number.parseInt(value, 10)
+      Math.trunc(Number(value))
     );
 
-    const savedSaturateRatio = getStoredNumber("saturateRatio", 1, Number.parseFloat);
+    const savedSaturateRatio = getStoredNumber("saturateRatio", 1, Number);
 
-    const resolvedSpoilerAnimationEnabled = getStoredBoolean(
+    const isResolvedSpoilerAnimationEnabled = hasStoredBoolean(
       "isSpoilerAnimationEnabled",
       true,
       {persistFallback: true}
     );
 
-    const resolvedHoverScaleAnimationEnabled = getStoredBoolean(
+    const isResolvedHoverScaleAnimationEnabled = hasStoredBoolean(
       "isHoverScaleAnimationEnabled",
       !isMobileDevice() && !isWebKitBrowser(),
       {persistFallback: true}
     );
 
-    const resolvedSnowfallEnabled = getSnowfallEnabledForMonth(new Date().getMonth());
+    const isResolvedSnowfallEnabled = isSnowfallEnabledForMonth(new Date().getMonth());
 
     const hasVibrationSupport = isHapticFeedbackSupported();
 
-    const resolvedVibrationEnabled = hasVibrationSupport
-      ? getStoredBoolean("isVibrationEnabled", true, {persistFallback: true})
-      : false;
+    const isResolvedVibrationEnabled =
+      hasVibrationSupport &&
+      hasStoredBoolean("isVibrationEnabled", true, {persistFallback: true});
 
     setThemeState(savedTheme);
     setAccentHueState(savedAccentHue);
     setSaturateRatioState(savedSaturateRatio);
-    setIsSpoilerAnimationEnabledState(resolvedSpoilerAnimationEnabled);
-    setIsHoverScaleAnimationEnabledState(resolvedHoverScaleAnimationEnabled);
-    setIsSnowfallEnabled(resolvedSnowfallEnabled);
+    setIsSpoilerAnimationEnabledState(isResolvedSpoilerAnimationEnabled);
+    setIsHoverScaleAnimationEnabledState(isResolvedHoverScaleAnimationEnabled);
+    setIsSnowfallEnabled(isResolvedSnowfallEnabled);
 
     if (hasVibrationSupport) {
-      setIsVibrationEnabledState(resolvedVibrationEnabled);
-      setGlobalVibrationEnabled(resolvedVibrationEnabled);
+      setIsVibrationEnabledState(isResolvedVibrationEnabled);
+      setGlobalVibrationEnabled(isResolvedVibrationEnabled);
     } else {
       setIsVibrationEnabledState(false);
       setGlobalVibrationEnabled(false);
@@ -155,36 +151,36 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({children})
     setStoredNumber("saturateRatio", ratio);
   };
 
-  const setIsSpoilerAnimationEnabled = (enabled: boolean) => {
-    setIsSpoilerAnimationEnabledState(enabled);
-    setStoredBoolean("isSpoilerAnimationEnabled", enabled);
+  const setIsSpoilerAnimationEnabled = (isEnabled: boolean) => {
+    setIsSpoilerAnimationEnabledState(isEnabled);
+    setStoredBoolean("isSpoilerAnimationEnabled", isEnabled);
   };
 
-  const setIsHoverScaleAnimationEnabled = (enabled: boolean) => {
-    setIsHoverScaleAnimationEnabledState(enabled);
-    setStoredBoolean("isHoverScaleAnimationEnabled", enabled);
+  const setIsHoverScaleAnimationEnabled = (isEnabled: boolean) => {
+    setIsHoverScaleAnimationEnabledState(isEnabled);
+    setStoredBoolean("isHoverScaleAnimationEnabled", isEnabled);
   };
 
-  const setSnowfallEnabled = (enabled: boolean) => {
-    setIsSnowfallEnabled(enabled);
-    setStoredBoolean("isSnowfallEnabled", enabled);
+  const setSnowfallEnabled = (isEnabled: boolean) => {
+    setIsSnowfallEnabled(isEnabled);
+    setStoredBoolean("isSnowfallEnabled", isEnabled);
   };
 
-  const setVibrationEnabled = (enabled: boolean) => {
+  const setVibrationEnabled = (isEnabled: boolean) => {
     if (!isHapticFeedbackSupported()) {
       return;
     }
 
-    setIsVibrationEnabledState(enabled);
-    setGlobalVibrationEnabled(enabled);
+    setIsVibrationEnabledState(isEnabled);
+    setGlobalVibrationEnabled(isEnabled);
   };
 
-  const calculateIsDarkMode = (theme: Theme, isSystemDark: boolean): boolean => {
+  const isThemeDarkMode = (theme: Theme, isSystemDark: boolean): boolean => {
     return theme === "dark" || (theme === "system" && isSystemDark);
   };
 
   const updateTheme = () => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -195,13 +191,13 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({children})
     root.classList.toggle("no-spoiler-animation", !isSpoilerAnimationEnabledState);
     root.classList.toggle("no-hover-scale-animation", !isHoverScaleAnimationEnabledState);
 
-    const isSystemDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isSystemDark = matchMedia("(prefers-color-scheme: dark)").matches;
 
-    const isDarkMode = calculateIsDarkMode(themeState, isSystemDark);
+    const isDarkMode = isThemeDarkMode(themeState, isSystemDark);
 
     root.classList.toggle("dark", isDarkMode);
     root.classList.toggle("light", !isDarkMode);
-    globalThis.dispatchEvent(new CustomEvent("accentHueChanged"));
+    dispatchEvent(new CustomEvent("accentHueChanged"));
   };
 
   useLayoutEffect(
@@ -216,13 +212,13 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({children})
   );
 
   useEffect(() => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
     const handleSystemThemeChange = () => themeState === "system" && updateTheme();
 
-    const mediaQuery = globalThis.window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = matchMedia("(prefers-color-scheme: dark)");
 
     mediaQuery.addEventListener("change", handleSystemThemeChange);
 
@@ -359,8 +355,7 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
     setTemporarySaturate(saturateRatio);
   }, [saturateRatio]);
 
-  const currentPath =
-    globalThis.window === undefined ? "" : globalThis.window.location.pathname;
+  const currentPath = typeof window === "undefined" ? "" : location.pathname;
 
   const pagesWithSpoilerAnimation = ["/aefaq", "/prfaq", "/psfaq"];
 
@@ -374,11 +369,11 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
 
   const isWinter = [0, 1, 11].includes(month);
 
-  const showSpoilerAnimationSelector = pagesWithSpoilerAnimation.some((path) =>
+  const isShowSpoilerAnimationSelector = pagesWithSpoilerAnimation.some((path) =>
     currentPath.startsWith(path)
   );
 
-  const showVibrationSelector = isHapticFeedbackSupported();
+  const isShowVibrationSelector = isHapticFeedbackSupported();
 
   const ripple = useRipple<HTMLButtonElement>();
 
@@ -447,7 +442,7 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
                 </ThemeOptionButton>
               </div>
             </div>
-            {showSpoilerAnimationSelector && (
+            {isShowSpoilerAnimationSelector && (
               <>
                 <div className={modalStyles["modal-controls-row"]}>
                   <span className={modalStyles["modal-controls-title"]}>
@@ -469,7 +464,7 @@ const ThemeModal: React.FC<ThemeModalProperties> = ({closeModal, isModalOpen}) =
                 onChange={handleHoverScaleAnimationChange}
               />
             </div>
-            {showVibrationSelector && (
+            {isShowVibrationSelector && (
               <div className={modalStyles["modal-controls-row"]}>
                 <span className={modalStyles["modal-controls-title"]}>
                   Тактильная отдача

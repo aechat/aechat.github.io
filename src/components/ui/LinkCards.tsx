@@ -12,7 +12,7 @@ import {useLongPress} from "../../hooks/useLongPress";
 
 import {useRipple} from "../../hooks/useRipple";
 
-import {copyText} from "../../utilities/copyUtilities";
+import {canCopyText} from "../../utilities/copyUtilities";
 
 import {formatNestedQuotes} from "../../utilities/stringUtilities";
 
@@ -31,7 +31,7 @@ interface LinkCardProperties {
 }
 
 const getLinkCardCopyUrl = (href: string, variant: LinkCardVariant): string => {
-  return variant === "internal" ? `${globalThis.location.origin}${href}` : href;
+  return variant === "internal" ? `${location.origin}${href}` : href;
 };
 
 export const LinkCard: React.FC<LinkCardProperties> = ({
@@ -41,18 +41,18 @@ export const LinkCard: React.FC<LinkCardProperties> = ({
   name,
   variant = "external",
 }) => {
-  const hasDescription = !!description;
+  const hasDescription = Boolean(description);
 
-  const handleCopyLink = useCallback(
+  const canHandleCopyLink = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
       event.stopPropagation();
 
       const urlToCopy = getLinkCardCopyUrl(href, variant);
 
       (async () => {
-        const success = await copyText(urlToCopy);
+        const isSuccess = await canCopyText(urlToCopy);
 
-        if (success) {
+        if (isSuccess) {
           message.success(`Ссылка на «${formatNestedQuotes(name)}» скопирована`);
         } else {
           message.error("Не удалось скопировать ссылку");
@@ -64,7 +64,7 @@ export const LinkCard: React.FC<LinkCardProperties> = ({
     [href, name, variant]
   );
 
-  const longPressProperties = useLongPress(handleCopyLink);
+  const longPressProperties = useLongPress(canHandleCopyLink);
 
   const rippleProperties = useRipple<HTMLDivElement>();
 
@@ -138,7 +138,7 @@ export const FolderCard: React.FC<FolderCardProperties> = ({
     }
 
     const rafId = requestAnimationFrame(() => {
-      globalThis.dispatchEvent(new Event("resize"));
+      dispatchEvent(new Event("resize"));
     });
 
     return () => {
@@ -169,22 +169,28 @@ export const FolderCard: React.FC<FolderCardProperties> = ({
     const seenTypes = new Set<unknown>();
 
     React.Children.forEach(children, (child) => {
-      if (
+      if (!(
         React.isValidElement<{icon?: React.ReactNode}>(child) &&
         child.props &&
         child.props.icon
-      ) {
-        const iconElement = child.props.icon;
-
-        if (React.isValidElement(iconElement)) {
-          const typeKey = iconElement.type;
-
-          if (!seenTypes.has(typeKey)) {
-            seenTypes.add(typeKey);
-            extracted.push(iconElement);
-          }
-        }
+      )) {
+        return;
       }
+
+      const iconElement = child.props.icon;
+
+      if (!React.isValidElement(iconElement)) {
+        return;
+      }
+
+      const typeKey = iconElement.type;
+
+      if (seenTypes.has(typeKey)) {
+        return;
+      }
+
+      seenTypes.add(typeKey);
+      extracted.push(iconElement);
     });
 
     if (extracted.length >= 4) {
@@ -199,10 +205,10 @@ export const FolderCard: React.FC<FolderCardProperties> = ({
           (randomValues[0] / (0xff_ff_ff_ff + 1)) * (index + 1)
         );
 
-        [shuffled[index], shuffled[randomIndex]] = [
-          shuffled[randomIndex],
-          shuffled[index],
-        ];
+        const temporary = shuffled[index];
+
+        shuffled[index] = shuffled[randomIndex];
+        shuffled[randomIndex] = temporary;
       }
 
       return {miniIcons: shuffled.slice(0, 4), uniqueIcons: extracted};
@@ -217,7 +223,7 @@ export const FolderCard: React.FC<FolderCardProperties> = ({
     icon ??
     (hasMiniIcons ? <FolderOpenRounded /> : (uniqueIcons[0] ?? <FolderOpenRounded />));
 
-  const hasDescription = !!description;
+  const hasDescription = Boolean(description);
 
   return (
     <>

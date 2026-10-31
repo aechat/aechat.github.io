@@ -28,23 +28,31 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
   const getTitle = () => {
     const path = location.pathname;
 
-    if (path.startsWith("/aefaq")) return "aefaq";
+    if (path.startsWith("/aefaq")) {
+      return "aefaq";
+    }
 
-    if (path.startsWith("/prfaq")) return "prfaq";
+    if (path.startsWith("/prfaq")) {
+      return "prfaq";
+    }
 
-    if (path.startsWith("/psfaq")) return "psfaq";
+    if (path.startsWith("/psfaq")) {
+      return "psfaq";
+    }
 
-    if (path.startsWith("/rules")) return "rules";
+    if (path.startsWith("/rules")) {
+      return "rules";
+    }
   };
 
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isFontsLoaded, setIsFontsLoaded] = useState(false);
 
   useEffect(() => {
     let isDisposed = false;
 
     const markFontsLoaded = () => {
       if (!isDisposed) {
-        setFontsLoaded(true);
+        setIsFontsLoaded(true);
       }
     };
 
@@ -60,28 +68,34 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
 
     const taglineFont = "italic 500 1em 'Red Hat Display'";
 
-    const fontsLoading = Promise.all([
-      document.fonts.load(logoFont),
-      document.fonts.load(taglineFont),
-    ]);
+    void (async () => {
+      try {
+        await Promise.all([
+          document.fonts.load(logoFont),
+          document.fonts.load(taglineFont),
+        ]);
+      } catch {
+        // Fallback to loaded state
+      } finally {
+        markFontsLoaded();
+      }
+    })();
 
-    fontsLoading.then(markFontsLoaded).catch(markFontsLoaded);
-
-    const fallbackTimer = globalThis.setTimeout(markFontsLoaded, 2000);
+    const fallbackTimer = setTimeout(markFontsLoaded, 2000);
 
     return () => {
       isDisposed = true;
-      globalThis.clearTimeout(fallbackTimer);
+      clearTimeout(fallbackTimer);
     };
   }, []);
 
-  const [showIntro, setShowIntro] = useState(false);
+  const [isShowIntro, setIsShowIntro] = useState(false);
 
-  const [showProgressBar, setShowProgressBar] = useState(false);
+  const [isShowProgressBar, setIsShowProgressBar] = useState(false);
 
-  const [textAnimationFinished, setTextAnimationFinished] = useState(false);
+  const [isTextAnimationFinished, setIsTextAnimationFinished] = useState(false);
 
-  const [introAnimationFinished, setIntroAnimationFinished] = useState(false);
+  const [isIntroAnimationFinished, setIsIntroAnimationFinished] = useState(false);
 
   useLayoutEffect(() => {
     setIsLoading(true);
@@ -89,98 +103,106 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
   }, [location.pathname, setIsLoading, setCanDismiss]);
 
   useEffect(() => {
-    const timers: Array<ReturnType<typeof globalThis.setTimeout>> = [];
+    if (isSuppressed) {
+      setIsShowProgressBar(false);
+      setIsShowIntro(false);
+      setCanDismiss(true);
+      setIsTextAnimationFinished(false);
+      setIsIntroAnimationFinished(false);
+
+      return;
+    }
+
+    if (!isLoading) {
+      return;
+    }
+
+    const timers: Array<ReturnType<typeof setTimeout>> = [];
 
     const startTimer = (callback: () => void, delay: number) => {
-      const timer = globalThis.setTimeout(callback, delay);
+      const timer = setTimeout(callback, delay);
 
       timers.push(timer);
 
       return timer;
     };
 
-    if (isSuppressed) {
-      setShowProgressBar(false);
-      setShowIntro(false);
+    setIsTextAnimationFinished(false);
+    setIsIntroAnimationFinished(false);
+
+    startTimer(() => {
+      setIsShowProgressBar(true);
+    }, 50);
+
+    const title = getTitle();
+
+    const isTitleExists = Boolean(title);
+
+    if (!isTitleExists) {
+      setIsShowIntro(false);
       setCanDismiss(true);
-      setTextAnimationFinished(false);
-      setIntroAnimationFinished(false);
-
-      return;
-    }
-
-    if (isLoading) {
-      setTextAnimationFinished(false);
-      setIntroAnimationFinished(false);
-
-      startTimer(() => {
-        setShowProgressBar(true);
-      }, 50);
-
-      const title = getTitle();
-
-      const titleExists = !!title;
-
-      if (!titleExists) {
-        setShowIntro(false);
-        setCanDismiss(true);
-        setIntroAnimationFinished(true);
-
-        return () => {
-          for (const timer of timers) {
-            globalThis.clearTimeout(timer);
-          }
-        };
-      }
-
-      const now = Date.now();
-
-      const lastShown = getStoredNumber("introLastShown", 0);
-
-      const shouldShowIntro = !lastShown || now - lastShown > 10 * 60 * 1000;
-
-      if (!shouldShowIntro) {
-        setShowIntro(false);
-        setCanDismiss(false);
-        setIntroAnimationFinished(true);
-        startTimer(() => setCanDismiss(true), 500);
-      } else if (fontsLoaded) {
-        setShowIntro(true);
-        setCanDismiss(false);
-      } else {
-        setShowIntro(false);
-        setCanDismiss(false);
-        setIntroAnimationFinished(true);
-      }
+      setIsIntroAnimationFinished(true);
 
       return () => {
         for (const timer of timers) {
-          globalThis.clearTimeout(timer);
+          clearTimeout(timer);
         }
       };
     }
-  }, [isLoading, location.pathname, fontsLoaded, isSuppressed]);
+
+    const now = Date.now();
+
+    const lastShown = getStoredNumber("introLastShown", 0);
+
+    const shouldShowIntro = !lastShown || now - lastShown > 10 * 60 * 1000;
+
+    if (!shouldShowIntro) {
+      setIsShowIntro(false);
+      setCanDismiss(false);
+      setIsIntroAnimationFinished(true);
+      startTimer(() => setCanDismiss(true), 500);
+    } else if (isFontsLoaded) {
+      setIsShowIntro(true);
+      setCanDismiss(false);
+    } else {
+      setIsShowIntro(false);
+      setCanDismiss(false);
+      setIsIntroAnimationFinished(true);
+    }
+
+    return () => {
+      for (const timer of timers) {
+        clearTimeout(timer);
+      }
+    };
+  }, [isLoading, location.pathname, isFontsLoaded, isSuppressed]);
 
   useEffect(() => {
-    if (isLoading || (showIntro && !textAnimationFinished)) return;
+    if (isLoading || (isShowIntro && !isTextAnimationFinished)) {
+      return;
+    }
 
     setCanDismiss(true);
-  }, [isLoading, showIntro, textAnimationFinished]);
+  }, [isLoading, isShowIntro, isTextAnimationFinished]);
 
   useEffect(() => {
-    if (!showIntro || !textAnimationFinished) return;
+    if (!isShowIntro || !isTextAnimationFinished) {
+      return;
+    }
 
     setStoredNumber("introLastShown", Date.now());
     setCanDismiss(true);
-  }, [showIntro, textAnimationFinished]);
+  }, [isShowIntro, isTextAnimationFinished]);
 
   const title = getTitle();
 
-  const show = !isSuppressed && (isLoading || !canDismiss);
+  const isShow = !isSuppressed && (isLoading || !canDismiss);
 
-  const [shouldRender, setShouldRender] = useState(show);
+  const [shouldRender, setShouldRender] = useState(isShow);
 
   const [isFadingOut, setIsFadingOut] = useState(false);
+
+  const [isInitialOverlay, setIsInitialOverlay] = useState(isShow);
 
   useEffect(() => {
     if (isSuppressed) {
@@ -190,24 +212,15 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
       return;
     }
 
-    if (show) {
+    if (isShow) {
       setShouldRender(true);
       setIsFadingOut(false);
     } else {
       setIsFadingOut(true);
     }
-  }, [isSuppressed, show]);
+  }, [isSuppressed, isShow]);
 
-  let progressBarDelay = 0;
-
-  if (showProgressBar) {
-    progressBarDelay = 0.25;
-  }
-
-  const isProgressBarVisible =
-    showProgressBar && introAnimationFinished && (isLoading || !canDismiss);
-
-  const titleLength = title ? title.length : 0;
+  const titleLength = title?.length ?? 0;
 
   const taglineLength = taglineText.length;
 
@@ -215,11 +228,9 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
 
   const hasTitle = titleLength > 0;
 
-  const centerIndex = hasTitle ? (titleLength - 1) / 2 : (taglineLength - 1) / 2;
+  const centerIndex = ((hasTitle ? titleLength : taglineLength) - 1) / 2;
 
   const maxDistance = Math.max(centerIndex, totalLength - 1 - centerIndex);
-
-  const loopStepDelay = 0.06;
 
   const maxTitleDelay = 0.5 + maxDistance * 0.1 + 0.75;
 
@@ -230,36 +241,55 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
   const introAnimationDuration = introPhaseDuration + 500;
 
   useEffect(() => {
-    if (!showIntro || introAnimationFinished) return;
+    if (!isShowIntro || isIntroAnimationFinished) {
+      return;
+    }
 
-    const timer = globalThis.setTimeout(() => {
-      setIntroAnimationFinished(true);
+    const timer = setTimeout(() => {
+      setIsIntroAnimationFinished(true);
     }, introPhaseDuration);
 
     return () => {
-      globalThis.clearTimeout(timer);
+      clearTimeout(timer);
     };
-  }, [introPhaseDuration, location.pathname, showIntro, introAnimationFinished]);
+  }, [introPhaseDuration, location.pathname, isShowIntro, isIntroAnimationFinished]);
 
   useEffect(() => {
-    if (!showIntro || textAnimationFinished) return;
+    if (!isShowIntro || isTextAnimationFinished) {
+      return;
+    }
 
-    const timer = globalThis.setTimeout(() => {
-      setTextAnimationFinished(true);
+    const timer = setTimeout(() => {
+      setIsTextAnimationFinished(true);
     }, introAnimationDuration);
 
     return () => {
-      globalThis.clearTimeout(timer);
+      clearTimeout(timer);
     };
-  }, [introAnimationDuration, location.pathname, showIntro, textAnimationFinished]);
+  }, [introAnimationDuration, location.pathname, isShowIntro, isTextAnimationFinished]);
 
-  if (isSuppressed || !shouldRender) return <></>;
+  if (isSuppressed || !shouldRender) {
+    return <></>;
+  }
+
+  const loopStepDelay = 0.06;
+
+  const progressBarDelay = isShowProgressBar ? 0.25 : 0;
+
+  const isProgressBarVisible =
+    isShowProgressBar && isIntroAnimationFinished && (isLoading || !canDismiss);
+
+  const overlayStateClass = (() => {
+    if (isFadingOut) {
+      return styles["fade-out"];
+    }
+
+    return isInitialOverlay ? styles["fade-initial"] : styles["fade-in"];
+  })();
 
   return (
     <div
-      className={`${styles["loading-animation-overlay"]} ${
-        isFadingOut ? styles["fade-out"] : styles["fade-in"]
-      }`}
+      className={`${styles["loading-animation-overlay"]} ${overlayStateClass}`}
       onAnimationEnd={(event) => {
         if (
           !isFadingOut ||
@@ -271,11 +301,12 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
 
         setShouldRender(false);
         setIsFadingOut(false);
-        setShowProgressBar(false);
+        setIsInitialOverlay(false);
+        setIsShowProgressBar(false);
       }}
     >
       <div className={styles["loading-content"]}>
-        {showIntro && (
+        {isShowIntro && (
           <div className={styles["animated-text-container"]}>
             {title && (
               <div className={styles["animated-text-logo"]}>
@@ -310,7 +341,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
                           isFurthest
                             ? (event) => {
                                 if (event.animationName.includes("smooth-scale")) {
-                                  setIntroAnimationFinished(true);
+                                  setIsIntroAnimationFinished(true);
                                 }
                               }
                             : undefined
@@ -356,7 +387,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
                           isFurthest
                             ? (event) => {
                                 if (event.animationName.includes("smooth-scale")) {
-                                  setIntroAnimationFinished(true);
+                                  setIsIntroAnimationFinished(true);
                                 }
                               }
                             : undefined
@@ -376,7 +407,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProperties> = ({
             isProgressBarVisible ? styles["visible"] : ""
           }`}
           style={{
-            marginTop: showIntro ? "30px" : "0",
+            marginTop: isShowIntro ? "30px" : "0",
             transitionDelay: `${progressBarDelay}s`,
           }}
         >

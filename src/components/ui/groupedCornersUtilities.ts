@@ -28,7 +28,7 @@ const MIN_RADIUS_FALLBACK_PX = 2;
 const RADIUS_LEVELS = [1, 0.875, 0.75] as const;
 
 const parsePixelValue = (value: string) => {
-  const numericValue = Number.parseFloat(value);
+  const numericValue = Number(value.replace(/px$/, ""));
 
   if (!Number.isFinite(numericValue)) {
     return;
@@ -108,11 +108,7 @@ const getElementPriorityInlinePadding = (element: HTMLElement) => {
 
   const maxInlinePadding = Math.max(...inlinePaddings);
 
-  if (maxInlinePadding > 0) {
-    return maxInlinePadding;
-  }
-
-  return getElementMaxPadding(element);
+  return maxInlinePadding > 0 ? maxInlinePadding : getElementMaxPadding(element);
 };
 
 const getElementMaxBorder = (element: HTMLElement) => {
@@ -311,7 +307,8 @@ const applyGroupCornerRadius = (group: HTMLElement, items: HTMLElement[]) => {
   const nestedRadius =
     structuralRadius ??
     Math.max(
-      Math.max(MIN_RADIUS_FALLBACK_PX, parentRadius * MIN_RADIUS_RATIO),
+      MIN_RADIUS_FALLBACK_PX,
+      parentRadius * MIN_RADIUS_RATIO,
       Math.min(parentRadius, parentRadius - parentBorder - parentPadding)
     );
 

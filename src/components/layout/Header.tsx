@@ -47,9 +47,7 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
   const [isScrollButtonVisible, setIsScrollButtonVisible] = useState(false);
 
   const [isWide, setIsWide] = useState(
-    globalThis.window === undefined
-      ? false
-      : window.innerWidth > constants.WIDE_SCREEN_WIDTH
+    typeof window !== "undefined" && window.innerWidth > constants.WIDE_SCREEN_WIDTH
   );
 
   const ripple = useRipple<HTMLButtonElement>();
@@ -57,24 +55,26 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
   const rippleLink = useRipple<HTMLAnchorElement>();
 
   const scrollToTop = (): void => {
-    if (globalThis.window !== undefined) {
-      window.scrollTo({
-        behavior: "smooth",
-        top: 0,
-      });
-
-      globalThis.history.replaceState({}, "", currentPath);
+    if (typeof window === "undefined") {
+      return;
     }
+
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0,
+    });
+
+    history.replaceState({}, "", currentPath);
   };
 
   const checkScrollPosition = (): void => {
-    if (globalThis.window !== undefined) {
+    if (typeof window !== "undefined") {
       setIsScrollButtonVisible(window.scrollY > constants.SCROLL_THRESHOLD);
     }
   };
 
   useEffect(() => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -86,27 +86,29 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
   }, []);
 
   useEffect(() => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
-    const resizeHandler = (): void => {
-      setIsWide(window.innerWidth > constants.WIDE_SCREEN_WIDTH);
+    const mediaQuery = matchMedia(`(min-width: ${constants.WIDE_SCREEN_WIDTH + 1}px)`);
+
+    const resizeHandler = (event: MediaQueryListEvent): void => {
+      setIsWide(event.matches);
     };
 
-    window.addEventListener("resize", resizeHandler);
+    setIsWide(mediaQuery.matches);
+    mediaQuery.addEventListener("change", resizeHandler);
 
     return () => {
-      window.removeEventListener("resize", resizeHandler);
+      mediaQuery.removeEventListener("change", resizeHandler);
     };
   }, []);
 
   const shouldShowSearch = (): boolean => {
-    if (globalThis.window !== undefined) {
-      return SEARCH_PATHS.some((path) => currentPath.includes(path));
-    }
-
-    return false;
+    return (
+      typeof window !== "undefined" &&
+      SEARCH_PATHS.some((path) => currentPath.includes(path))
+    );
   };
 
   const currentPath = location.pathname;
@@ -116,7 +118,7 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
   return (
     <motion.header
       animate={{opacity: 1}}
-      className={`${styles.header}`}
+      className={styles.header}
       exit={{opacity: 0}}
       initial={{opacity: 0}}
       transition={{
@@ -125,12 +127,12 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
       }}
     >
       <div className={styles["header-left"]}>
-        {currentPath === "/" ? undefined : (
+        {currentPath !== "/" && (
           <Link
             className={styles.icon}
             to="/"
             onClick={() => {
-              globalThis.window?.dispatchEvent(new CustomEvent("close-all-modals"));
+              dispatchEvent(new CustomEvent("close-all-modals"));
             }}
             onMouseDown={rippleLink.onMouseDown}
           >
@@ -157,7 +159,9 @@ const Header: React.FC<HeaderProperties> = ({title}) => {
             )}
           </div>
         )}
-        <div>{isWide ? <SupportDonut wide /> : <SupportDonut />}</div>
+        <div>
+          <SupportDonut isWide={isWide} />
+        </div>
       </div>
       <div className={styles["header-right"]}>
         <div
