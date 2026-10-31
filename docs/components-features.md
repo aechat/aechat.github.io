@@ -151,3 +151,28 @@ import TgsToJsonConverter from "../../../components/features/converters/Converte
 <Divider>Конвертер TGS в JSON</Divider>
 <TgsToJsonConverter />;
 ```
+
+Компонент `ConverterAepDowngrade.tsx` представляет собой специализированный конвертер файлов проектов After Effects для понижения их версии до релиза 23.X (2023). Модуль принимает бинарные проекты `.aep`, шаблоны проектов `.aet`, текстовые проекты XML `.aepx`, анимационные пакеты `.mogrt` и капсулы графики `.aegraphic`. Для бинарных файлов и шаблонов проверяется целостность заголовков контейнера RIFX и маркера Egg!, для XML-проектов анализируется корневой тег `AfterEffectsProject` и шестнадцатеричные атрибуты `bdata`, а для контейнеров `.mogrt` и `.aegraphic` распаковывается внутренний бинарный проект `mogrt_prepared.aep`.
+
+Логика бинарного и XML-декодирования и эталонные сигнатуры версий вынесены в модуль `src/components/features/converters/aeDowngradeConfig.ts`. Парсер распознает проекты от версий CC 2017 до 2026 и новее за счет побитового декодирования поля `svap` и байтов схемы заголовка `head`. В качестве целевых версий для сохранения доступны релизы 26.X (2026), 25.X (2025), 24.X (2024) и 23.X (2023), в рамках которых структура контейнеров RIFX и заголовков слоев `ldta` полностью совместима.
+
+При экспорте в выбранную версию функция `downgradeAep` точечно перезаписывает байты мажорной и минорной версии и контрольные байты сборки в секциях `head` и `svap`, не затрагивая дерево чанков и завершающий пакет метаданных XMP. Для проектов формата `.aepx` функция `downgradeAepx` обновляет шестнадцатеричные префиксы в тегах `<svap>` и `<head>`, для архивов `.aegraphic` функция `downgradeAegraphic` перепаковывает внутренний проект, а для пакетов `.mogrt` функция `downgradeMogrt` каскадно обрабатывает вложенный контейнер `project.aegraphic`. Компонент оформлен в минималистичном стиле основных конвертеров с прямым выбором целевой версии и кнопками управления.
+
+Компонент не принимает props и экспортируется по умолчанию:
+
+```tsx
+const AepDowngradeConverter: React.FC = () => { ... };
+export default AepDowngradeConverter;
+```
+
+Пример интеграции конвертера версий AEP в статье `src/pages/sections/aefaq/AeImport.tsx` выглядит следующим образом:
+
+```tsx
+import AepDowngradeConverter from "../../../components/features/converters/ConverterAepDowngrade";
+
+<Divider>
+  Конвертер <mark className="file">AEP</mark> для старых версий{" "}
+  <mark className="app">Adobe After Effects</mark>
+</Divider>
+<AepDowngradeConverter />;
+```

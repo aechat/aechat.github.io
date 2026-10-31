@@ -79,4 +79,30 @@
       font-size: $font-size-text-xs;
     }
   }
+
+  &-target-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-8;
+    align-items: center;
+    justify-content: space-between;
+    margin-block: $space-16;
+    margin-inline: $space-4;
+
+    &-header {
+      display: flex;
+      flex-flow: column nowrap;
+      gap: $space-4;
+    }
+
+    &-title {
+      font-family: Onest, sans-serif;
+      font-size: $font-size-text-sm;
+      font-weight: 500;
+    }
+
+    &-control {
+      min-width: 280px;
+    }
+  }
 }
