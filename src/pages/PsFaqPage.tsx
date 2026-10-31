@@ -32,7 +32,7 @@ import {useAnchorValidation} from "../hooks/useAnchorValidation";
 
 import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
 import {useSmartCopy} from "../hooks/useSmartCopy";
 
@@ -56,8 +56,8 @@ import PsPerformance from "./sections/psfaq/PsPerformance";
 
 import PsWhereFind from "./sections/psfaq/PsWhereFind";
 
-const PsFaqPage = () => {
-  const isPageLoaded = usePageLoad(true);
+export default function PsFaqPage() {
+  const isPageLoaded = useIsPageLoaded(true);
 
   useCopyToClipboard();
   useSmartCopy(isPageLoaded);
@@ -239,6 +239,4 @@ const PsFaqPage = () => {
       </SearchProvider>
     </div>
   );
-};
-
-export default PsFaqPage;
+}

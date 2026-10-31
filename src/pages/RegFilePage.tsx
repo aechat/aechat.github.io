@@ -26,12 +26,12 @@ import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
 import {useHashAnchorNavigation} from "../hooks/useHashAnchorNavigation";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
-const RegFilePage = () => {
+export default function RegFilePage() {
   const {hash} = useLocation();
 
-  usePageLoad();
+  useIsPageLoaded();
   useCopyToClipboard();
 
   const {handleCopyAnchor} = useHashAnchorNavigation(hash);
@@ -275,6 +275,4 @@ const RegFilePage = () => {
       </PageTransition>
     </div>
   );
-};
-
-export default RegFilePage;
+}

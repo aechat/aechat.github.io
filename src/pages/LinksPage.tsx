@@ -56,7 +56,7 @@ import SupportDonut from "../components/modals/SupportDonut";
 
 import {FolderCard, LinkCard} from "../components/ui/LinkCards";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
 import {useRipple} from "../hooks/useRipple";
 
@@ -67,7 +67,7 @@ import {triggerHaptic} from "../utilities/haptics";
 import {AeIcon, PrIcon, PsIcon} from "./FaqIcon";
 
 const Links = () => {
-  usePageLoad();
+  useIsPageLoaded();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 

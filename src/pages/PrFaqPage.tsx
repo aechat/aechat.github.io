@@ -32,7 +32,7 @@ import {useAnchorValidation} from "../hooks/useAnchorValidation";
 
 import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
 import {useSmartCopy} from "../hooks/useSmartCopy";
 
@@ -56,8 +56,8 @@ import PrPerformance from "./sections/prfaq/PrPerformance";
 
 import PrWhereFind from "./sections/prfaq/PrWhereFind";
 
-const PrFaqPage = () => {
-  const isPageLoaded = usePageLoad(true);
+export default function PrFaqPage() {
+  const isPageLoaded = useIsPageLoaded(true);
 
   useCopyToClipboard();
   useSmartCopy(isPageLoaded);
@@ -239,6 +239,4 @@ const PrFaqPage = () => {
       </SearchProvider>
     </div>
   );
-};
-
-export default PrFaqPage;
+}

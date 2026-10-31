@@ -6,7 +6,7 @@ import PageTransition from "../components/layout/PageTransition";
 
 import modalStyles from "../components/modals/Modal.module.scss";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
 import {useRipple} from "../hooks/useRipple";
 
@@ -23,7 +23,7 @@ const NotFound = () => {
 
   const ripple = useRipple<HTMLButtonElement>();
 
-  usePageLoad();
+  useIsPageLoaded();
 
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
 
@@ -59,15 +59,17 @@ const NotFound = () => {
 
     fetchSubtitles();
 
-    const handlePlayAudio = () => {
+    const handlePlayAudio = async () => {
       if (audioReference.current) {
-        audioReference.current.play().catch((error) => {
+        try {
+          await audioReference.current.play();
+        } catch (error) {
           console.error("Ошибка воспроизведения аудио:", error);
-        });
+        }
       }
     };
 
-    globalThis.addEventListener("click", handlePlayAudio);
+    addEventListener("click", handlePlayAudio);
 
     const audioElement = audioReference.current;
 
@@ -83,18 +85,18 @@ const NotFound = () => {
         videoElement.pause();
       }
 
-      globalThis.removeEventListener("click", handlePlayAudio);
+      removeEventListener("click", handlePlayAudio);
     };
   }, []);
 
   useEffect(() => {
-    let animationFrameId: number | undefined;
-
     const audioElement = audioReference.current;
 
     if (!audioElement || subtitles.length === 0) {
       return;
     }
+
+    let animationFrameId: number | undefined;
 
     const firstSubtitle = subtitles[0];
 
@@ -116,9 +118,13 @@ const NotFound = () => {
         hasStartedVideoReference.current = true;
         videoElement.currentTime = 0;
 
-        videoElement.play().catch((error) => {
-          console.error("Ошибка воспроизведения видео:", error);
-        });
+        (async () => {
+          try {
+            await videoElement.play();
+          } catch (error) {
+            console.error("Ошибка воспроизведения видео:", error);
+          }
+        })();
       }
 
       const showVideo = () => {
@@ -154,10 +160,12 @@ const NotFound = () => {
         return;
       }
 
-      if (hasFadedOutReference.current && currentTime >= firstSubtitle.end) {
-        hasFadedOutReference.current = false;
-        setIsVideoVisible(true);
+      if (!(hasFadedOutReference.current && currentTime >= firstSubtitle.end)) {
+        return;
       }
+
+      hasFadedOutReference.current = false;
+      setIsVideoVisible(true);
     };
 
     const syncSubtitles = () => {
@@ -167,7 +175,7 @@ const NotFound = () => {
         (sub) => currentTime >= sub.start && currentTime <= sub.end
       );
 
-      const nextText = current ? current.text : "Пустота";
+      const nextText = current?.text ?? "Пустота";
 
       setCurrentSubtitle((previous) => (previous === nextText ? previous : nextText));
 
@@ -191,8 +199,12 @@ const NotFound = () => {
 
       const videoElement = videoReference.current;
 
-      if (hasStartedVideoReference.current && videoElement && videoElement.paused) {
-        videoElement.play().catch(() => {});
+      if (hasStartedVideoReference.current && videoElement?.paused) {
+        (async () => {
+          try {
+            await videoElement.play();
+          } catch {}
+        })();
       }
     };
 
@@ -320,8 +332,8 @@ const NotFound = () => {
               <div className="flexible-links">
                 <button
                   onClick={() => {
-                    globalThis.location.reload();
-                    globalThis.location.href = "/";
+                    location.reload();
+                    location.assign("/");
                   }}
                   onMouseDown={ripple.onMouseDown}
                 >

@@ -22,12 +22,12 @@ import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
 import {useHashAnchorNavigation} from "../hooks/useHashAnchorNavigation";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
-const ChatRules = () => {
+export default function ChatRules() {
   const {hash} = useLocation();
 
-  usePageLoad();
+  useIsPageLoaded();
   useCopyToClipboard();
 
   const {handleCopyAnchor} = useHashAnchorNavigation(hash);
@@ -771,6 +771,4 @@ const ChatRules = () => {
       </PageTransition>
     </div>
   );
-};
-
-export default ChatRules;
+}

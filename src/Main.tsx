@@ -22,8 +22,12 @@ import {ThemeProvider} from "./components/modals/ThemeChanger";
 
 import "./styles/main.scss";
 
-if (globalThis.window !== undefined && !globalThis.window.ResizeObserver) {
-  globalThis.window.ResizeObserver = ResizeObserverPolyfill;
+if (typeof window !== "undefined" && !globalThis.ResizeObserver) {
+  Object.defineProperty(globalThis, "ResizeObserver", {
+    configurable: true,
+    value: ResizeObserverPolyfill,
+    writable: true,
+  });
 }
 
 const rootElement = document.querySelector("#root");

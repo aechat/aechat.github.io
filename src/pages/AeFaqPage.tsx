@@ -31,7 +31,7 @@ import {useAnchorValidation} from "../hooks/useAnchorValidation";
 
 import {useCopyToClipboard} from "../hooks/useCopyToClipboard";
 
-import {usePageLoad} from "../hooks/usePageLoad";
+import {useIsPageLoaded} from "../hooks/usePageLoad";
 
 import {useSmartCopy} from "../hooks/useSmartCopy";
 
@@ -53,8 +53,8 @@ import AePerformance from "./sections/aefaq/AePerformance";
 
 import AeWhereFind from "./sections/aefaq/AeWhereFind";
 
-const AeFaqPage = () => {
-  const isPageLoaded = usePageLoad(true);
+export default function AeFaqPage() {
+  const isPageLoaded = useIsPageLoaded(true);
 
   useCopyToClipboard();
   useSmartCopy(isPageLoaded);
@@ -229,6 +229,4 @@ const AeFaqPage = () => {
       </SearchProvider>
     </div>
   );
-};
-
-export default AeFaqPage;
+}

@@ -32,7 +32,7 @@ import getAntTheme from "./styles/antTheme";
 
 import {isWebKitBrowser} from "./utilities/browserDetection";
 
-import {copyText} from "./utilities/copyUtilities";
+import {canCopyText} from "./utilities/copyUtilities";
 
 import {
   disposeHaptics,
@@ -42,8 +42,8 @@ import {
 } from "./utilities/haptics";
 
 import {
-  getStoredBoolean,
   getStoredNumber,
+  hasStoredBoolean,
   isLocalStorageAvailable,
   setStoredBoolean,
   setStoredNumber,
@@ -77,29 +77,29 @@ const shouldShowStoredWarning = (
   dismissedKey: string,
   lastShownKey: string,
   interval: number,
-  showWhenStorageUnavailable: boolean
+  shouldShowWhenStorageUnavailable: boolean
 ): boolean => {
   if (!isLocalStorageAvailable()) {
-    return showWhenStorageUnavailable;
+    return shouldShowWhenStorageUnavailable;
   }
 
-  if (getStoredBoolean(dismissedKey, false)) {
+  if (hasStoredBoolean(dismissedKey, false)) {
     return false;
   }
 
   const lastShown = getStoredNumber(lastShownKey, 0, (value) =>
-    Number.parseInt(value, 10)
+    Math.trunc(Number(value))
   );
 
   return !lastShown || Date.now() - lastShown >= interval;
 };
 
 const updateStoredWarningState = (
-  dontShowAgain: boolean,
+  isDontShowAgain: boolean,
   dismissedKey: string,
   lastShownKey: string
 ): void => {
-  if (dontShowAgain) {
+  if (isDontShowAgain) {
     setStoredBoolean(dismissedKey, true);
 
     return;
@@ -112,8 +112,7 @@ const FilesRedirect = () => {
   useEffect(() => {
     document.title = "files@aechat";
 
-    globalThis.location.href =
-      "https://github.com/aechat/aechat.github.io/tree/main/public/files";
+    location.assign("https://github.com/aechat/aechat.github.io/tree/main/public/files");
   }, []);
 
   return <></>;
@@ -137,33 +136,33 @@ const RedirectHtml = () => {
 };
 
 const SafariWarningModal = ({
+  isOpen,
   onClose,
-  open,
 }: {
-  open: boolean;
-  onClose: (dontShowAgain: boolean) => void;
+  isOpen: boolean;
+  onClose: (isDontShowAgain: boolean) => void;
 }) => {
-  const [dontShowAgain, setDontShowAgain] = React.useState(false);
+  const [isDontShowAgain, setIsDontShowAgain] = React.useState(false);
 
   const ripple = useRipple<HTMLButtonElement>({haptic: "soft"});
 
   const handleClose = () => {
-    onClose(dontShowAgain);
+    onClose(isDontShowAgain);
   };
 
   const handleDontShowAgainChange = withSelectionHaptic(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setDontShowAgain(event.target.checked);
+      setIsDontShowAgain(event.target.checked);
     }
   );
 
   return (
-    <RemoveScroll enabled={open}>
+    <RemoveScroll enabled={isOpen}>
       <Modal
         centered
         closable={false}
         footer={<></>}
-        open={open}
+        open={isOpen}
         title={undefined}
         width={450}
         zIndex={9999}
@@ -201,7 +200,7 @@ const SafariWarningModal = ({
             </div>
             <label className="warning-dismiss-option">
               <input
-                checked={dontShowAgain}
+                checked={isDontShowAgain}
                 type="checkbox"
                 onChange={handleDontShowAgainChange}
               />
@@ -258,7 +257,7 @@ const ErrorFallback = ({error}: {error: Error}) => {
             })()}
           </div>
         </div>
-        <div className={`${modalStyles["modal-content"]}`}>
+        <div className={modalStyles["modal-content"]}>
           <div className={modalStyles["modal-text-balance"]}>
             <p>
               {(() => {
@@ -280,9 +279,9 @@ const ErrorFallback = ({error}: {error: Error}) => {
                 <span
                   className="error-message-copyable"
                   onClick={async () => {
-                    const success = await copyText(error.message);
+                    const isSuccess = await canCopyText(error.message);
 
-                    if (success) {
+                    if (isSuccess) {
                       message.success("Текст ошибки скопирован в буфер обмена");
                     } else {
                       message.error("Не удалось скопировать текст ошибки");
@@ -297,8 +296,7 @@ const ErrorFallback = ({error}: {error: Error}) => {
               {isNewVersionError === false && (
                 <button
                   onClick={() => {
-                    if (globalThis.window !== undefined)
-                      globalThis.window.location.href = "/";
+                    if (typeof window !== "undefined") location.assign("/");
                   }}
                   onMouseDown={ripple.onMouseDown}
                 >
@@ -307,8 +305,7 @@ const ErrorFallback = ({error}: {error: Error}) => {
               )}
               <button
                 onClick={() => {
-                  if (globalThis.window !== undefined)
-                    globalThis.window.location.reload();
+                  if (typeof window !== "undefined") location.reload();
                 }}
                 onMouseDown={ripple.onMouseDown}
               >
@@ -326,13 +323,13 @@ class ErrorBoundary extends React.Component<
   {children: React.ReactNode; onError?: (error: Error) => void},
   {hasError: boolean; error: Error | undefined}
 > {
+  static getDerivedStateFromError(error: Error) {
+    return {error, hasError: true};
+  }
+
   constructor(properties: {children: React.ReactNode; onError?: (error: Error) => void}) {
     super(properties);
     this.state = {error: undefined, hasError: false};
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return {error, hasError: true};
   }
 
   componentDidCatch(error: Error) {
@@ -340,11 +337,11 @@ class ErrorBoundary extends React.Component<
   }
 
   render() {
-    if (this.state.hasError && this.state.error) {
-      return <ErrorFallback error={this.state.error} />;
-    }
-
-    return <>{this.props.children}</>;
+    return this.state.hasError && this.state.error ? (
+      <ErrorFallback error={this.state.error} />
+    ) : (
+      <>{this.props.children}</>
+    );
   }
 }
 
@@ -352,8 +349,7 @@ const SnowfallManager = () => {
   const {accentHue, isSnowfallEnabled, saturateRatio, theme} = useTheme();
 
   const isSystemDark =
-    globalThis.window?.matchMedia &&
-    globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches;
+    typeof window !== "undefined" && matchMedia("(prefers-color-scheme: dark)").matches;
 
   const isDarkMode = theme === "dark" || (theme === "system" && isSystemDark);
 
@@ -384,8 +380,7 @@ const AppInner = () => {
   const {accentHue, saturateRatio, theme} = useTheme();
 
   const isSystemDark =
-    globalThis.window?.matchMedia &&
-    globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches;
+    typeof window !== "undefined" && matchMedia("(prefers-color-scheme: dark)").matches;
 
   const isDarkMode = theme === "dark" || (theme === "system" && isSystemDark);
 
@@ -472,11 +467,9 @@ const AppContent = () => {
 
     const safetyTimer = setTimeout(() => {
       setLoadingError((previousError) => {
-        if (previousError || boundaryError) {
-          return previousError;
-        }
-
-        return new Error("Page loading timed out after 60 seconds.");
+        return previousError || boundaryError
+          ? previousError
+          : new Error("Page loading timed out after 60 seconds.");
       });
     }, 60_000);
 
@@ -489,7 +482,7 @@ const AppContent = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (globalThis.window === undefined) return;
+    if (typeof window === "undefined") return;
 
     let shouldShowWarning = false;
 
@@ -519,21 +512,21 @@ const AppContent = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
-    const path = globalThis.window.location.pathname;
+    const path = globalThis.location.pathname;
 
     if (path.endsWith("/index.html")) {
-      globalThis.window.location.replace("/");
+      globalThis.location.replace("/");
     } else if (path.endsWith(".html")) {
-      globalThis.window.location.replace(path.replace(/\.html$/, ""));
+      globalThis.location.replace(path.replace(/\.html$/, ""));
     }
   }, [location]);
 
   useEffect(() => {
-    if (globalThis.window === undefined) {
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -557,10 +550,10 @@ const AppContent = () => {
       triggerHaptic("selection");
     };
 
-    globalThis.document.addEventListener("mousedown", handleAnchorMouseDown);
+    document.addEventListener("mousedown", handleAnchorMouseDown);
 
     return () => {
-      globalThis.document.removeEventListener("mousedown", handleAnchorMouseDown);
+      document.removeEventListener("mousedown", handleAnchorMouseDown);
     };
   }, []);
 
@@ -574,10 +567,10 @@ const AppContent = () => {
       <SnowfallManager />
       <ErrorBoundary onError={setBoundaryError}>
         <SafariWarningModal
-          open={isSafariWarningOpen}
-          onClose={(dontShowAgain) => {
+          isOpen={isSafariWarningOpen}
+          onClose={(isDontShowAgain) => {
             updateStoredWarningState(
-              dontShowAgain,
+              isDontShowAgain,
               "safariWarningDismissed",
               "safariWarningLastShown"
             );
@@ -596,9 +589,9 @@ const AppContent = () => {
               <AnimatePresence
                 mode="wait"
                 onExitComplete={() => {
-                  if (globalThis.window !== undefined) {
+                  if (typeof window !== "undefined") {
                     setTimeout(() => {
-                      globalThis.window.scrollTo({
+                      window.scrollTo({
                         behavior: "instant",
                         top: 0,
                       });
