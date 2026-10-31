@@ -5,7 +5,7 @@ import {runScript} from "../utilities/scriptRunner.js";
 
 async function fixSpecificContentTags(content, tagName) {
   const regex = new RegExp(
-    `<${tagName}>(?:<mark className="${tagName}">)?.?(.*?)(?:</mark>)?</${tagName}>`,
+    `<${tagName}>(?:<mark className="${tagName}">)?([^<]*)(?:</mark>)?</${tagName}>`,
     "g"
   );
 
@@ -41,7 +41,7 @@ async function fixSpecificContentTags(content, tagName) {
 }
 
 async function fixKeyTags(content) {
-  const regex = /<key>(?:<mark className="key">)?(.*?)(?:<\/mark>)?<\/key>/g;
+  const regex = /<key>(?:<mark className="key">)?([^<]*)(?:<\/mark>)?<\/key>/g;
 
   const matches = Array.from(content.matchAll(regex));
 
@@ -50,7 +50,10 @@ async function fixKeyTags(content) {
   for (const match of matches) {
     const [fullMatch, keyContent] = match;
 
-    const proposed = keyContent.replace(/\s*\+\s*/g, " + ");
+    const proposed = keyContent
+      .split("+")
+      .map((part) => part.trim())
+      .join(" + ");
 
     if (keyContent === proposed) continue;
 

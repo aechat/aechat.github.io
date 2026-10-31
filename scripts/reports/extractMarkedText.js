@@ -31,15 +31,38 @@ function decodeHtmlEntities(value) {
     .replaceAll("&nbsp;", " ");
 }
 
+function stripTagsAndBraces(value) {
+  let result = "";
+
+  let tagDepth = 0;
+
+  let braceDepth = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+
+    if (character === "<") {
+      tagDepth += 1;
+    } else if (character === ">") {
+      tagDepth = Math.max(0, tagDepth - 1);
+    } else if (character === "{") {
+      braceDepth += 1;
+    } else if (character === "}") {
+      braceDepth = Math.max(0, braceDepth - 1);
+    } else if (tagDepth === 0 && braceDepth === 0) {
+      result += character;
+    }
+  }
+
+  return result;
+}
+
 function normalizeInnerText(raw) {
-  return decodeHtmlEntities(raw)
-    .replaceAll(/\{\/\*[\s\S]*?\*\/\}/g, " ")
-    .replaceAll(/\{\s*"\\s*"\s*\}/g, " ")
-    .replaceAll(/\{\s*'\\s*'\s*\}/g, " ")
-    .replaceAll(/\{\s*\n\s*\}/g, " ")
-    .replaceAll(/\{[^}]*\}/g, " ")
-    .replaceAll(/<br\s*\/?\s*>/gi, "\n")
-    .replaceAll(/<[^>]+>/g, " ")
+  const converted = decodeHtmlEntities(raw).replaceAll(/<br\s*\/?>/gi, "\n");
+
+  const stripped = stripTagsAndBraces(converted);
+
+  return stripped
     .replaceAll(/[\t\r ]+/g, " ")
     .replaceAll(/\n\s+/g, "\n")
     .trim();

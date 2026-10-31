@@ -1,6 +1,8 @@
 import fs from "node:fs";
 
-import {getSectionFiles, toRelativePath} from "./fileUtilities.js";
+import path from "node:path";
+
+import {getSectionFiles, ROOT, SECTIONS_ROOT, toRelativePath} from "./fileUtilities.js";
 
 import {createFinding} from "./reportUtilities.js";
 
@@ -34,7 +36,7 @@ export const PLUGIN_NAMES = [
   "Depth Anything V2",
 ];
 
-const HTML_TAG_RE = /<\s*\/?\s*[A-Za-z][^>]*>/;
+const HTML_TAG_RE = /<\/?\s*[A-Za-z][^>]*>/;
 
 const STRING_PROP_RE = /\b(title|caption|tag|anchor)\s*=\s*(["'])([\s\S]*?)\2/g;
 
@@ -211,15 +213,36 @@ function pushStrictFinding({errors, finding, strict, warnings}) {
   }
 }
 
+function getSectionKey(file) {
+  const relative = toRelativePath(file, SECTIONS_ROOT);
+
+  const [section] = relative.split("/");
+
+  if (!section || section.startsWith("..")) {
+    return "default";
+  }
+
+  return section;
+}
+
 export function collectDetailsSummaryFindings(files, {strict = false} = {}) {
   const errors = [];
 
   const warnings = [];
 
-  const anchors = new Map();
+  const anchorsBySection = new Map();
 
   for (const file of files) {
     const content = fs.readFileSync(file, "utf8");
+
+    const section = getSectionKey(file);
+
+    let sectionAnchors = anchorsBySection.get(section);
+
+    if (!sectionAnchors) {
+      sectionAnchors = new Map();
+      anchorsBySection.set(section, sectionAnchors);
+    }
 
     DETAILS_SUMMARY_OPEN_RE.lastIndex = 0;
 
@@ -247,10 +270,10 @@ export function collectDetailsSummaryFindings(files, {strict = false} = {}) {
           warnings,
         });
       } else {
-        const entries = anchors.get(anchor) ?? [];
+        const entries = sectionAnchors.get(anchor) ?? [];
 
         entries.push({file, line});
-        anchors.set(anchor, entries);
+        sectionAnchors.set(anchor, entries);
 
         if (!KEBAB_CASE_RE.test(anchor)) {
           pushStrictFinding({
@@ -385,21 +408,110 @@ export function collectDetailsSummaryFindings(files, {strict = false} = {}) {
     }
   }
 
-  for (const [anchor, entries] of anchors.entries()) {
-    if (entries.length < 2) {
-      continue;
-    }
+  for (const sectionAnchors of anchorsBySection.values()) {
+    for (const [anchor, entries] of sectionAnchors.entries()) {
+      if (entries.length < 2) {
+        continue;
+      }
 
-    for (const entry of entries) {
-      warnings.push(
-        makeFinding(
-          entry.file,
-          entry.line,
-          "details-duplicate-anchor",
-          "anchor в DetailsSummary дублируется",
-          anchor
-        )
-      );
+      for (const entry of entries) {
+        warnings.push(
+          makeFinding(
+            entry.file,
+            entry.line,
+            "details-duplicate-anchor",
+            "anchor в DetailsSummary дублируется",
+            anchor
+          )
+        );
+      }
+    }
+  }
+
+  return {errors, warnings};
+}
+
+const ARTICLE_MEDIA_OPEN_RE = /<ArticleMedia\b([\s\S]*?)(?:\/>|><\/ArticleMedia>)/g;
+
+export function collectArticleMediaFindings(files) {
+  const errors = [];
+
+  const warnings = [];
+
+  for (const file of files) {
+    const content = fs.readFileSync(file, "utf8");
+
+    ARTICLE_MEDIA_OPEN_RE.lastIndex = 0;
+
+    let match;
+
+    while ((match = ARTICLE_MEDIA_OPEN_RE.exec(content)) !== null) {
+      const attrs = match[1] ?? "";
+
+      const line = lineFromOffset(content, match.index);
+
+      const src = getStringProp(attrs, "src");
+
+      const type = getStringProp(attrs, "type");
+
+      if (!src) {
+        errors.push(
+          makeFinding(
+            file,
+            line,
+            "article-media-missing-src",
+            "У компонента ArticleMedia отсутствует свойство src"
+          )
+        );
+
+        continue;
+      }
+
+      if (!type) {
+        errors.push(
+          makeFinding(
+            file,
+            line,
+            "article-media-missing-type",
+            "У компонента ArticleMedia отсутствует свойство type"
+          )
+        );
+
+        continue;
+      }
+
+      if (
+        type === "youtube" ||
+        src.startsWith("http://") ||
+        src.startsWith("https://") ||
+        src.startsWith("//")
+      ) {
+        continue;
+      }
+
+      let resolvedSource = src;
+
+      if (!resolvedSource.startsWith("/")) {
+        if (resolvedSource.startsWith("media/")) {
+          resolvedSource = `/${resolvedSource}`;
+        } else {
+          resolvedSource = `/media/${resolvedSource}`;
+        }
+      }
+
+      const fullPath = path.join(ROOT, "public", resolvedSource);
+
+      if (!fs.existsSync(fullPath)) {
+        errors.push(
+          makeFinding(
+            file,
+            line,
+            "article-media-missing-file",
+            `Медиафайл "${src}" не найден по пути "public${resolvedSource}"`,
+            `src="${src}"`
+          )
+        );
+      }
     }
   }
 

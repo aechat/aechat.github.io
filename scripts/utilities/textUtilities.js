@@ -15,7 +15,23 @@ export function normalizeInlineText(value) {
 }
 
 export function stripTags(value) {
-  return normalizeInlineText(value.replaceAll(/<[^>]+>/g, ""));
+  let result = "";
+
+  let inTag = false;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+
+    if (character === "<") {
+      inTag = true;
+    } else if (character === ">") {
+      inTag = false;
+    } else if (!inTag) {
+      result += character;
+    }
+  }
+
+  return normalizeInlineText(result);
 }
 
 export function makeTimestamp() {
