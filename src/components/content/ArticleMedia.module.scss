@@ -92,6 +92,7 @@
     border-radius: $roundness;
     background-color: var(--color-panel-background);
     width: 100%;
+    max-width: 100%;
   }
 
   &-caption {

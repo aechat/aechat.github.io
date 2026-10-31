@@ -27,7 +27,17 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
   macContent,
   windowsContent,
 }) => {
-  const [isWindowsActive, setIsWindowsActive] = useState(true);
+  const [isWindowsActive, setIsWindowsActive] = useState(() => {
+    if (globalThis.window === undefined) {
+      return true;
+    }
+
+    const platform = getPlatformInfo();
+
+    return !(platform.isMacOS || platform.isIOS);
+  });
+
+  const hasMountedReference = useRef(false);
 
   const parentAnchor = useContext(ParentAnchorContext);
 
@@ -73,7 +83,13 @@ const ContentFilter: React.FC<ContentFilterProperties> = ({
   }, []);
 
   useEffect(() => {
-    generateAnchorId();
+    if (!hasMountedReference.current) {
+      hasMountedReference.current = true;
+
+      return;
+    }
+
+    void generateAnchorId();
   }, [isWindowsActive]);
 
   const hasWindowsContent = windowsContent !== undefined;

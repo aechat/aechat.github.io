@@ -1,12 +1,14 @@
 import hljs from "highlight.js";
 
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useContext, useEffect, useMemo, useRef} from "react";
 
 import {message} from "antd";
 
 import {canCopyText} from "../../utilities/copyUtilities";
 
 import {triggerHaptic} from "../../utilities/haptics";
+
+import {DetailsSummaryContext, useSpoiler} from "../detailsSummary/spoilerContexts";
 
 import "highlight.js/styles/github-dark.css";
 
@@ -67,15 +69,34 @@ const CodeSnippet: React.FC<CodeSnippetProperties> = ({
 }) => {
   const codeReference = useRef<HTMLElement | null>(null);
 
+  const highlightedKeyReference = useRef("");
+
+  const isInDetailsSummary = useContext(DetailsSummaryContext);
+
+  const isSpoilerOpen = useSpoiler();
+
+  const shouldHighlight = !isInDetailsSummary || isSpoilerOpen;
+
   const codeText = useMemo(() => {
     return getCodeTextFromNode(children);
   }, [children]);
 
   useEffect(() => {
-    if (codeReference.current) {
-      hljs.highlightElement(codeReference.current);
+    if (!shouldHighlight || !codeReference.current) {
+      return;
     }
-  }, [codeText, language]);
+
+    const highlightKey = `${language}:${codeText}`;
+
+    if (highlightedKeyReference.current === highlightKey) {
+      return;
+    }
+
+    delete codeReference.current.dataset.highlighted;
+    codeReference.current.textContent = codeText;
+    hljs.highlightElement(codeReference.current);
+    highlightedKeyReference.current = highlightKey;
+  }, [codeText, language, shouldHighlight]);
 
   const handleCopy = (event: React.MouseEvent<HTMLPreElement>): void => {
     event.stopPropagation();

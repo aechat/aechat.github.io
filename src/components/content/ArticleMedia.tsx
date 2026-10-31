@@ -460,11 +460,7 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const [hasOpenedViewer, setHasOpenedViewer] = useState(false);
 
   useEffect(() => {
     if (isSpoilerOpen) {
@@ -492,7 +488,9 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
       customWidth
     );
 
-    if (!hasBeenOpened) {
+    const isMediaReady = hasBeenOpened || Boolean(isSpoilerOpen);
+
+    if (!isMediaReady) {
       return (
         <div
           className={styles["media-placeholder"]}
@@ -513,6 +511,7 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
           <img
             alt={caption}
             className={`${styles["media-content"]} ${styles["media-content--image"]}`}
+            decoding="async"
             height={displayHeight}
             loading="lazy"
             src={resolvedSource}
@@ -520,6 +519,7 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
             width={displayWidth}
             onClick={() => {
               triggerHaptic("soft");
+              setHasOpenedViewer(true);
               setIsViewerOpen(true);
             }}
           />
@@ -603,7 +603,7 @@ const ArticleMedia: React.FC<ArticleMediaProperties> = (properties) => {
           {renderCaption()}
         </figure>
       </div>
-      {isClient && (
+      {type === "image" && hasOpenedViewer && (
         <ImageViewer
           isOpen={isViewerOpen}
           src={getMediaSource(src)}
