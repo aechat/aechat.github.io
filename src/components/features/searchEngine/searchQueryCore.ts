@@ -3,7 +3,6 @@ import {
   isKeyCombinationSearch,
   normalizeKeyCombination,
   normalizeText,
-  normalizeWord,
 } from "./searchContentUtilities";
 
 import {
@@ -112,7 +111,23 @@ const buildWordPrefixSet = (words: string[]): Set<string> => {
   return prefixSet;
 };
 
+const MAX_TEXT_SEARCH_INDEX_CACHE_SIZE = 2500;
+
+const MAX_CACHEABLE_INDEX_TEXT_LENGTH = 1500;
+
+const TEXT_SEARCH_INDEX_CACHE = new Map<string, TextSearchIndex>();
+
 export const buildSearchIndex = (text: string): TextSearchIndex => {
+  const canCache = text.length <= MAX_CACHEABLE_INDEX_TEXT_LENGTH;
+
+  if (canCache) {
+    const cachedIndex = TEXT_SEARCH_INDEX_CACHE.get(text);
+
+    if (cachedIndex) {
+      return cachedIndex;
+    }
+  }
+
   const normalizedText = normalizeText(text);
 
   const foldedText = normalizeLatinPhonetics(normalizedText);
@@ -163,7 +178,7 @@ export const buildSearchIndex = (text: string): TextSearchIndex => {
     }
   }
 
-  return {
+  const builtIndex: TextSearchIndex = {
     consonantPrefixSet,
     consonantSet,
     foldedPrefixSet,
@@ -175,6 +190,20 @@ export const buildSearchIndex = (text: string): TextSearchIndex => {
     normalizedWordSet,
     stemSet,
   };
+
+  if (canCache) {
+    if (TEXT_SEARCH_INDEX_CACHE.size >= MAX_TEXT_SEARCH_INDEX_CACHE_SIZE) {
+      const oldestKey = TEXT_SEARCH_INDEX_CACHE.keys().next().value;
+
+      if (oldestKey !== undefined) {
+        TEXT_SEARCH_INDEX_CACHE.delete(oldestKey);
+      }
+    }
+
+    TEXT_SEARCH_INDEX_CACHE.set(text, builtIndex);
+  }
+
+  return builtIndex;
 };
 
 const hasExactVariantMatch = (
@@ -254,20 +283,12 @@ const getWordMatchType = (
     : undefined;
 };
 
-const hasWordMatch = (searchWord: string, index: TextSearchIndex): boolean => {
-  const normalizedWord = normalizeWord(searchWord);
-
-  return Boolean(
-    normalizedWord && getWordMatchType(getWordFeatures(normalizedWord), index)
-  );
-};
-
 export const hasAllQueryWordsMatch = (
   textSearchIndex: TextSearchIndex,
   compiledQuery: CompiledSearchQuery
 ): boolean => {
-  for (const {normalizedWord} of compiledQuery.words) {
-    if (!hasWordMatch(normalizedWord, textSearchIndex)) {
+  for (const {features, normalizedWord} of compiledQuery.words) {
+    if (!normalizedWord || !getWordMatchType(features, textSearchIndex)) {
       return false;
     }
   }
@@ -279,8 +300,8 @@ const hasAnyQueryWordMatch = (
   textSearchIndex: TextSearchIndex,
   compiledQuery: CompiledSearchQuery
 ): boolean => {
-  for (const {normalizedWord} of compiledQuery.words) {
-    if (hasWordMatch(normalizedWord, textSearchIndex)) {
+  for (const {features, normalizedWord} of compiledQuery.words) {
+    if (normalizedWord && getWordMatchType(features, textSearchIndex)) {
       return true;
     }
   }

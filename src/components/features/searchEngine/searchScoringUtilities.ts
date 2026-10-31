@@ -209,19 +209,11 @@ const pickSequentialPositions = (tokenPositions: number[][]): number[] => {
   return sequence;
 };
 
-export const getProximityBonus = <TWordFeatures>(
-  text: string,
-  query: QueryWithFeatures<TWordFeatures>,
-  weight: number,
-  dependencies: SearchScoringDependencies<TWordFeatures>
+const getProximityBonusFromPositions = (
+  tokenPositions: number[][] | undefined,
+  weight: number
 ): number => {
-  if (query.words.length < 2) {
-    return 0;
-  }
-
-  const tokenPositions = getTokenPositionsByQuery(text, query, dependencies);
-
-  if (!tokenPositions) {
+  if (!tokenPositions || tokenPositions.length < 2) {
     return 0;
   }
 
@@ -239,7 +231,7 @@ export const getProximityBonus = <TWordFeatures>(
   return Math.round(rawBonus * weight);
 };
 
-export const getQueryOrderBonus = <TWordFeatures>(
+export const getProximityBonus = <TWordFeatures>(
   text: string,
   query: QueryWithFeatures<TWordFeatures>,
   weight: number,
@@ -251,7 +243,19 @@ export const getQueryOrderBonus = <TWordFeatures>(
 
   const tokenPositions = getTokenPositionsByQuery(text, query, dependencies);
 
-  if (!tokenPositions || tokenPositions.some((positions) => positions.length === 0)) {
+  return getProximityBonusFromPositions(tokenPositions, weight);
+};
+
+const getQueryOrderBonusFromPositions = (
+  tokenPositions: number[][] | undefined,
+  queryWordsCount: number,
+  weight: number
+): number => {
+  if (
+    !tokenPositions ||
+    queryWordsCount < 2 ||
+    tokenPositions.some((positions) => positions.length === 0)
+  ) {
     return 0;
   }
 
@@ -269,12 +273,45 @@ export const getQueryOrderBonus = <TWordFeatures>(
 
   let rawBonus = sequence.length * ORDER_STEP_BONUS;
 
-  if (sequence.length === query.words.length) {
+  if (sequence.length === queryWordsCount) {
     rawBonus += ORDER_FULL_SEQUENCE_BONUS;
   }
 
   rawBonus += Math.max(0, ORDER_MAX_START_BONUS - start * 2);
   rawBonus += Math.max(0, ORDER_MAX_SPAN_BONUS - span * 2);
+
+  return Math.round(rawBonus * weight);
+};
+
+export const getQueryOrderBonus = <TWordFeatures>(
+  text: string,
+  query: QueryWithFeatures<TWordFeatures>,
+  weight: number,
+  dependencies: SearchScoringDependencies<TWordFeatures>
+): number => {
+  if (query.words.length < 2) {
+    return 0;
+  }
+
+  const tokenPositions = getTokenPositionsByQuery(text, query, dependencies);
+
+  return getQueryOrderBonusFromPositions(tokenPositions, query.words.length, weight);
+};
+
+const getLeadingWordBonusFromPositions = (
+  tokenPositions: number[][] | undefined,
+  weight: number
+): number => {
+  if (!tokenPositions || tokenPositions.length === 0 || tokenPositions[0].length === 0) {
+    return 0;
+  }
+
+  const firstPosition = tokenPositions[0][0];
+
+  const rawBonus = Math.max(
+    0,
+    LEADING_MAX_BONUS - firstPosition * LEADING_DECAY_PER_TOKEN
+  );
 
   return Math.round(rawBonus * weight);
 };
@@ -291,18 +328,7 @@ export const getLeadingWordBonus = <TWordFeatures>(
 
   const tokenPositions = getTokenPositionsByQuery(text, query, dependencies);
 
-  if (!tokenPositions || tokenPositions[0].length === 0) {
-    return 0;
-  }
-
-  const firstPosition = tokenPositions[0][0];
-
-  const rawBonus = Math.max(
-    0,
-    LEADING_MAX_BONUS - firstPosition * LEADING_DECAY_PER_TOKEN
-  );
-
-  return Math.round(rawBonus * weight);
+  return getLeadingWordBonusFromPositions(tokenPositions, weight);
 };
 
 export const getFieldMatchTypeScore = (
@@ -499,94 +525,86 @@ export const computeSearchScore = <TWordFeatures>({
     titleTypeCounts: titleMatchInfo.typeCounts,
   });
 
-  score += getProximityBonus(
-    normalizedTitle,
-    compiledQuery,
-    SEARCH_PROXIMITY_WEIGHTS.title,
-    dependencies
+  const titlePositions =
+    titleMatchInfo.totalMatched > 0
+      ? getTokenPositionsByQuery(normalizedTitle, compiledQuery, dependencies)
+      : undefined;
+
+  const tagPositions =
+    tagMatchInfo.totalMatched > 0
+      ? getTokenPositionsByQuery(normalizedTag, compiledQuery, dependencies)
+      : undefined;
+
+  const entityPositions =
+    entityMatchInfo.totalMatched > 0
+      ? getTokenPositionsByQuery(normalizedEntityText, compiledQuery, dependencies)
+      : undefined;
+
+  const contentPositions =
+    contentMatchInfo.totalMatched > 0
+      ? getTokenPositionsByQuery(normalizedContent, compiledQuery, dependencies)
+      : undefined;
+
+  const queryWordsCount = compiledQuery.words.length;
+
+  score += getProximityBonusFromPositions(titlePositions, SEARCH_PROXIMITY_WEIGHTS.title);
+
+  score += Math.round(
+    getProximityBonusFromPositions(tagPositions, SEARCH_PROXIMITY_WEIGHTS.tag) *
+      tagLengthDampingFactor
+  );
+
+  score += getProximityBonusFromPositions(
+    entityPositions,
+    SEARCH_PROXIMITY_WEIGHTS.entity
+  );
+
+  score += getProximityBonusFromPositions(
+    contentPositions,
+    SEARCH_PROXIMITY_WEIGHTS.content
+  );
+
+  score += getLeadingWordBonusFromPositions(titlePositions, SEARCH_LEADING_WEIGHTS.title);
+
+  score += Math.round(
+    getLeadingWordBonusFromPositions(tagPositions, SEARCH_LEADING_WEIGHTS.tag) *
+      tagLengthDampingFactor
+  );
+
+  score += getLeadingWordBonusFromPositions(
+    entityPositions,
+    SEARCH_LEADING_WEIGHTS.entity
+  );
+
+  score += getLeadingWordBonusFromPositions(
+    contentPositions,
+    SEARCH_LEADING_WEIGHTS.content
+  );
+
+  score += getQueryOrderBonusFromPositions(
+    titlePositions,
+    queryWordsCount,
+    SEARCH_ORDER_WEIGHTS.title
   );
 
   score += Math.round(
-    getProximityBonus(
-      normalizedTag,
-      compiledQuery,
-      SEARCH_PROXIMITY_WEIGHTS.tag,
-      dependencies
+    getQueryOrderBonusFromPositions(
+      tagPositions,
+      queryWordsCount,
+      SEARCH_ORDER_WEIGHTS.tag
     ) * tagLengthDampingFactor
   );
 
-  score += getProximityBonus(
-    normalizedEntityText,
-    compiledQuery,
-    SEARCH_PROXIMITY_WEIGHTS.entity,
-    dependencies
+  score += getQueryOrderBonusFromPositions(
+    entityPositions,
+    queryWordsCount,
+    SEARCH_ORDER_WEIGHTS.entity
   );
 
-  score += getProximityBonus(
-    normalizedContent,
-    compiledQuery,
-    SEARCH_PROXIMITY_WEIGHTS.content,
-    dependencies
-  );
-
-  score += getLeadingWordBonus(
-    normalizedTitle,
-    compiledQuery,
-    SEARCH_LEADING_WEIGHTS.title,
-    dependencies
-  );
-
-  score += Math.round(
-    getLeadingWordBonus(
-      normalizedTag,
-      compiledQuery,
-      SEARCH_LEADING_WEIGHTS.tag,
-      dependencies
-    ) * tagLengthDampingFactor
-  );
-
-  score += getLeadingWordBonus(
-    normalizedEntityText,
-    compiledQuery,
-    SEARCH_LEADING_WEIGHTS.entity,
-    dependencies
-  );
-
-  score += getLeadingWordBonus(
-    normalizedContent,
-    compiledQuery,
-    SEARCH_LEADING_WEIGHTS.content,
-    dependencies
-  );
-
-  score += getQueryOrderBonus(
-    normalizedTitle,
-    compiledQuery,
-    SEARCH_ORDER_WEIGHTS.title,
-    dependencies
-  );
-
-  score += Math.round(
-    getQueryOrderBonus(
-      normalizedTag,
-      compiledQuery,
-      SEARCH_ORDER_WEIGHTS.tag,
-      dependencies
-    ) * tagLengthDampingFactor
-  );
-
-  score += getQueryOrderBonus(
-    normalizedEntityText,
-    compiledQuery,
-    SEARCH_ORDER_WEIGHTS.entity,
-    dependencies
-  );
-
-  score += getQueryOrderBonus(
-    normalizedContent,
-    compiledQuery,
-    SEARCH_ORDER_WEIGHTS.content,
-    dependencies
+  score += getQueryOrderBonusFromPositions(
+    contentPositions,
+    queryWordsCount,
+    SEARCH_ORDER_WEIGHTS.content
   );
 
   if (

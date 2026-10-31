@@ -736,6 +736,20 @@ type SearchResultsProperties = {
   totalResultsCount?: number;
 };
 
+const areStringSetsEqual = (firstSet: Set<string>, secondSet: Set<string>): boolean => {
+  if (firstSet.size !== secondSet.size) {
+    return false;
+  }
+
+  for (const item of firstSet) {
+    if (!secondSet.has(item)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   onLinkClick,
   query,
@@ -865,7 +879,7 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
 
   const updateHighlightEligibility = useCallback(() => {
     if (!isHighlightReady) {
-      setHighlightEligibleIds(new Set());
+      setHighlightEligibleIds((previous) => (previous.size === 0 ? previous : new Set()));
 
       return;
     }
@@ -901,7 +915,9 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
     }
 
-    setHighlightEligibleIds(nextEligibleIds);
+    setHighlightEligibleIds((previous) =>
+      areStringSetsEqual(previous, nextEligibleIds) ? previous : nextEligibleIds
+    );
   }, [
     HIGHLIGHT_BUFFER_VIEWPORTS,
     isHighlightReady,
@@ -1015,6 +1031,41 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
     [displayedResults]
   );
 
+  const resultPresentationById = useMemo(() => {
+    const presentationMap = new Map<
+      string,
+      {
+        displayTitle: string;
+        highlightedTags: React.ReactNode[];
+        highlightedTitle: React.ReactNode;
+        isContentUnclamped: boolean;
+        tagsToDisplay: string[];
+      }
+    >();
+
+    for (const {content, id, tag, title} of displayedResults) {
+      const tagsToDisplay = getMatchingTagsByQuery(tag, compiledQuery);
+
+      const displayTitle = title.replace(/^[+-]+/, "").trim();
+
+      const highlightedTitle = renderHighlightedText(displayTitle, compiledQuery);
+
+      const highlightedTags = tagsToDisplay.map((tag_) =>
+        renderHighlightedText(tag_, compiledQuery)
+      );
+
+      presentationMap.set(id, {
+        displayTitle,
+        highlightedTags,
+        highlightedTitle,
+        isContentUnclamped: hasTableInContent(content),
+        tagsToDisplay,
+      });
+    }
+
+    return presentationMap;
+  }, [compiledQuery, displayedResults]);
+
   const checkResultOverflow = useCallback(() => {
     const overflowedIds = new Set<string>();
 
@@ -1030,7 +1081,9 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
     }
 
-    setOverflowingResultIds(overflowedIds);
+    setOverflowingResultIds((previous) =>
+      areStringSetsEqual(previous, overflowedIds) ? previous : overflowedIds
+    );
   }, [displayedResults]);
 
   useEffect(() => {
@@ -1187,9 +1240,12 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
   const renderResult = ({index, result}: {index: number; result: SearchResult}) => {
     const {anchor, content, id, tag, title} = result;
 
-    const tagsToDisplay = getMatchingTagsByQuery(tag, compiledQuery);
+    const presentation = resultPresentationById.get(id);
 
-    const displayTitle = title.replace(/^[+-]+/, "").trim();
+    const tagsToDisplay =
+      presentation?.tagsToDisplay ?? getMatchingTagsByQuery(tag, compiledQuery);
+
+    const displayTitle = presentation?.displayTitle ?? title.replace(/^[+-]+/, "").trim();
 
     const isCurrentSelectedResult =
       selectedResultIndex >= 0 &&
@@ -1200,11 +1256,13 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       isCurrentSelectedResult || (isHighlightReady && highlightEligibleIds.has(id));
 
     const highlightedTitle = shouldHighlight
-      ? renderHighlightedText(displayTitle, compiledQuery)
+      ? (presentation?.highlightedTitle ??
+        renderHighlightedText(displayTitle, compiledQuery))
       : displayTitle;
 
     const highlightedTags = shouldHighlight
-      ? tagsToDisplay.map((tag_) => renderHighlightedText(tag_, compiledQuery))
+      ? (presentation?.highlightedTags ??
+        tagsToDisplay.map((tag_) => renderHighlightedText(tag_, compiledQuery)))
       : tagsToDisplay;
 
     const cacheKey = `${id}::${displayedQuery}`;
@@ -1225,7 +1283,8 @@ const SearchResultsComponent: React.FC<SearchResultsProperties> = ({
       }
     }
 
-    const isContentUnclamped = hasTableInContent(content);
+    const isContentUnclamped =
+      presentation?.isContentUnclamped ?? hasTableInContent(content);
 
     const isSelected = index === selectedResultIndex;
 

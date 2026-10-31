@@ -20,6 +20,7 @@ import {
   mapRankedResultsToSearchResults as mapRankedResultsToSearchResultsRuntime,
   normalizeKeyCombination,
   normalizeText,
+  removeFigureContainers,
   wrapSnippetWithAdditionContainer,
   wrapSnippetWithClosestAddition,
 } from "./searchContentUtilities";
@@ -47,20 +48,36 @@ import type {SearchResult, SearchSection} from "./SearchState";
 
 const EMPTY_SUGGESTIONS: string[] = [];
 
+const INDEXING_YIELD_BUDGET_MS = 12;
+
+const htmlHelperElements: {
+  decodeTextArea: HTMLTextAreaElement | undefined;
+  stripContainer: HTMLDivElement | undefined;
+} = {
+  decodeTextArea: undefined,
+  stripContainer: undefined,
+};
+
 const decodeHtmlEntities = (text: string): string => {
-  const textArea = document.createElement("textarea");
+  if (!text.includes("&")) {
+    return text;
+  }
 
-  textArea.innerHTML = text;
+  htmlHelperElements.decodeTextArea ??= document.createElement("textarea");
+  htmlHelperElements.decodeTextArea.innerHTML = text;
 
-  return textArea.value;
+  return htmlHelperElements.decodeTextArea.value;
 };
 
 const stripHtml = (html: string): string => {
-  const temporary = document.createElement("div");
+  if (!html.includes("<") && !html.includes("&")) {
+    return html;
+  }
 
-  temporary.innerHTML = html;
+  htmlHelperElements.stripContainer ??= document.createElement("div");
+  htmlHelperElements.stripContainer.innerHTML = html;
 
-  return temporary.textContent || "";
+  return htmlHelperElements.stripContainer.textContent || "";
 };
 
 const extractKeyCombinationText = (element: Element): string => {
@@ -249,6 +266,8 @@ const processSingleDetail = (
     nested.remove();
   }
 
+  removeFigureContainers(detailClone);
+
   const tag = detail.dataset.tags?.trim() ?? "";
 
   const anchor = detail.dataset.anchor;
@@ -350,13 +369,30 @@ const processSingleDetail = (
   };
 };
 
-const isResultHidden = (sourceOrder: number): boolean => {
-  const details = document.querySelectorAll<HTMLDetailsElement>("details");
+const filterVisibleRankedResults = (
+  rankedResults: WorkerRankedResult[],
+  cachedDetailsElements?: HTMLDetailsElement[]
+): WorkerRankedResult[] => {
+  if (rankedResults.length === 0) {
+    return rankedResults;
+  }
 
-  const element = details[sourceOrder];
+  const details =
+    cachedDetailsElements && cachedDetailsElements.length > 0
+      ? cachedDetailsElements
+      : document.querySelectorAll<HTMLDetailsElement>("details");
 
-  return Boolean(element && isElementHiddenByFilter(element));
+  return rankedResults.filter((item) => {
+    const element = details[item.sourceOrder];
+
+    return !element || !isElementHiddenByFilter(element);
+  });
 };
+
+const yieldToMain = (): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
 
 export const useSearchLogic = (
   query: string,
@@ -381,33 +417,70 @@ export const useSearchLogic = (
 
   const allRankedResultsReference = useRef<WorkerRankedResult[]>([]);
 
-  const cachedDetailsData = useMemo(() => {
+  const cachedDetailsElementsReference = useRef<HTMLDetailsElement[]>([]);
+
+  const [cachedDetailsData, setCachedDetailsData] = useState<BaseSearchResult[]>([]);
+
+  useEffect(() => {
     if (!isPageLoaded) {
-      return [];
+      cachedDetailsElementsReference.current = [];
+      setCachedDetailsData([]);
+
+      return;
     }
 
-    const cachedDetails = [...document.querySelectorAll<HTMLDetailsElement>("details")];
+    let isCancelled = false;
 
-    const data: BaseSearchResult[] = [];
+    const indexDetailsAsync = async () => {
+      const cachedDetails = [...document.querySelectorAll<HTMLDetailsElement>("details")];
 
-    const dependencies = {
-      additionContainerSelector: ADDITION_CONTAINER_SELECTOR,
-      decodeHtmlEntities,
-      getTopLevelAdditionContainer,
-      normalizeKeyCombination,
-      normalizeText,
-      stripHtml,
+      cachedDetailsElementsReference.current = cachedDetails;
+
+      const data: BaseSearchResult[] = [];
+
+      const dependencies = {
+        additionContainerSelector: ADDITION_CONTAINER_SELECTOR,
+        decodeHtmlEntities,
+        getTopLevelAdditionContainer,
+        normalizeKeyCombination,
+        normalizeText,
+        stripHtml,
+      };
+
+      let deadline = performance.now() + INDEXING_YIELD_BUDGET_MS;
+
+      for (const [sourceOrder, detail] of cachedDetails.entries()) {
+        if (isCancelled) {
+          return;
+        }
+
+        if (performance.now() >= deadline) {
+          await yieldToMain();
+
+          if (isCancelled) {
+            return;
+          }
+
+          deadline = performance.now() + INDEXING_YIELD_BUDGET_MS;
+        }
+
+        const processed = processSingleDetail(detail, sourceOrder, dependencies);
+
+        if (processed) {
+          data.push(processed);
+        }
+      }
+
+      if (!isCancelled) {
+        setCachedDetailsData(data);
+      }
     };
 
-    for (const [sourceOrder, detail] of cachedDetails.entries()) {
-      const processed = processSingleDetail(detail, sourceOrder, dependencies);
+    void indexDetailsAsync();
 
-      if (processed) {
-        data.push(processed);
-      }
-    }
-
-    return data;
+    return () => {
+      isCancelled = true;
+    };
   }, [isPageLoaded]);
 
   const cachedDetailsByKey = useMemo(
@@ -485,8 +558,9 @@ export const useSearchLogic = (
     (text: string) => {
       const rankedResults = searchDetails(workerDetailsData, text);
 
-      const filteredResults = rankedResults.filter(
-        (item) => !isResultHidden(item.sourceOrder)
+      const filteredResults = filterVisibleRankedResults(
+        rankedResults,
+        cachedDetailsElementsReference.current
       );
 
       allRankedResultsReference.current = filteredResults;
@@ -533,8 +607,9 @@ export const useSearchLogic = (
         return;
       }
 
-      const filteredResults = message_.results.filter(
-        (item) => !isResultHidden(item.sourceOrder)
+      const filteredResults = filterVisibleRankedResults(
+        message_.results,
+        cachedDetailsElementsReference.current
       );
 
       allRankedResultsReference.current = filteredResults;

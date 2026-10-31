@@ -104,4 +104,27 @@ const SearchResultCardComponent: React.FC<SearchResultCardProperties> = ({
   );
 };
 
-export const SearchResultCard = memo(SearchResultCardComponent);
+const areSearchResultCardPropertiesEqual = (
+  previous: SearchResultCardProperties,
+  next: SearchResultCardProperties
+): boolean => {
+  return (
+    previous.id === next.id &&
+    previous.anchor === next.anchor &&
+    previous.cardIndex === next.cardIndex &&
+    previous.content === next.content &&
+    previous.isContentOverflowing === next.isContentOverflowing &&
+    previous.isContentUnclamped === next.isContentUnclamped &&
+    previous.isHovered === next.isHovered &&
+    previous.isMobile === next.isMobile &&
+    previous.isSelected === next.isSelected &&
+    previous.highlightedTitle === next.highlightedTitle &&
+    previous.highlightedTags === next.highlightedTags &&
+    previous.tagsToDisplay === next.tagsToDisplay
+  );
+};
+
+export const SearchResultCard = memo(
+  SearchResultCardComponent,
+  areSearchResultCardPropertiesEqual
+);

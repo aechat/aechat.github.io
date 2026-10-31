@@ -103,7 +103,7 @@ const REPLACE_CHARS_REGEX = /ё/gi;
 
 const UNDERSCORE_REGEX = /_/g;
 
-const removeFigureContainers = (root: Element): void => {
+export const removeFigureContainers = (root: Element): void => {
   for (const element of root.querySelectorAll('[class*="media-figure"]')) {
     element.remove();
   }
@@ -750,11 +750,37 @@ export const wrapSnippetWithAdditionContainer = (
   return `<${containerTag}${containerAttributes}><div>${snippetHtml}</div></${containerTag}>`;
 };
 
+const ENTITY_CLASS_NAMES = [
+  "app",
+  "plugin",
+  "file",
+  "key",
+  "select",
+  "video",
+  "audio",
+  "image",
+  "path",
+  "word",
+  "tag",
+] as const;
+
+const COMBINED_ENTITY_SELECTOR = ENTITY_CLASS_NAMES.map(
+  (className) => `mark.${className}`
+).join(", ");
+
+const MAX_FORMATTED_SNIPPET_CACHE_SIZE = 600;
+
+const formattedSnippetCache = new Map<string, string>();
+
+const entityExtractionState: {root: HTMLDivElement | undefined} = {
+  root: undefined,
+};
+
 export const applyAdditionSnippetStyles = (
   html: string,
   additionContainerSelector: string
 ): string => {
-  if (!html || !additionContainerSelector) {
+  if (!html || !additionContainerSelector || !html.includes("addition")) {
     return html;
   }
 
@@ -762,9 +788,15 @@ export const applyAdditionSnippetStyles = (
 
   temporaryDiv.innerHTML = html;
 
-  const nestedAdditionContainers = [
+  const allAdditionElements = [
     ...temporaryDiv.querySelectorAll(additionContainerSelector),
-  ].filter((element) => {
+  ];
+
+  if (allAdditionElements.length === 0) {
+    return html;
+  }
+
+  const nestedAdditionContainers = allAdditionElements.filter((element) => {
     const parentAdditionContainer = element.parentElement?.closest(
       additionContainerSelector
     );
@@ -835,9 +867,21 @@ export const buildAdditionsHtml = (
     }
   );
 
+  if (additions.length === 0) {
+    return "";
+  }
+
+  const hasMediaFigures = Boolean(detail.querySelector('[class*="media-figure"]'));
+
   const htmlParts: string[] = [];
 
   for (const addition of additions) {
+    if (!hasMediaFigures) {
+      htmlParts.push(addition.outerHTML);
+
+      continue;
+    }
+
     const clone = addition.cloneNode(true) as Element;
 
     removeFigureContainers(clone);
@@ -868,9 +912,21 @@ export const collectLinkHrefs = (detail: Element): string[] => {
 export const buildParagraphsHtml = (detail: Element): string => {
   const paragraphs = [...detail.querySelectorAll<HTMLParagraphElement>("p")];
 
+  if (paragraphs.length === 0) {
+    return "";
+  }
+
+  const hasMediaFigures = Boolean(detail.querySelector('[class*="media-figure"]'));
+
   const htmlParts: string[] = [];
 
   for (const paragraph of paragraphs) {
+    if (!hasMediaFigures) {
+      htmlParts.push(paragraph.outerHTML);
+
+      continue;
+    }
+
     const clone = paragraph.cloneNode(true) as Element;
 
     removeFigureContainers(clone);
@@ -937,6 +993,18 @@ export const buildTableGroupsHtml = (
     .join("");
 };
 
+const getCleanElementOuterHtml = (element: Element, hasMediaFigures: boolean): string => {
+  if (!hasMediaFigures) {
+    return element.outerHTML;
+  }
+
+  const clone = element.cloneNode(true) as Element;
+
+  removeFigureContainers(clone);
+
+  return clone.outerHTML;
+};
+
 export const buildListContentHtml = (
   detail: Element,
   searchWords: string[],
@@ -944,23 +1012,33 @@ export const buildListContentHtml = (
 ): string => {
   const uls = [...detail.querySelectorAll<HTMLUListElement>("ul")];
 
+  if (uls.length === 0) {
+    return "";
+  }
+
+  const hasMediaFigures = Boolean(detail.querySelector('[class*="media-figure"]'));
+
+  const normalizedSearchWords = searchWords.map((word) =>
+    dependencies.normalizeText(word)
+  );
+
   const parts: string[] = [];
 
   const addedParts = new Set<string>();
 
   for (const ul of uls) {
-    const ulClone = ul.cloneNode(true) as Element;
+    const ulHtml = getCleanElementOuterHtml(ul, hasMediaFigures);
 
-    removeFigureContainers(ulClone);
-
-    const ulText = dependencies.stripHtml(ulClone.outerHTML);
+    const ulText = hasMediaFigures
+      ? dependencies.stripHtml(ulHtml)
+      : ul.textContent || "";
 
     const normalizedUlText = dependencies.normalizeText(ulText);
 
     const hasMatch =
-      searchWords.length === 0 ||
-      searchWords.some((word) =>
-        normalizedUlText.includes(dependencies.normalizeText(word))
+      normalizedSearchWords.length === 0 ||
+      normalizedSearchWords.some((normalizedWord) =>
+        normalizedUlText.includes(normalizedWord)
       );
 
     if (!hasMatch) {
@@ -973,62 +1051,56 @@ export const buildListContentHtml = (
       dependencies.additionContainerSelector
     );
 
-    if (additionContainer) {
-      const additionClone = additionContainer.cloneNode(true) as Element;
+    const targetHtml = additionContainer
+      ? getCleanElementOuterHtml(additionContainer, hasMediaFigures)
+      : ulHtml;
 
-      removeFigureContainers(additionClone);
-
-      const additionHtml = additionClone.outerHTML;
-
-      if (!addedParts.has(additionHtml)) {
-        parts.push(additionHtml);
-        addedParts.add(additionHtml);
-      }
-
+    if (addedParts.has(targetHtml)) {
       continue;
     }
 
-    const ulHtml = ulClone.outerHTML;
-
-    if (addedParts.has(ulHtml)) {
-      continue;
-    }
-
-    parts.push(ulHtml);
-    addedParts.add(ulHtml);
+    parts.push(targetHtml);
+    addedParts.add(targetHtml);
   }
 
   return parts.filter(Boolean).join("\n");
 };
 
 export const extractEntityTextFromContent = (content: string): string => {
-  if (!content.trim()) {
+  if (!content.trim() || !content.includes("<mark")) {
     return "";
   }
 
-  const root = document.createElement("div");
+  entityExtractionState.root ??= document.createElement("div");
+  entityExtractionState.root.innerHTML = content;
 
-  root.innerHTML = content;
+  const buckets = new Map<string, string[]>();
 
-  return [
-    "mark.app",
-    "mark.plugin",
-    "mark.file",
-    "mark.key",
-    "mark.select",
-    "mark.video",
-    "mark.audio",
-    "mark.image",
-    "mark.path",
-    "mark.word",
-    "mark.tag",
-  ]
-    .flatMap((selector) =>
-      [...root.querySelectorAll(selector)]
-        .map((element) => element.textContent?.trim() || "")
-        .filter(Boolean)
-    )
-    .join(" ");
+  for (const className of ENTITY_CLASS_NAMES) {
+    buckets.set(className, []);
+  }
+
+  for (const element of entityExtractionState.root.querySelectorAll(
+    COMBINED_ENTITY_SELECTOR
+  )) {
+    const text = element.textContent?.trim() || "";
+
+    if (!text) {
+      continue;
+    }
+
+    for (const className of ENTITY_CLASS_NAMES) {
+      if (element.classList.contains(className)) {
+        buckets.get(className)?.push(text);
+      }
+    }
+  }
+
+  entityExtractionState.root.replaceChildren();
+
+  return ENTITY_CLASS_NAMES.flatMap((className) => buckets.get(className) ?? []).join(
+    " "
+  );
 };
 
 export const formatSearchSnippetResult = (
@@ -1093,21 +1165,41 @@ export const mapRankedResultsToSearchResults = (
 ): SearchResultMapped[] => {
   const compiledQuery = compileSearchQuery(queryText);
 
+  const normalizedCacheQuery = compiledQuery.originalText.trim().toLowerCase();
+
   const mappedResults: SearchResultMapped[] = [];
 
   for (const workerResult of rankedResults) {
-    const detail = dependencies.cachedDetailsByKey.get(
-      `${workerResult.id}::${workerResult.sourceOrder}`
-    );
+    const detailKey = `${workerResult.id}::${workerResult.sourceOrder}`;
+
+    const detail = dependencies.cachedDetailsByKey.get(detailKey);
 
     if (!detail) {
       continue;
     }
 
+    const snippetCacheKey = `${detailKey}::${normalizedCacheQuery}`;
+
+    let formattedContent = formattedSnippetCache.get(snippetCacheKey);
+
+    if (formattedContent === undefined) {
+      formattedContent = dependencies.formatContent(detail.content, compiledQuery);
+
+      if (formattedSnippetCache.size >= MAX_FORMATTED_SNIPPET_CACHE_SIZE) {
+        const oldestKey = formattedSnippetCache.keys().next().value;
+
+        if (oldestKey !== undefined) {
+          formattedSnippetCache.delete(oldestKey);
+        }
+      }
+
+      formattedSnippetCache.set(snippetCacheKey, formattedContent);
+    }
+
     mappedResults.push({
       ...(detail.anchor && {anchor: detail.anchor}),
       ...(detail.tag && {tag: detail.tag}),
-      content: dependencies.formatContent(detail.content, compiledQuery),
+      content: formattedContent,
       hasTagMatch: workerResult.hasTagMatch,
       hasTitleMatch: workerResult.hasTitleMatch,
       id: detail.id,
