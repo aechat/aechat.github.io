@@ -242,7 +242,7 @@ export const parseAepHeader = (bytes: Uint8Array): ParsedAepInfo => {
 
   const decoded = decodeSvap(bytes, SOFTWARE_VERSION_SVAP_OFFSET);
 
-  const platform = decoded.osCode >= 2 ? "macOS" : "Windows";
+  const platform = decoded.osCode === 13 || decoded.osCode === 14 ? "macOS" : "Windows";
 
   const headByte1 = bytes[VERSION_BYTE_OFFSET];
 
@@ -360,7 +360,7 @@ export const parseAepxHeader = (xmlString: string): ParsedAepInfo => {
     minor = decoded.minor;
     patch = decoded.patch;
     build = decoded.build;
-    platform = decoded.osCode >= 2 ? "macOS" : "Windows";
+    platform = decoded.osCode === 13 || decoded.osCode === 14 ? "macOS" : "Windows";
   }
 
   let headByte1 = 0;
@@ -423,15 +423,19 @@ export const getPlatformAdjustedSvapBytes = (
   rawBytes: [number, number, number, number],
   isMac: boolean
 ): [number, number, number, number] => {
-  const result: [number, number, number, number] = [...rawBytes];
+  const value =
+    ((rawBytes[0] << 24) | (rawBytes[1] << 16) | (rawBytes[2] << 8) | rawBytes[3]) >>> 0;
 
-  if (isMac) {
-    result[1] |= 0x80;
-  } else {
-    result[1] &= 0x3f;
-  }
+  const targetOsCode = isMac ? 13 : 12;
 
-  return result;
+  const adjustedValue = ((value & ~0x03_c0_00_00) | ((targetOsCode & 0x0f) << 22)) >>> 0;
+
+  return [
+    (adjustedValue >>> 24) & 0xff,
+    (adjustedValue >>> 16) & 0xff,
+    (adjustedValue >>> 8) & 0xff,
+    adjustedValue & 0xff,
+  ];
 };
 
 export const downgradeAep = (
