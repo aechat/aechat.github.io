@@ -105,4 +105,9 @@
       min-width: 280px;
     }
   }
+
+  & + :global([class*="addition"]),
+  & ~ :global([class*="addition"]) {
+    border-radius: 0 !important;
+  }
 }

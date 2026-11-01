@@ -4,13 +4,15 @@ import React, {useMemo, useState} from "react";
 
 import {UploadFileRounded} from "@mui/icons-material";
 
-import {message, Select, Upload} from "antd";
+import {message, Select, Switch, Upload} from "antd";
 
 import {useRipple} from "../../../hooks/useRipple";
 
 import {formatBytes} from "../../../utilities/fileUtilities";
 
 import {triggerHaptic, withSoftHaptic} from "../../../utilities/haptics";
+
+import Addition from "../../content/Addition";
 
 import modalStyles from "../../modals/Modal.module.scss";
 
@@ -54,7 +56,14 @@ const AepDowngradeConverter: React.FC = () => {
 
   const [targetVersion, setTargetVersion] = useState<AeMajorVersion | undefined>();
 
+  const [shouldConvertExpressions, setShouldConvertExpressions] =
+    useState<boolean>(false);
+
   const ripple = useRipple<HTMLButtonElement>();
+
+  const isExtendScriptMandatory = Boolean(targetVersion && targetVersion <= 15);
+
+  const shouldTranspileExpressions = isExtendScriptMandatory || shouldConvertExpressions;
 
   const targetVersionOptions = useMemo(() => {
     if (!parsedInfo || parsedInfo.detectedMajor <= 0) {
@@ -187,7 +196,12 @@ const AepDowngradeConverter: React.FC = () => {
       /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     if (fileFormat === "aepx" && fileText) {
-      const modifiedXml = downgradeAepx(fileText, targetVersion, isUserMac);
+      const modifiedXml = downgradeAepx(
+        fileText,
+        targetVersion,
+        isUserMac,
+        shouldTranspileExpressions
+      );
 
       const blob = new Blob([modifiedXml], {
         type: "application/xml;charset=utf-8",
@@ -206,7 +220,12 @@ const AepDowngradeConverter: React.FC = () => {
     const sourceBytes = new Uint8Array(fileBuffer);
 
     if (fileFormat === "mogrt") {
-      const modifiedBytes = downgradeMogrt(sourceBytes, targetVersion, isUserMac);
+      const modifiedBytes = downgradeMogrt(
+        sourceBytes,
+        targetVersion,
+        isUserMac,
+        shouldTranspileExpressions
+      );
 
       const blob = new Blob([new Uint8Array(modifiedBytes)], {
         type: "application/octet-stream",
@@ -219,7 +238,12 @@ const AepDowngradeConverter: React.FC = () => {
     }
 
     if (fileFormat === "aegraphic") {
-      const modifiedBytes = downgradeAegraphic(sourceBytes, targetVersion, isUserMac);
+      const modifiedBytes = downgradeAegraphic(
+        sourceBytes,
+        targetVersion,
+        isUserMac,
+        shouldTranspileExpressions
+      );
 
       const originalExtension = originalFileName.slice(originalFileName.lastIndexOf("."));
 
@@ -233,7 +257,12 @@ const AepDowngradeConverter: React.FC = () => {
       return;
     }
 
-    const modifiedBytes = downgradeAep(sourceBytes, targetVersion, isUserMac);
+    const modifiedBytes = downgradeAep(
+      sourceBytes,
+      targetVersion,
+      isUserMac,
+      shouldTranspileExpressions
+    );
 
     const blob = new Blob([new Uint8Array(modifiedBytes)], {
       type: "application/octet-stream",
@@ -253,6 +282,7 @@ const AepDowngradeConverter: React.FC = () => {
     setOriginalFileSize(undefined);
     setParsedInfo(undefined);
     setTargetVersion(undefined);
+    setShouldConvertExpressions(false);
   });
 
   const downloadButtonLabel = useMemo(() => {
@@ -280,81 +310,109 @@ const AepDowngradeConverter: React.FC = () => {
   }, [fileFormat]);
 
   return (
-    <div className={styles["converter"]}>
-      <div onMouseDown={() => triggerHaptic("selection")}>
-        <Upload.Dragger
-          accept=".aep,.aet,.aepx,.mogrt,.aegraphic"
-          beforeUpload={canHandleFileUpload}
-          className={styles["converter-dragger"]}
-          name="file"
-          showUploadList={false}
-        >
-          <div className={styles["converter-dragger-content"]}>
-            <UploadFileRounded />
-            <span className={styles["converter-dragger-text"]}>
-              Перетащите файл формата AEP, AET, AEPX, AEGRAPHIC или MOGRT в это поле или
-              нажмите для выбора файла
-            </span>
-          </div>
-        </Upload.Dragger>
-      </div>
-      <p className={styles["converter-info-text"]}>
-        Конвертация происходит локально на вашем устройстве, качественный результат не
-        гарантируется.
-        {parsedInfo && (
-          <>
-            <br />
-            Файл: <b>{originalFileName}</b>
-            {originalFileSize ? ` (${formatBytes(originalFileSize)})` : ""} — версия{" "}
-            <b>
-              Adobe After Effects {parsedInfo.displayVersion} ({parsedInfo.yearLabel})
-            </b>
-            {targetVersionOptions.length === 0 && (
-              <>
-                <br />
-                Дальнейшее понижение версии недоступно: компонент поддерживает конвертацию
-                проектов только до версии 23.X (2023).
-              </>
-            )}
-          </>
-        )}
-      </p>
-      {parsedInfo && targetVersionOptions.length > 0 && (
-        <div className={styles["converter-target-select"]}>
-          <div className={styles["converter-target-select-header"]}>
-            <span className={styles["converter-target-select-title"]}>
-              Целевая версия проекта
-            </span>
-          </div>
-          <Select
-            className={styles["converter-target-select-control"]}
-            options={targetVersionOptions}
-            value={targetVersion}
-            onChange={handleVersionChange}
-          />
-        </div>
-      )}
-      {parsedInfo && (
-        <div className={modalStyles["modal-controls-group"]}>
-          <button
-            className={`${modalStyles["modal-controls-option"]} ${styles["converter-reset-desaturated"]}`}
-            onClick={handleReset}
-            onMouseDown={ripple.onMouseDown}
+    <>
+      <div className={styles["converter"]}>
+        <div onMouseDown={() => triggerHaptic("selection")}>
+          <Upload.Dragger
+            accept=".aep,.aet,.aepx,.mogrt,.aegraphic"
+            beforeUpload={canHandleFileUpload}
+            className={styles["converter-dragger"]}
+            name="file"
+            showUploadList={false}
           >
-            Сбросить
-          </button>
-          {targetVersion && (
+            <div className={styles["converter-dragger-content"]}>
+              <UploadFileRounded />
+              <span className={styles["converter-dragger-text"]}>
+                Перетащите файл формата AEP, AET, AEPX, AEGRAPHIC или MOGRT в это поле или
+                нажмите для выбора файла
+              </span>
+            </div>
+          </Upload.Dragger>
+        </div>
+        <p className={styles["converter-info-text"]}>
+          Конвертация происходит локально на вашем устройстве, качественный результат не
+          гарантируется.
+          {parsedInfo && (
+            <>
+              <br />
+              Файл: <b>{originalFileName}</b>
+              {originalFileSize ? ` (${formatBytes(originalFileSize)})` : ""} — версия{" "}
+              <b>
+                Adobe After Effects {parsedInfo.displayVersion} ({parsedInfo.yearLabel})
+              </b>
+              {targetVersionOptions.length === 0 && (
+                <>
+                  <br />
+                  Дальнейшее понижение версии недоступно: компонент поддерживает
+                  конвертацию проектов только до версии 15.X (CC 2018).
+                </>
+              )}
+            </>
+          )}
+        </p>
+        {parsedInfo && targetVersionOptions.length > 0 && (
+          <div className={styles["converter-target-select"]}>
+            <div className={styles["converter-target-select-header"]}>
+              <span className={styles["converter-target-select-title"]}>
+                Целевая версия проекта
+              </span>
+            </div>
+            <Select
+              className={styles["converter-target-select-control"]}
+              options={targetVersionOptions}
+              value={targetVersion}
+              onChange={handleVersionChange}
+            />
+          </div>
+        )}
+        {parsedInfo && targetVersionOptions.length > 0 && (
+          <div className={styles["converter-precision"]}>
+            <div className={styles["converter-precision-header"]}>
+              <span className={styles["converter-precision-title"]}>
+                Конвертировать выражения в Legacy ExtendScript (ES3)
+              </span>
+            </div>
+            <div className={styles["converter-precision-controls"]}>
+              <Switch
+                checked={shouldTranspileExpressions}
+                disabled={isExtendScriptMandatory}
+                onChange={(checked) => {
+                  triggerHaptic("selection");
+                  setShouldConvertExpressions(checked);
+                }}
+              />
+            </div>
+          </div>
+        )}
+        {parsedInfo && (
+          <div className={modalStyles["modal-controls-group"]}>
             <button
-              className={`${modalStyles["modal-controls-option"]} ${styles["converter-button-action"]}`}
-              onClick={handleDownload}
+              className={`${modalStyles["modal-controls-option"]} ${styles["converter-reset-desaturated"]}`}
+              onClick={handleReset}
               onMouseDown={ripple.onMouseDown}
             >
-              {downloadButtonLabel}
+              Сбросить
             </button>
-          )}
-        </div>
+            {targetVersion && (
+              <button
+                className={`${modalStyles["modal-controls-option"]} ${styles["converter-button-action"]}`}
+                onClick={handleDownload}
+                onMouseDown={ripple.onMouseDown}
+              >
+                {downloadButtonLabel}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {targetVersion && targetVersion <= 22 && (
+        <Addition type="warning">
+          Для открытия конвертированного файла используйте{" "}
+          <mark className="select">«File» → «Import» → «File»</mark> или комбинацию клавиш{" "}
+          <mark className="key">Ctrl + I</mark> в пустом или уже открытом проекте.
+        </Addition>
       )}
-    </div>
+    </>
   );
 };
 
