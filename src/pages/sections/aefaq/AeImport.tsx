@@ -12,6 +12,8 @@ import ContentFilter from "../../../components/content/ContentFilter";
 
 import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
 
+import AepDowngradeConverter from "../../../components/features/converters/ConverterAepDowngrade";
+
 import TgsToJsonConverter from "../../../components/features/converters/ConverterTgsToJson";
 
 const ProjectStructureExample = `Обзор на Ford Focus 2
@@ -2149,61 +2151,68 @@ const AeImport: React.FC = () => {
           действия.
         </p>
         <p>
-          При возникновении этой проблемы у вас есть два варианта решения: попросить
-          пользователя с более новой версией программы сохранить проект для старой версии
-          или всё же обновить <mark className="app">Adobe After Effects</mark> до
-          актуальной версии. Второй способ проще и быстрее: имеет смысл потратить полчаса
-          на установку новой версии <mark className="app">Adobe After Effects</mark> и{" "}
-          <a href="#update-app">перенос настроек с плагинами</a>.{" "}
-          <em className="article-note-muted">
-            Это значительно сэкономит время в будущем, если вы часто работаете с чужими
-            проектами.
-          </em>
+          При возникновении этой проблемы у вас есть три варианта решения: попросите
+          пользователя с более новой версией программы сохранить проект для старой версии,
+          обновите <mark className="app">Adobe After Effects</mark> до актуальной версии
+          или используйте конвертер проектов на этой странице.
         </p>
         <Addition type="info">
-          Проекты, созданные в одной версии{" "}
-          <mark className="app">Adobe After Effects</mark> на Windows, в большинстве
-          случаев без проблем откроются в версии для macOS и наоборот.
+          <ul>
+            <li>
+              Второй способ проще и быстрее: имеет смысл потратить полчаса на установку
+              новой версии <mark className="app">Adobe After Effects</mark> и{" "}
+              <a href="#update-app">перенос настроек с плагинами</a>, так как часть
+              функций или эффектов, добавленные в более новой версии{" "}
+              <mark className="app">Adobe After Effects</mark>, могут работать некорректно
+              или вовсе не поддерживаться в вашей старой версии программы. Также это
+              значительно сэкономит время в будущем, если вы часто работаете с чужими
+              проектами.
+            </li>
+            <li>
+              Проекты, созданные в одной версии{" "}
+              <mark className="app">Adobe After Effects</mark> на Windows, в большинстве
+              случаев без проблем открываются в версии для macOS и наоборот.
+            </li>
+          </ul>
         </Addition>
         <Divider>
-          Конвертируем проект для старой версии{" "}
+          Конвертируем проект для старой версии средствами{" "}
           <mark className="app">Adobe After Effects</mark>
         </Divider>
         <p>
           Если у вас установлено две версии{" "}
           <mark className="app">Adobe After Effects</mark> и вы по какой-то причине не
           хотите работать в новой — вы можете конвертировать файл проекта самостоятельно.
-          Для этого перейдите в <mark className="select">«File» → «Save As»</mark> и
-          выберите нужную версию из списка. Программа предложит указать папку для
-          сохранения копии проекта. Рекомендуется сохранять копию проекта в той же папке,
-          где находится оригинал, чтобы избежать проблем со ссылками на исходники.
+          Для этого откройте нужный проект, перейдите в{" "}
+          <mark className="select">«File» → «Save As»</mark> и выберите нужную версию из
+          списка. Программа предложит указать папку для сохранения копии проекта.
+          Рекомендуется сохранять копию проекта в той же папке, где находится оригинал,
+          чтобы избежать проблем со ссылками на исходники.
         </p>
         <ArticleMedia
           caption="Выбираем «Сохранить как...»"
           src="legacy/aftereffects/file_save_as.png"
           type="image"
         />
-        <p>
-          Обратите внимание, что новые версии{" "}
-          <mark className="app">Adobe After Effects</mark> уже не позволяют сохранять
-          проекты для версий <mark className="app">Adobe After Effects</mark>{" "}
+        <Addition type="warning">
+          Новые версии <mark className="app">Adobe After Effects</mark> не позволяют
+          сохранять проекты для версий <mark className="app">Adobe After Effects</mark>{" "}
           <mark className="version">18.X (2021)</mark> или{" "}
           <mark className="app">Adobe After Effects</mark>{" "}
-          <mark className="version">22.X (2022)</mark>. В таком случае придётся установить
-          несколько версий программы и последовательно конвертировать проект через каждую.
-          Лучше выполнять этот процесс в виртуальной машине, чтобы избежать возможных
-          проблем в основной системе.
-        </p>
+          <mark className="version">22.X (2022)</mark>. Если вам нужно понизить версию ещё
+          ниже — придётся установить несколько версий программы и последовательно
+          конвертировать проект через каждую. Лучше выполнять этот процесс в виртуальной
+          машине, чтобы избежать возможных проблем в основной системе.
+        </Addition>
         <p>
           После конвертации до нужной версии откройте сохранённый файл в вашей версии{" "}
           <mark className="app">Adobe After Effects</mark>.
         </p>
-        <Addition type="warning">
-          После сохранения проекта для старой версии часть функций или эффектов,
-          добавленных в более новой версии{" "}
-          <mark className="app">Adobe After Effects</mark>, могут работать некорректно или
-          вовсе не поддерживаться в вашей старой версии программы.
-        </Addition>
+        <Divider>
+          Конвертируем проект для старой версии без использования{" "}
+          <mark className="app">Adobe After Effects</mark>
+        </Divider>
+        <AepDowngradeConverter />
       </DetailsSummary>
     </div>
   );
