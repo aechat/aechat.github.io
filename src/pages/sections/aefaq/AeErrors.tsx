@@ -936,6 +936,42 @@ const AeErrors: React.FC = () => {
         />
       </DetailsSummary>
       <DetailsSummary
+        anchor="fix-ai-assistant"
+        tag="there was an issue processing your request, please try again, if the issue persists please start a new chat, ии, помощник, агент, нейросети, пустое окно"
+        title="Почему я не могу использовать «AI Assistant»?"
+      >
+        <p>
+          Для работы функционала окна <mark className="select">«AI Assistant»</mark>,
+          добавленный в <mark className="app">Adobe After Effects</mark>{" "}
+          <mark className="version">27.0 (2027)</mark>, требуется вход в аккаунт{" "}
+          <mark className="company">Adobe</mark>, действующая подписка Creative Cloud и
+          поддерживаемый сервисом регион аккаунта. При использовании ИИ-ассистента у вас
+          будут списываться генеративные кредиты, которые начисляются согласно вашему
+          тарифному плану. Если вы ранее{" "}
+          <a href="#unlicensed-app">блокировали доступ в интернет</a> для{" "}
+          <mark className="app">Adobe After Effects</mark>, то окно{" "}
+          <mark className="select">«AI Assistant»</mark> будет пустым и функционал
+          облачных нейросетей работать не будет.
+        </p>
+        <Addition type="warning">
+          Вход в аккаунт <mark className="company">Adobe</mark> может быть недоступен на
+          территории Российской Федерации.
+        </Addition>
+        <p>
+          Если вы используете «народную» версию{" "}
+          <mark className="app">Adobe After Effects</mark> и хотите подключить ИИ-агентов
+          к рабочему процессу, воспользуйтесь сторонними MCP-серверами. Они позволяют
+          связать <mark className="app">Adobe After Effects</mark> с{" "}
+          <mark className="app">Codex</mark>, <mark className="app">Claude Code</mark>,{" "}
+          <mark className="app">Antigravity</mark> и другими агентами.
+        </p>
+        <div className="flexible-links">
+          <a href="https://github.com/Dakkshin/after-effects-mcp">
+            MCP для Adobe After Effects от Dakkshin
+          </a>
+        </div>
+      </DetailsSummary>
+      <DetailsSummary
         anchor="fix-advanced-3d-plugin-generated-an-unexpected-exception"
         tag="advanced 3d, classic 3d, расширенный 3d, вылетает при попытке использовать адвансед 3д, 3d рендеринг, драйверы видеокарты"
         title="Что делать с ошибкой «Advanced 3D plug-in generated an unexpected exception»?"
