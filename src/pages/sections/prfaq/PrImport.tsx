@@ -8,6 +8,8 @@ import {ArticleMedia} from "../../../components/content/ArticleMedia";
 
 import DetailsSummary from "../../../components/detailsSummary/DetailsSummary";
 
+import PrprojDowngradeConverter from "../../../components/features/converters/ConverterPrprojDowngrade";
+
 const PrImport: React.FC = () => {
   return (
     <div className="article-content">
@@ -590,6 +592,39 @@ const PrImport: React.FC = () => {
             </li>
           </ul>
         </Addition>
+      </DetailsSummary>
+      <DetailsSummary
+        anchor="this-project-was-saved-from-a-previous-version"
+        tag="the original project file will not be modified, совместимость версий, конвертация проекта"
+        title="Что означает «This project was saved from a previous version of Adobe Premiere Pro and must be converted» при открытии проекта?"
+      >
+        <p>
+          Это сообщение означает, что вы открыли проект, созданный в более старой версии{" "}
+          <mark className="app">Adobe Premiere</mark>, в новой версии программы. В таких
+          случаях программа автоматически конвертирует и сохранит проект для
+          совместимости, при этом исходный файл остаётся без изменений. Чтобы продолжить
+          работу, выберите путь для сохранения нового файла в поле{" "}
+          <mark className="select">«Location»</mark> и нажмите{" "}
+          <mark className="select">«OK»</mark> в появившемся окне.
+        </p>
+      </DetailsSummary>
+      <DetailsSummary
+        anchor="fix-cannot-be-opened-in-this-version"
+        tag="данный проект сохранен в более поздней версии и не может быть открыт в этой версии, the project could not be loaded, it may be damaged or contain outdated elements, не удалось загрузить проект, возможно он поврежден или содержит устаревшие элементы"
+        title="Что делать с «This project was saved in a newer version of Adobe Premiere Pro and cannot be opened in this version»?"
+      >
+        <p>
+          Это сообщение информирует вас о том, что проект, созданный в новой версии{" "}
+          <mark className="app">Adobe Premiere</mark>, нельзя открыть в старой версии. В
+          программе отсутствует автоматическая обратная совместимость — для открытия таких
+          проектов в предыдущих версиях потребуются дополнительные действия.
+        </p>
+        <p>
+          При возникновении этой проблемы у вас есть два варианта решения: используйте
+          конвертер проектов на этой странице или обновите{" "}
+          <mark className="app">Adobe Premiere</mark> до актуальной версии.
+        </p>
+        <PrprojDowngradeConverter />
       </DetailsSummary>
     </div>
   );
