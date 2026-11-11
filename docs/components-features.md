@@ -178,3 +178,28 @@ import AepDowngradeConverter from "../../../components/features/converters/Conve
 </Divider>
 <AepDowngradeConverter />;
 ```
+
+Компонент `ConverterPrprojDowngrade.tsx` представляет собой специализированный конвертер файлов проектов Premiere Pro для понижения их внутренней версии до релиза 11.X за 2017 год. Модуль принимает сжатые gzip-контейнеры проектов `.prproj`, а также открытые текстовые XML-проекты. Для загруженных файлов проверяется целостность данных на отсутствие заполнения пустыми нулевыми байтами, определяется наличие сигнатуры GZIP и распаковывается внутренняя XML-структура.
+
+Вся логика распаковки GZIP, потокового анализа XML и таблица внутренних версий вынесены в модуль `src/components/features/converters/prprojDowngradeConfig.ts`. Парсер распознает проекты от версий CC 2017 с внутренним индексом 32 до релизов 2026 с индексом 45, сопоставляя атрибут `Version` корневого тега `Project` со строками сборки `MZ.BuildVersion.Modified` и `MZ.BuildVersion.Created`. Это позволяет распознавать и восстанавливать проекты, заголовки которых ранее были некорректно перезаписаны сторонними веб-конвертерами без адаптации внутренней структуры.
+
+При экспорте в выбранную версию функция `downgradePrproj` вызывает адаптер `adaptPrprojXml` и сжимает преобразованный XML обратно в контейнер GZIP с помощью библиотеки `fflate`. Для проектов из релиза 2026 адаптер выполняет де-разреживание сериализации: автоматически восстанавливает опущенные значения по умолчанию, диапазоны параметров эффектов `VideoComponentParam` и `AudioComponentParam`, атрибуты дорожек `Track` и `AudioTrack`, а также приводит версии вложенных узлов `Sequence`, `Component`, `VideoStream` и `VideoTrackGroup` к спецификациям целевого релиза. Для совместимости с релизами 2024 и старше препроцессор разворачивает контейнеры генеративного расширения `CompoundProjectItem` до базовых элементов `ClipProjectItem`, удаляет объекты `GenerativeExtendSession` и преобразует заглушку `DummyCaptureSettings` в классический узел `CaptureSettings`. Для версий 2022 и ниже компонент выводит предупреждение с рекомендацией импорта файла через меню программы при сбоях прямого открытия.
+
+Компонент не принимает props и экспортируется по умолчанию:
+
+```tsx
+const PrprojDowngradeConverter: React.FC = () => { ... };
+export default PrprojDowngradeConverter;
+```
+
+Пример интеграции конвертера версий PRPROJ в статьях раздела `src/pages/sections/prfaq/` выглядит следующим образом:
+
+```tsx
+import PrprojDowngradeConverter from "../../../components/features/converters/ConverterPrprojDowngrade";
+
+<Divider>
+  Конвертер <mark className="file">PRPROJ</mark> для старых версий{" "}
+  <mark className="app">Adobe Premiere Pro</mark>
+</Divider>
+<PrprojDowngradeConverter />;
+```
