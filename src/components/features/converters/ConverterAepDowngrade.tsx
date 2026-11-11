@@ -189,7 +189,7 @@ const AepDowngradeConverter: React.FC = () => {
       .replaceAll(/ \([^)]*\)/g, "")
       .replace(/\.(?:aepx|aep|aet|mogrt|aegraphic)$/i, "");
 
-    const convertedSuffix = ` (${targetVersion}.x - aefaq)`;
+    const convertedSuffix = ` (${targetVersion}.x)`;
 
     const isUserMac =
       typeof navigator !== "undefined" &&
