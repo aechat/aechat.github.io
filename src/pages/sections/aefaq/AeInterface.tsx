@@ -56,6 +56,10 @@ const AeInterface: React.FC = () => {
           <mark className="app">Adobe After Effects</mark>, войдите в аккаунт и снова
           включите правила <mark className="app">брандмауэра</mark>.
         </Addition>
+        <Addition type="warning">
+          Вход в аккаунт <mark className="company">Adobe</mark> может быть недоступен на
+          территории Российской Федерации.
+        </Addition>
         <Divider>Отключаем домашний экран при запуске программы</Divider>
         <p>
           Если вариант со входом в аккаунт вас не устраивает или это окно просто мешает,
