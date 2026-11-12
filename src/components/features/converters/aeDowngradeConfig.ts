@@ -1,6 +1,6 @@
 import {unzipSync, zipSync} from "fflate";
 
-export type AeMajorVersion = 14 | 15 | 16 | 17 | 18 | 22 | 23 | 24 | 25 | 26;
+export type AeMajorVersion = 14 | 15 | 16 | 17 | 18 | 22 | 23 | 24 | 25 | 26 | 27;
 
 export interface VersionSignature {
   displayVersion: string;
@@ -35,7 +35,7 @@ export const SOFTWARE_VERSION_HEAD_OFFSET = 36;
 export const SOFTWARE_VERSION_SVAP_OFFSET = 20;
 
 export const SUPPORTED_TARGET_MAJORS: AeMajorVersion[] = [
-  26, 25, 24, 23, 22, 18, 17, 16, 15,
+  27, 26, 25, 24, 23, 22, 18, 17, 16, 15,
 ];
 
 export const AE_VERSION_SIGNATURES: Record<AeMajorVersion, VersionSignature> = {
@@ -119,6 +119,14 @@ export const AE_VERSION_SIGNATURES: Record<AeMajorVersion, VersionSignature> = {
     softwareVersionBytes: [0x0f, 0x91, 0x84, 0x45],
     yearLabel: "2026",
   },
+  27: {
+    displayVersion: "27.X",
+    headByte1: 0x62,
+    headByte3: 0x06,
+    major: 27,
+    softwareVersionBytes: [0x0f, 0x18, 0x06, 0x4e],
+    yearLabel: "2027",
+  },
 };
 
 export const decodeSvap = (
@@ -156,7 +164,7 @@ export const getVersionLabel = (version: number): string => {
     return `Adobe After Effects ${known.displayVersion} (${known.yearLabel})`;
   }
 
-  return version > 26
+  return version > 27
     ? `Adobe After Effects ${version}.X (${2000 + version})`
     : `Adobe After Effects ${version}.X`;
 };
@@ -166,43 +174,53 @@ const resolveMajorFromHead = (
   headByte1: number,
   headByte3: number
 ): number => {
-  if (headByte1 === 0x58) {
-    return 14;
-  }
-
-  if (headByte1 === 0x5c) {
-    return 15;
-  }
-
-  if (headByte1 === 0x5d) {
-    if (headByte3 === 0x05) {
-      return 16;
+  switch (headByte1) {
+    case 0x58: {
+      return 14;
     }
 
-    return headByte3 >= 0x1d ? 22 : 17;
+    case 0x5c: {
+      return 15;
+    }
+
+    case 0x5d: {
+      if (headByte3 === 0x05) {
+        return 16;
+      }
+
+      return headByte3 >= 0x1d ? 22 : 17;
+    }
+
+    case 0x5e: {
+      return 23;
+    }
+
+    case 0x5f: {
+      return 24;
+    }
+
+    case 0x60: {
+      return 25;
+    }
+
+    case 0x61: {
+      return 26;
+    }
+
+    case 0x62: {
+      return 27;
+    }
+
+    default: {
+      break;
+    }
   }
 
-  if (headByte1 === 0x5e) {
-    return 23;
-  }
-
-  if (headByte1 === 0x5f) {
-    return 24;
-  }
-
-  if (headByte1 === 0x60) {
-    return 25;
-  }
-
-  if (headByte1 === 0x61) {
-    return 26;
-  }
-
-  if (decodedMajor >= 14 && decodedMajor <= 26) {
+  if (decodedMajor >= 14 && decodedMajor <= 27) {
     return decodedMajor;
   }
 
-  return headByte1 > 0x61 && headByte1 < 0x80 ? headByte1 - 0x61 + 26 : 0;
+  return headByte1 > 0x62 && headByte1 < 0x80 ? headByte1 - 0x62 + 27 : 0;
 };
 
 export const parseAepHeader = (bytes: Uint8Array): ParsedAepInfo => {
@@ -267,7 +285,7 @@ export const parseAepHeader = (bytes: Uint8Array): ParsedAepInfo => {
     };
   }
 
-  if (major > 26) {
+  if (major > 27) {
     const estYear = 2000 + major;
 
     return {
@@ -395,7 +413,7 @@ export const parseAepxHeader = (xmlString: string): ParsedAepInfo => {
     };
   }
 
-  if (major > 26) {
+  if (major > 27) {
     const estYear = 2000 + major;
 
     return {
