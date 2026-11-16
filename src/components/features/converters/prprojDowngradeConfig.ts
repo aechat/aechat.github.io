@@ -1,7 +1,7 @@
 import {gunzipSync, gzipSync} from "fflate";
 
 export type PrInternalVersion =
-  32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45;
+  32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46;
 
 export interface PrVersionMetadata {
   displayVersion: string;
@@ -64,7 +64,7 @@ const NULL_CHECK_SAMPLE_LIMIT = 4096;
 const FALLBACK_PREVIEW_FORMAT_ID = "b0f75bf9-a1fa-f37f-f0e2-3a24000000fa";
 
 export const SUPPORTED_TARGET_VERSIONS: PrInternalVersion[] = [
-  45, 43, 42, 41, 40, 39, 38, 36, 34, 32,
+  46, 45, 43, 42, 41, 40, 39, 38, 36, 34, 32,
 ];
 
 export const SUPPORTED_TARGET_PR_VERSIONS = SUPPORTED_TARGET_VERSIONS;
@@ -154,12 +154,19 @@ export const PR_VERSION_SIGNATURES: Record<number, PrVersionMetadata> = {
     major: 26,
     yearLabel: "2026",
   },
+  46: {
+    displayVersion: "27.X",
+    internalVersion: 46,
+    major: 27,
+    yearLabel: "2027",
+  },
 };
 
 const BUILD_PREFIX_TO_INTERNAL_VERSION: Array<{
   internalVersion: PrInternalVersion;
   prefix: string;
 }> = [
+  {internalVersion: 46, prefix: "27."},
   {internalVersion: 45, prefix: "26."},
   {internalVersion: 43, prefix: "25."},
   {internalVersion: 42, prefix: "24."},
@@ -194,6 +201,7 @@ const TAG_VERSION_THRESHOLDS: Record<string, TagVersionThreshold[]> = {
   AudioTrack: [{maxProjectVersion: 43, tagVersion: 11}],
   AudioTrackInlet: [{maxProjectVersion: 43, tagVersion: 3}],
   AudioTransitionTrackItem: [{maxProjectVersion: 43, tagVersion: 3}],
+  Clip: [{maxProjectVersion: 45, tagVersion: 18}],
   ClipLoggingInfo: [
     {maxProjectVersion: 33, tagVersion: 7},
     {maxProjectVersion: 42, tagVersion: 8},
@@ -211,6 +219,7 @@ const TAG_VERSION_THRESHOLDS: Record<string, TagVersionThreshold[]> = {
     {maxProjectVersion: 37, tagVersion: 2},
     {maxProjectVersion: 43, tagVersion: 3},
   ],
+  CompoundProjectItem: [{maxProjectVersion: 45, tagVersion: 1}],
   IngestSettings: [
     {maxProjectVersion: 42, tagVersion: 1},
     {maxProjectVersion: 43, tagVersion: 2},
@@ -228,6 +237,7 @@ const TAG_VERSION_THRESHOLDS: Record<string, TagVersionThreshold[]> = {
     {maxProjectVersion: 37, tagVersion: 26},
     {maxProjectVersion: 42, tagVersion: 27},
     {maxProjectVersion: 43, tagVersion: 30},
+    {maxProjectVersion: 45, tagVersion: 30},
   ],
   MediaSource: [
     {maxProjectVersion: 37, tagVersion: 3},
@@ -270,6 +280,7 @@ const TAG_VERSION_THRESHOLDS: Record<string, TagVersionThreshold[]> = {
     {maxProjectVersion: 37, tagVersion: 16},
     {maxProjectVersion: 42, tagVersion: 19},
     {maxProjectVersion: 43, tagVersion: 21},
+    {maxProjectVersion: 45, tagVersion: 23},
   ],
   VideoTrackGroup: [
     {maxProjectVersion: 37, tagVersion: 10},
@@ -638,7 +649,7 @@ export const getPrVersionLabel = (version: number): string => {
     return `Adobe Premiere Pro ${known.displayVersion} (${known.yearLabel})`;
   }
 
-  return version > 45
+  return version > 46
     ? `Adobe Premiere Pro (внутренняя версия ${version})`
     : `Adobe Premiere Pro v${version}`;
 };
@@ -701,6 +712,14 @@ export const inferVersionFromMetadata = (
     if (matchedPrefix) {
       return matchedPrefix.internalVersion;
     }
+  }
+
+  if (
+    /<Media\b[^>]*\bVersion="31"/.test(xml) ||
+    /<VideoStream\b[^>]*\bVersion="24"/.test(xml) ||
+    /<Clip\b[^>]*\bVersion="19"/.test(xml)
+  ) {
+    return 46;
   }
 
   if (
@@ -822,7 +841,7 @@ const resolveTargetTagVersion = (
     return targetProjectVersion;
   }
 
-  if (targetProjectVersion >= 44) {
+  if (targetProjectVersion >= 46) {
     return currentVersion;
   }
 
