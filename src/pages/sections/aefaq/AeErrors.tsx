@@ -1522,6 +1522,7 @@ const AeErrors: React.FC = () => {
                   <mark className="app">Adobe After Effects</mark>. Для решения проблемы
                   достаточно очистить систему от мусора, хотя бы кэш, и повторить попытку.
                 </li>
+                «мусора»
               </ul>
             </>
           }
