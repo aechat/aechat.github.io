@@ -3355,6 +3355,24 @@ const AeInstallProblems: React.FC = () => {
           основные файлы программы, сохранив ваши дополнения, поэтому переносить плагины и
           пресеты вручную не придётся.
         </p>
+        <Addition type="info">
+          <p>
+            Начиная с <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">27.0 (2027)</mark>, пользовательские параметры из
+            предыдущей версии автоматически переносятся в новую. Сбросить их до значений
+            по умолчанию можно в{" "}
+            <mark className="select">
+              «Edit» → «Preferences» → «Startup & Repair» → «Reset All Preferences To
+              Defaults»
+            </mark>
+            .
+          </p>
+          <p>
+            Информация о диалоге переноса пользовательских настроек при первом запуске
+            программы актуальна для <mark className="app">Adobe After Effects</mark>{" "}
+            <mark className="version">26.5 (2026)</mark> и ниже.
+          </p>
+        </Addition>
         <p>
           При первом запуске после обновления — неважно, в пределах «одного года» или при
           переходе на версию другого года — программа предложит импортировать настройки из
